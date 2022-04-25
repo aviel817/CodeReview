@@ -1,5 +1,5 @@
 @media (max-width: 1199.98px) { 
-    .container 
+    .container, #reviews 
     {
         width: 80% !important; 
     }
