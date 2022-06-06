@@ -54,7 +54,7 @@
           </li>
         </ul>
         <form class="d-flex">
-          <button class="btn btn-primary" type="submit">Login</button>
+          <button class="btn btn-primary" type="submit">Logout</button>
         </form>
       </div>
     </div>
@@ -69,18 +69,32 @@
       </ul>
     </div>
     <div class="col text-end">
-      <button class="btn btn-primary" type="button">Create Chat</button>
+      <button class="btn btn-secondary" type="button">Create Chat</button>
+      <button class="btn btn-success" type="button">Approve Patch</button>
     </div>
   </div>
   <div>
   <h3 style="font-size: 20px;">Reviewers:</h3>
-  <ul class="list-group list-group-horizontal">
-    <li class="list-group-item">Reviewer 1</li>
-    <li class="list-group-item">Reviewer 2</li>
-    <li class="list-group-item">Reviewer 3</li>
-    <li class="list-group-item">Reviewer 4</li>
-    <li class="list-group-item">Reviewer 5</li>
-  </ul>
+  <table class="table table-bordered text-center" style="width: 50%;">
+    <tbody>
+      <tr>
+        <td>Reviewer 1</td>
+        <td>Reviewer 2</td>
+        <td>Reviewer 3</td>
+        <td>Reviewer 4</td>
+        <td>Reviewer 5</td>
+      </tr>
+      <tr>
+        <td>-1</td>
+        <td>+2</td>
+        <td>Not voted</td>
+        <td>-2</td>
+        <td>+1</td>
+      </tr>
+
+    </tbody>
+
+  </table>
   </div>
   <div style="margin-bottom: 30px;">
   Code:
