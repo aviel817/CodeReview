@@ -25,20 +25,20 @@
         </div>
       </nav>
       <br>
-      <form>
+      <form action="/register" method="post" style="width: 50%; margin: auto;">
         <h1>Register to GamiRev</h1>
         <div class="form-group">
           <label for="exampleInputUserName1">Username</label>
-          <input type="text" class="form-control" id="exampleInputUserName1" placeholder="Enter username" required>
+          <input name="username" type="text" class="form-control" id="exampleInputUserName1" placeholder="Enter username" required>
         </div>
         <br>
         <div class="form-group">
           <label for="exampleInputPassword1">Password</label>
-          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" required>
+          <input name="password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" required>
         </div>
         <div class="form-group">
           <label for="exampleInputEmail1">Email address</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email" required>
+          <input name="email" type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email" required>
         </div>
         <br>
         <button type="submit" class="btn btn-primary">Register</button>

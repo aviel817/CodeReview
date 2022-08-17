@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const path = require('path');
+var bodyParser = require('body-parser')
+
+// create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 const UserSchema = new mongoose.Schema({
     username: String,
@@ -16,10 +21,11 @@ const UserSchema = new mongoose.Schema({
 const User = mongoose.model('Users', UserSchema);
 
 router.get('/', function (req, res) {
-	return res.render('register.html');
+	res.sendFile(path.join(__dirname + "/register.html"));
 });
-router.post('/', function(req, res) {
+router.post('/', urlencodedParser, async(req, res) =>  {
 	console.log(req.body);
     
-
 });
+
+module.exports = router;

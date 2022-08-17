@@ -5,8 +5,10 @@ const app = express()
 const port = 3000
 
 const loginRoute = require("./login");
+const registerRoute = require("./register");
 
 app.use('/login', loginRoute);
+app.use('/register', registerRoute);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -48,9 +50,3 @@ Review.findOne({authorID: {$gte:1} }, function (err, docs) {
     }
 });
 
-
-app.use(express.static(__dirname));
-
-app.get("/log-in", function (req, res) {
-    res.sendFile(path.join(__dirname + "/login.html"));
-  });
