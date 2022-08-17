@@ -17,10 +17,7 @@ router.post("/", urlencodedParser, async (req, res) => {
         console.log(req.body);
 
     }
-    res.send("The request sent!");
-    //var loginUser = req.body.loginUser;
-    //var email = loginUser.email;
-    //var password = loginUser.password;
+    
 
 });
 
