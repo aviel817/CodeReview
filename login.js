@@ -26,15 +26,13 @@ router.post("/", urlencodedParser, async (req, res) => {
         });
         if(user){
             dbPass = user.password;
-            console.log("db pass: " + dbPass);
             try {
                 hash = await argon2.hash(req.body.password);
-                console.log("hash: " + hash);
               } catch (err) {
                 console.log("ERROR " + err);
               }
               try {
-                if (await argon2.verify(hash, dbPass)) {
+                if (await argon2.verify(dbPass, hash)) {
                   // password match
                   console.log("matched");
                 } else {

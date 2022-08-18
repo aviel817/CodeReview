@@ -29,7 +29,7 @@ router.post('/', urlencodedParser, async(req, res) =>  {
         }
         else {
             try {
-                var hash = await argon2.hash("password");
+                var hash = await argon2.hash(req.body.password);
               } catch (err) {
                 console.log("ERROR " + err);
               }   
