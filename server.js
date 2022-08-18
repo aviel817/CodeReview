@@ -7,6 +7,8 @@ const port = 3000
 const loginRoute = require("./login");
 const registerRoute = require("./register");
 
+app.use('/css', express.static('css'));
+app.use('/js', express.static('js'));
 app.use('/login', loginRoute);
 app.use('/register', registerRoute);
 
