@@ -41,7 +41,8 @@ router.post('/', urlencodedParser, async(req, res) =>  {
                 permission: 0,
                 email: req.body.email
             }).save()
-            res.redirect('/login');
+            res.send('You have successfully registered');
+          //  res.redirect('/login');
         }
     }
     
