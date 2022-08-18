@@ -51,4 +51,4 @@ Review.findOne({authorID: {$gte:1} }, function (err, docs) {
         console.log("Result : ", docs.votes);
     }
 });
-
+module.exports = User;
