@@ -4,7 +4,7 @@ const path = require('path');
 const argon2 = require('argon2');
 var bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const User = require('./models/user.js');
+const User = require('./models/user');
 // create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
