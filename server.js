@@ -1,16 +1,19 @@
 const mongoose = require("mongoose");
 const path = require('path');
+const Review = require('./models/review');
 const express = require('express');
 const app = express();
 const port = 3000
 
 const loginRoute = require("./login");
 const registerRoute = require("./register");
+const createNewReviewRoute = require("./createNewReview");
 
 app.use('/css', express.static('css'));
 app.use('/js', express.static('js'));
 app.use('/login', loginRoute);
 app.use('/register', registerRoute);
+app.use('/createNewReview', createNewReviewRoute);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
@@ -31,17 +34,6 @@ mongoose.connect(dbURL)
     })
 
 
-const reviewSchema = new mongoose.Schema({
-    authorID: Number,
-    assignedReviewers: [Number],
-    votes: Number,
-    creationDate: String,
-    expirationDate: String
-  }, {
-    collection: 'Reviews'
-});
-
-const Review = mongoose.model('Reviews', reviewSchema);
 
 Review.findOne({authorID: {$gte:1} }, function (err, docs) {
     if (err){
