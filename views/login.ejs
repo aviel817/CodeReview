@@ -72,7 +72,14 @@
 <main class="form-signin w-100 m-auto">
   <form action="/login" method="post">
     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-
+    <% if(typeof error != 'undefined') { %>
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <%= error %>
+        <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <% } %>
     <div class="form-floating">
       <input name="username" type="text" class="form-control" id="floatingInput" placeholder="Username">
       <label for="floatingInput">Username</label>

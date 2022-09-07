@@ -6,29 +6,34 @@ var bodyParser = require('body-parser');
 var validator = require("email-validator");
 const mongoose = require('mongoose');
 const User = require('../models/user');
+
 // create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 
 router.get('/', function (req, res) {
-	res.sendFile(path.join(__dirname + "/register.html"));
+
+	res.render(path.join(__dirname + "/../views/register.ejs"));
 });
 router.post('/', urlencodedParser, async(req, res) =>  {
-    
+    var error = "";
 	console.log(req.body);
     if(validator.validate(req.body.email)=== false){
-        res.send('email address not valid');
+        error = 'The email address is not valid!';
+        res.render(path.join(__dirname + "/../views/register.ejs"), {error});
     }
     else{
         if(req.body.password.length <8){
-            res.send('password too short');
+            error = 'The password is too short!';
+            res.render(path.join(__dirname + "/../views/register.ejs"), {error});
         }
         else{
             const userName = await User.findOne({
                 username: req.body.username
             });
             if(userName){
-                res.redirect('/register');
+                error = 'Username already exists!';
+                res.render(path.join(__dirname + "/../views/register.ejs"), {error});
             }
             else{
                 const userEmail = await User.findOne({

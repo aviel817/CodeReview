@@ -5,15 +5,21 @@ var bodyParser = require('body-parser');
 const argon2 = require('argon2');
 const mongoose = require('mongoose');
 const User = require('../models/user');
+const expressSession = require("express-session");
 
 // create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-router.use('/css', express.static('css'));
-router.use('/js', express.static('js'));
+const isAuth = (req, res, next) => {
+  if (req.session.isAuth)
+  {
+      return res.redirect('/');
+  }
+  next();
+};
 
-router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname + "/../views/login.html"));
+router.get('/', isAuth, (req, res) => {
+    res.render(path.join(__dirname + "/../views/login.ejs"));
   });
 
 
@@ -30,9 +36,13 @@ router.post("/", urlencodedParser, async (req, res) => {
                 if (await argon2.verify(dbPass, req.body.password)) {
                   // password match
                   console.log("matched");
+                  req.session.isAuth = true;
+                  res.sendFile(path.join(__dirname + "/../views/index.html"));
                 } else {
                   // password did not match
                   console.log("not matched");
+                  error = "Password incorrect!";
+                  res.render(path.join(__dirname + "/../views/login.ejs"), {error});
                 }
               } catch (err) {
                 // internal failure
@@ -40,13 +50,12 @@ router.post("/", urlencodedParser, async (req, res) => {
               }
         }
         else {
-
               console.log("User doesn't exist!");
+              error = "Username doesn't exists!";
+              res.render(path.join(__dirname + "/../views/login.ejs"), {error});
         }
 
     }
-    res.sendStatus(201);
-
 });
 
 module.exports = router;

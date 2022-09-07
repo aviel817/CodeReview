@@ -27,8 +27,16 @@
         </div>
       </nav>
       <br>
-      <form action="/register" method="post" style="margin-left: 40%; margin-right: 40%;">
+      <form action="/register" method="post" style="margin: auto; width: 30%;">
         <h1>Register to GamiRev</h1>
+        <% if(typeof error != 'undefined') { %>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <%= error %>
+          <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <% } %>
         <div class="form-group">
           <label for="exampleInputUserName1">Username</label>
           <input name="username" type="text" class="form-control" id="exampleInputUserName1" placeholder="Enter username" required>
@@ -38,6 +46,7 @@
           <label for="exampleInputPassword1">Password</label>
           <input name="password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" required>
         </div>
+        
         <br>
         <div class="form-group">
           <label for="exampleInputEmail1">Email address</label>
