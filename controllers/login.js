@@ -13,7 +13,7 @@ router.use('/css', express.static('css'));
 router.use('/js', express.static('js'));
 
 router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname + "/login.html"));
+    res.sendFile(path.join(__dirname + "/../views/login.html"));
   });
 
 
