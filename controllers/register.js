@@ -5,7 +5,7 @@ const argon2 = require('argon2');
 var bodyParser = require('body-parser');
 var validator = require("email-validator");
 const mongoose = require('mongoose');
-const User = require('./models/user');
+const User = require('../models/user');
 // create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 

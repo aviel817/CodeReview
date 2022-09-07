@@ -6,7 +6,7 @@ const app = express();
 const port = 3000
 
 const loginRoute = require("./controllers/login");
-const registerRoute = require("./register");
+const registerRoute = require("./controllers/register");
 const createNewReviewRoute = require("./controllers/createNewReview");
 
 app.use('/css', express.static('css'));
