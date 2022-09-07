@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 var bodyParser = require('body-parser');
-const Review = require('./models/review');
+const Review = require('../models/review');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 router.get('/', function (req, res) {

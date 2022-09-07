@@ -3,9 +3,7 @@
 
 
 POST http://localhost:3000/login
-Content-Type: application/json
+Content-Type: application/x-www-form-urlencoded
 
-{
-    "email" : "Admin",
-    "password" : "1234"
-}
+username=admin
+&password=admin

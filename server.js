@@ -5,9 +5,9 @@ const express = require('express');
 const app = express();
 const port = 3000
 
-const loginRoute = require("./login");
+const loginRoute = require("./controllers/login");
 const registerRoute = require("./register");
-const createNewReviewRoute = require("./createNewReview");
+const createNewReviewRoute = require("./controllers/createNewReview");
 
 app.use('/css', express.static('css'));
 app.use('/js', express.static('js'));
@@ -23,7 +23,8 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 })
 
-const dbURL = "mongodb+srv://adminCR:fcz6B6s2mN2VAxsV@cluster0.w955u.mongodb.net/CodeReview";
+const secrets = require('./.secrets');
+const dbURL = secrets.dbURL;
 
 mongoose.connect(dbURL)
     .then( () => {
