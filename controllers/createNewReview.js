@@ -3,6 +3,7 @@ const router = express.Router();
 const path = require('path');
 var bodyParser = require('body-parser');
 const Review = require('../models/review');
+const date = require('date-and-time');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 router.get('/', function (req, res) {
@@ -18,13 +19,13 @@ router.post('/', urlencodedParser, async(req, res) =>  {
         res.redirect('/CreateNewReview');
     }
     else{
-        var currentDate = new Date();
+        const pattern = date.compile('D/MM/YYYY HH:mm:ss');
         new Review({
             authorID: 5,
             assignedReviewers: [0, 1, 2],
             votes: 0,
-            creationDate: "2022-08-21",
-            expirationDate: "2022-08-24",
+            creationDate:  date.format(new Date(), pattern),
+            expirationDate: date.format(date.addDays(new Date(), 3),pattern),
             reviewtitle: req.body.reviewtitle,
             code: req.body.code
         }).save()

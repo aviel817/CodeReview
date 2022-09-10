@@ -7,7 +7,16 @@ const reviewSchema = new mongoose.Schema({
     creationDate: String,
     expirationDate: String,
     reviewtitle: String,
-    code:String
+    code:String,
+    comments: [
+      {
+        userID: Number,
+        date: String,
+        content: String,
+        vote: String
+      },
+      require, true
+    ]
   }, {
     collection: 'Reviews'
 });
