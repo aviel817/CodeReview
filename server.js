@@ -15,6 +15,7 @@ const dbURL = secrets.dbURL;
 const loginRoute = require("./controllers/login");
 const registerRoute = require("./controllers/register");
 const createNewReviewRoute = require("./controllers/createNewReview");
+const existingReviewRoute = require("./controllers/existingReview");
 
 const store = new MongoDBStore({
     uri: dbURL,
@@ -36,6 +37,7 @@ app.use('/js', express.static('js'));
 app.use('/login', loginRoute);
 app.use('/register', registerRoute);
 app.use('/createNewReview', createNewReviewRoute);
+app.use('/existingReview', existingReviewRoute);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
