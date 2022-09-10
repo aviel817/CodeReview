@@ -6,7 +6,7 @@ const Review = require('../models/review');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 router.get('/', function (req, res) {
-	res.sendFile(path.join(__dirname + "/CreateNewReview.html"));
+	res.sendFile(path.join(__dirname + "/../views/CreateNewReview.html"));
 });
 
 router.post('/', urlencodedParser, async(req, res) =>  {  
