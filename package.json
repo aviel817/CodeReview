@@ -10,7 +10,7 @@
     "mongoose": "^6.5.2"
   },
   "scripts": {
-    "start": "npm start server.js"
+    "start": "node server.js"
   },
   "name": "gamirev",
   "version": "1.0.0",
