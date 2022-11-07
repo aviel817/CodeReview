@@ -11,7 +11,7 @@ app.set('view engine', 'ejs');
 
 
 //const secrets = require('./.secrets');
-const dbURL = secrets.dbURL;
+//const dbURL = secrets.dbURL;
 
 const store = new MongoDBStore({
     uri: dbURL,
