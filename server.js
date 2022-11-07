@@ -10,7 +10,7 @@ const isAuth = require("./auth");
 app.set('view engine', 'ejs');
 
 
-const secrets = require('./.secrets');
+//const secrets = require('./.secrets');
 const dbURL = secrets.dbURL;
 
 const store = new MongoDBStore({
