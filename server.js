@@ -9,7 +9,7 @@ const expressSession = require("express-session");
 const MongoDBStore = require('connect-mongodb-session')(expressSession);
 const isAuth = require("./auth");
 app.set('view engine', 'ejs');
-
+app.set('port', port);
 
 //const secrets = require('./.secrets');
 //const dbURL = secrets.dbURL;
@@ -51,7 +51,7 @@ app.use('/createNewReview', createNewReviewRoute);
 app.use('/existingReview', existingReviewRoute);
 app.use('/', mainRoute);
 
-app.listen(port, LOCAL_ADDRESS, () => {
+app.listen(app.get('port'), () => {
     console.log(`Example app listening on port ${port}`);
 });
 
