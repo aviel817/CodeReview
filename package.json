@@ -10,7 +10,7 @@
     "mongoose": "^6.5.2"
   },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "npm start server.js"
   },
   "name": "gamirev",
   "version": "1.0.0",
