@@ -54,7 +54,7 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
             repository: "Project1"
     });
     var titles = []
-    const maxPotentialMap = Map();
+    const maxPotentialMap = new Map();
     const currUserID = req.session.userID;
     const alpha = 0.6;
     const beta = 0.4;
