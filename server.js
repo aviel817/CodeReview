@@ -12,6 +12,9 @@ app.set('view engine', 'ejs');
 
 //const secrets = require('./.secrets');
 //const dbURL = secrets.dbURL;
+const dbURL = process.env.dbURL;
+const cookieSecret = process.env.cookieSecret;
+//secrets.cookieSecret
 
 const store = new MongoDBStore({
     uri: dbURL,
@@ -23,7 +26,7 @@ app.use(
     expressSession({
     resave: false,
     saveUninitialized: false,
-    secret: secrets.cookieSecret,
+    secret: cookieSecret,
     store: store
 })
 );
