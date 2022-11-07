@@ -54,30 +54,41 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
             repository: "Project1"
     });
     var titles = []
-    const maxPotentialMap = map();
+    const maxPotentialMap = Map();
     const currUserID = req.session.userID;
+    const alpha = 0.6;
+    const beta = 0.4;
 
     closedReviews.forEach((review) => {
         if (review.authorID == currUserID)
         {
             return;
         }
+
         titles.push(review.reviewtitle);
         const exist_tags = review.tags;
+
         var intersec = exist_tags.filter(value => new_tags.includes(value));
         var union = new_tags.length + exist_tags.length - intersec.length;
         console.log("intersec: "+intersec.length);
         console.log("union: "+union);
-        var func_res = (intersec.length) / (union);
-        console.log("func: " + func_res);
-        const points = 500;
-        var func2 = Math.log(points+1) / 10;
-        console.log("func2: " + func2);
-        console.log("sum: " + (func_res*0.6+func2*0.4));
+        var func1 = (intersec.length) / (union);
+        console.log("func: " + func1);
+        review.assignedReviewers.forEach((reviewer) => {
+            var reviewer = User.find({_id: reviewer._id});
+            var points = reviewer.points;
+            console.log(points);
+            var func2 = Math.log(points+1) / 10;
+            var sum = func1*alpha+func2*beta;
+            maxPotentialMap.set(reviewer._id, Math.max(maxPotentialMap.get(reviewer._id) || 0, sum));
+            console.log("sum: " + (sum));
+        });
+
     });
     //const filteredArray = array1.filter(value => array2.includes(value));
-
+    
     console.log(titles);
+    console.log(maxPotentialMap);
     res.status(200);
     res.send("none");
 });

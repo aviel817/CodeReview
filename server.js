@@ -11,11 +11,15 @@ const isAuth = require("./auth");
 app.set('view engine', 'ejs');
 app.set('port', port);
 
-//const secrets = require('./.secrets');
-//const dbURL = secrets.dbURL;
+/** 
+const secrets = require('./.secrets');
+const dbURL = secrets.dbURL;
+const cookieSecret = secrets.cookieSecret;
+*/
+
 const dbURL = process.env.dbURL;
 const cookieSecret = process.env.cookieSecret;
-//secrets.cookieSecret
+
 
 const store = new MongoDBStore({
     uri: dbURL,
