@@ -19,7 +19,7 @@ router.get('/', async function (req, res) {
     repos.forEach((item)=> {
         projects.push(item._id);
     });
-	res.render(path.join(__dirname + "/../views/CreateNewReview.ejs"), {projects, tags});
+	res.render(path.join(__dirname + "/../views/createNewReview.ejs"), {projects, tags});
 });
 
 
@@ -29,7 +29,7 @@ router.post('/', urlencodedParser, async(req, res) =>  {
         reviewtitle: req.body.reviewtitle
     });
     if(reviewtitle){
-        res.redirect('/CreateNewReview');
+        res.redirect('/createNewReview');
     }
     else{
         const pattern = date.compile('D/MM/YYYY HH:mm:ss');
