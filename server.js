@@ -4,6 +4,7 @@ const Review = require('./models/review');
 const express = require('express');
 const app = express();
 const port = process.env.port || 3000;
+const LOCAL_ADDRESS= '0.0.0.0';
 const expressSession = require("express-session");
 const MongoDBStore = require('connect-mongodb-session')(expressSession);
 const isAuth = require("./auth");
@@ -50,7 +51,7 @@ app.use('/createNewReview', createNewReviewRoute);
 app.use('/existingReview', existingReviewRoute);
 app.use('/', mainRoute);
 
-app.listen(port, () => {
+app.listen(port, LOCAL_ADDRESS, () => {
     console.log(`Example app listening on port ${port}`);
 });
 
