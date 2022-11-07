@@ -1,16 +1,19 @@
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
-    authorID: Number,
-    assignedReviewers: [Number],
+    authorID: mongoose.Types.ObjectId,
+    assignedReviewers: [mongoose.Types.ObjectId],
+    repository: String,
     votes: Number,
     creationDate: String,
     expirationDate: String,
     reviewtitle: String,
-    code:String,
+    code: [String],
+    status: String,
+    tags: [String],
     comments: [
       {
-        userID: Number,
+        userID: mongoose.Types.ObjectId,
         date: String,
         content: String,
         vote: String

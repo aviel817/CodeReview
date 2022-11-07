@@ -1,27 +1,105 @@
 const express = require('express');
+const mongoose = require("mongoose");
 const router = express.Router();
+const path = require('path');
 var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
+var urlencodedParser = bodyParser.urlencoded({ extended: true });
 const date = require('date-and-time');
 const Review = require('../models/review');
+const User = require('../models/user');
 
-router.post('/', urlencodedParser, async(req, res) =>  {  
-    const review = await Review.findOne({_id: "631ce6603bf9fd01866a9719"});
-    console.log(review.comments);
+function getUserDetails(userID) {
+    User.findById(mongoose.Types.ObjectId(userID)).then((user)=>user).catch((err)=>console.log(err));
+}
+
+router.get('/:id', async function (req, res) {
+    //console.log(req.params.id);
+    const getVarID = req.params.id;
+    var revTitle = "";
+    var paramList = [];
+    const existingReviewPath = path.join(__dirname + "/../views/existingreview.ejs");
+    if (mongoose.Types.ObjectId.isValid(getVarID))
+    {
+        const review = await Review.findById(mongoose.Types.ObjectId(getVarID));
+        if (review)
+        {
+            revTitle = review.reviewtitle;
+            const authorID = review.authorID;
+            var uploaderUser = await User.findById(mongoose.Types.ObjectId(authorID));
+            if (!uploaderUser)
+            {
+                authorName = "Not Found";
+            }
+            else {
+                authorName = uploaderUser.username;
+            }
+
+            const assignedReviewersIDS = review.assignedReviewers;
+            var assignedReviewers = [];
+            for (var i=0; i < assignedReviewersIDS.length; i++)
+            {
+                var reviewer = await User.findById(mongoose.Types.ObjectId(review.assignedReviewers[i]));
+                if (reviewer)
+                {
+                    assignedReviewers.push(reviewer.username);
+                }
+                else
+                {
+                    console.log("Error: Reviewer not found!");
+                    return res.sendStatus(500);
+                }
+                
+            }
+            const revID = getVarID;
+            const reviewCode = review.code;
+            const lastReviewCode = reviewCode[reviewCode.length-1];
+            const reviewComments = review.comments;
+            const tags = review.tags;
+            var userDetails = [];
+            var tagsStr = "";
+            var user = null;
+            for (var i=0; i < reviewComments.length; i++)
+            {
+                user = await User.findById(mongoose.Types.ObjectId(reviewComments[i].userID));
+                userDetails.push(user);
+            }
+            tags.forEach((item)=> {
+                tagsStr = tagsStr.concat(" #", item);
+            });
+            res.render(existingReviewPath, {revID, revTitle, authorName, assignedReviewers, lastReviewCode, reviewComments, userDetails, tagsStr});
+            return;
+        }
+        revTitle = "Not Found";
+        res.render(existingReviewPath, {revTitle});
+        return;
+    }
+    
+    
+    revTitle = "error";
+    res.render(existingReviewPath, {revTitle});
+
+});
+
+
+
+router.post('/:id', urlencodedParser, async(req, res) =>  {  
+    const existingReviewPath = path.join(__dirname + "/../views/existingreview.ejs");
+
+    const review = await Review.findOne({_id: "632dc94c68daaae3bd3f0080"});
     const pattern = date.compile('D/MM/YYYY HH:mm:ss');
     const comment = {
-        userID: 1,
+        userID: mongoose.Types.ObjectId("632dc83468daaae3bd3f0078"),
         date: date.format(new Date(), pattern),
-        content: "aaaa",
-        vote: "+1"
+        content: req.body.commentText,
+        vote: req.body.radioRate
     };
 
     await Review.findOneAndUpdate(
-        {_id: "631ce6603bf9fd01866a9719"},
+        {_id: "632dc94c68daaae3bd3f0080"},
         { $push : {comments: comment}},
     );
 
-    res.sendStatus(200);
+    res.redirect('/existingreview/'+req.params.id);
 });
 
 module.exports = router;

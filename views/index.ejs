@@ -72,37 +72,19 @@
       <th scope="col">Title</th>
       <th scope="col">Last Comment By</th>
       <th scope="col">Updated</th>
-      <th scope="col">Approved</th>
+      <th scope="col">Status</th>
     </tr>
   </thead>
   <tbody>
+    <% for(var i=0; i < selfReviews.length; i++) { %>
     <tr>
-      <th scope="row">1</th>
-      <td>Update1</td>
-      <td>Otto</td>
-      <td>April 15</td>
-      <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-      </svg></td>
+      <th scope="row"><%= i+1 %></th>
+      <td><a href="/existingreview/<%= selfReviews[i]._id %>"><%= selfReviews[i].reviewtitle %></a></td>
+      <td><%= lastCommentsNames[i] %></td>
+      <td><%= selfReviews[i].comments[selfReviews[i].comments.length-1].date %></td>
+      <td><%= selfReviews[i].status %></td>
     </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Update2</td>
-      <td>Thornton</td>
-      <td>April 14</td>
-      <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-      </svg></td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Update3</td>
-      <td>Tony</td>
-      <td>April 13</td>
-      <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-      </svg></td>
-    </tr>
+    <% } %>
   </tbody>
 </table>
 <br>
@@ -114,37 +96,19 @@
       <th scope="col">Title</th>
       <th scope="col">Author</th>
       <th scope="col">Updated</th>
-      <th scope="col">Approved</th>
+      <th scope="col">Status</th>
     </tr>
   </thead>
   <tbody>
+    <% for(var i=0; i < relatedReviews.length; i++) { %>
     <tr>
-      <th scope="row">1</th>
-      <td>Update1</td>
-      <td>Otto</td>
-      <td>April 15</td>
-      <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-        <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-      </svg></td>
+      <th scope="row"><%= i+1 %></th>
+      <td><a href="/existingreview/<%= relatedReviews[i]._id %>"><%= relatedReviews[i].reviewtitle %></a></td>
+      <td><%= authors[i] %></td>
+      <td><%= relatedReviews[i].comments[relatedReviews[i].comments.length-1].date %></td>
+      <td><%= relatedReviews[i].status %></td>
     </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Update2</td>
-      <td>Thornton</td>
-      <td>April 14</td>
-      <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-      </svg></td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Update3</td>
-      <td>Tony</td>
-      <td>April 13</td>
-      <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-      </svg></td>
-    </tr>
+    <% } %>
   </tbody>
 </table>
 </div>
