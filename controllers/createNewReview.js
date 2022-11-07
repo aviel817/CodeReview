@@ -78,7 +78,7 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
         review.assignedReviewers.forEach((reviewer) => {
             var reviewer = User.find({_id: reviewer._id});
             var points = reviewer.points;
-            console.log(points);
+            console.log("points: " + points);
             var func2 = Math.log(points+1) / 10;
             var sum = func1*alpha+func2*beta;
             maxPotentialMap.set(reviewer._id, Math.max(maxPotentialMap.get(reviewer._id) || 0, sum));
