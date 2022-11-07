@@ -5,6 +5,7 @@ const path = require('path');
 var bodyParser = require('body-parser');
 const Review = require('../models/review');
 const Project = require('../models/project');
+const User = require('../models/user');
 const Tag = require('../models/tag');
 const date = require('date-and-time');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
