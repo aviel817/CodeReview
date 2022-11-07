@@ -54,8 +54,14 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
             repository: "Project1"
     });
     var titles = []
+    const maxPotentialMap = map();
+    const currUserID = req.session.userID;
 
     closedReviews.forEach((review) => {
+        if (review.authorID == currUserID)
+        {
+            return;
+        }
         titles.push(review.reviewtitle);
         const exist_tags = review.tags;
         var intersec = exist_tags.filter(value => new_tags.includes(value));
