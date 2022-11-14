@@ -35,8 +35,8 @@ router.post('/', urlencodedParser, async(req, res) =>  {
     else{
         const pattern = date.compile('D/MM/YYYY HH:mm:ss');
         new Review({
-            authorID: 5,
-            assignedReviewers: [0, 1, 2],
+            authorID: req.session.userID,
+            assignedReviewers: req.body.reviewersList,
             votes: 0,
             creationDate:  date.format(new Date(), pattern),
             expirationDate: date.format(date.addDays(new Date(), 3),pattern),
@@ -59,7 +59,6 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
     const currUserID = req.session.userID;
     const alpha = 0.6;
     const beta = 0.4;
-    maxPotentialMap.set(1, 1000);
     for (let closed_review of closedReviews) {
         titles.push(closed_review.reviewtitle);
         const exist_tags = closed_review.tags;
@@ -72,18 +71,18 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
         console.log("func: " + func1);
         for (let reviewer_id of closed_review.assignedReviewers) {
             var reviewer_user = await User.findOne({_id: mongoose.Types.ObjectId(reviewer_id)}).exec().then((items) => { return items });;
+            var reviewer_username = reviewer_user.username;
             var points = reviewer_user.totalPoints;
             //console.log("points: " + reviewer_user.totalPoints);
             //console.log("r_obj: "+ reviewer_user);
             var func2 = Math.log(points+1) / 10;
             var sum = func1*alpha+func2*beta;
             var cur_val = maxPotentialMap.get(reviewer_id) || 0;
-            maxPotentialMap.set(reviewer_id.toString(), Math.max(sum, cur_val));
+            maxPotentialMap.set(reviewer_username.toString(), Math.max(sum, cur_val));
             
             //console.log("map val: " + maxPotentialMap.get(reviewer_id));
             console.log("sum: " + (sum));
         }
-        maxPotentialMap.set(2, 2000);
     }
     //const filteredArray = array1.filter(value => array2.includes(value));
     console.log("entries:");
@@ -91,7 +90,7 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
     console.log(titles);
     //console.log("map: " + maxPotentialMap.get(mongoose.Types.ObjectId('632dc83468daaae3bd3f0078')));
     res.status(200);
-    res.send("none");
+    res.send(JSON.stringify(Array.from(maxPotentialMap.entries())));
 });
 
 module.exports = router;
