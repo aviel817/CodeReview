@@ -29,9 +29,12 @@ router.get('/', isAuth, async (req, res) => {
     var username = "";
     for (var i=0; i < selfReviews.length; i++)
     {
-        var commentsUser = await User.findById(mongoose.Types.ObjectId(selfReviews[i].comments[selfReviews[i].comments.length-1].userID)).then((user)=> {return user}).catch((err)=>console.log(err));
-        username = commentsUser.username;
-        lastCommentsNames.push(username);
+        if (selfReviews[i].comments.length != 0)
+        {
+            var commentsUser = await User.findById(mongoose.Types.ObjectId(selfReviews[i].comments[selfReviews[i].comments.length-1].userID)).then((user)=> {return user}).catch((err)=>console.log(err));
+            username = commentsUser.username;
+            lastCommentsNames.push(username);
+        }
     }
     for (var i=0; i < relatedReviews.length; i++)
     {
