@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="design.css" rel="stylesheet">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2" crossorigin="anonymous"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    -->
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
+<style>
+    h1   {text-align:left;}
+    th   {text-align: center;}
+    table {margin: auto;}
+    h3 {text-align: center;}
+</style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">CodeReview</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Changes
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#">Open</a></li>
+              <li><a class="dropdown-item" href="#">Approved</a></li>
+              <li><a class="dropdown-item" href="#">Time Exceeded</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Repos</a>
+          </li>
+        </ul>
+        <form class="d-flex">
+          <div style="width: 100px; height: 25px; margin-top: 5px;">
+          <a href="#">
+            <img alt="Notifications" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3C!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --%3E%3Cpath d='M256 32V51.2C329 66.03 384 130.6 384 208V226.8C384 273.9 401.3 319.2 432.5 354.4L439.9 362.7C448.3 372.2 450.4 385.6 445.2 397.1C440 408.6 428.6 416 416 416H32C19.4 416 7.971 408.6 2.809 397.1C-2.353 385.6-.2883 372.2 8.084 362.7L15.5 354.4C46.74 319.2 64 273.9 64 226.8V208C64 130.6 118.1 66.03 192 51.2V32C192 14.33 206.3 0 224 0C241.7 0 256 14.33 256 32H256zM224 512C207 512 190.7 505.3 178.7 493.3C166.7 481.3 160 464.1 160 448H288C288 464.1 281.3 481.3 269.3 493.3C257.3 505.3 240.1 512 224 512z'/%3E%3C/svg%3E"
+            width="100" height="25">
+          </a>
+        </div>
+        </form>
+        <form class="d-flex">
+          <button class="btn btn-primary" type="submit">Logout</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <br>
+  <h1> <u>GamiRev Badges:</u> </h1>
+<div>
+    <br>
+    <h3>all-time badges</h3>
+    <table class="table table-bordered table-hover border-dark w-auto text-center">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Rank</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td style="background-color:#CD7F32 ;" > Bronze</td>
+            <td>Small Contributer</td>
+            <td>Created 5 Reviewes</td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td style="background-color:#C0C0C0 ;">Silver</td>
+            <td>Medium Contributer</td>
+            <td>Created 20 Reviews</td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td style="background-color:#FFD700 ;">Gold</td>
+            <td>Major Contributer</td>
+            <td>Created 50 Reviews</td>
+        </tr>
+        <tr>
+            <th scope="row">4</th>
+            <td style="background-color:#CD7F32 ;">Bronze</td>
+            <td>First timer</td>
+            <td>Commented in the first time</td>
+        </tr>
+        <tr>
+            <th scope="row">5</th>
+            <td style="background-color:#CD7F32 ;">Bronze</td>
+            <td>Rising Star</td>
+            <td>Reached the leaderboard top 10</td>
+        </tr>
+        <tr>
+          <th scope="row">6</th>
+          <td style="background-color:#C0C0C0 ;"> Silver</td>
+          <td>Big Game</td>
+          <td>Reached the leaderboard top 3</td>
+        </tr>
+        <tr>
+          <th scope="row">7</th>
+          <td style="background-color:#FFD700 ;">Gold</td>
+          <td>Top of the Pyramid</td>
+          <td>Reached the leaderboard 1st place</td>
+        </tr>
+    </tbody>
+  </table>
+</div>
+
+<div>
+    <br>
+    <h3>Review and Project badges</h3>
+    <table class="table table-bordered table-hover border-dark w-auto text-center">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Rank</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td style="background-color:#C0C0C0 ;"> Silver</td>
+            <td>Middle Reviewer</td>
+            <td>Assigned as a reviewer for 10 reviews in the same Project</td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td style="background-color:#FFD700 ;">Gold</td>
+            <td>Top reviewer</td>
+            <td>Assigned as a reviewer for 50 reviews in the same Project</td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td style="background-color:#CD7F32 ;">Bronze</td>
+            <td>low participant</td>
+            <td>Commented 2 times in a single review</td>
+        </tr>
+        <tr>
+            <th scope="row">4</th>
+            <td style="background-color:#C0C0C0 ;">Silver</td>
+            <td>Highly Involved</td>
+            <td>Writng most comments in a single closed Review</td>
+        </tr>
+        <tr>
+          <th scope="row">5</th>
+          <td style="background-color:#C0C0C0 ;">Silver</td>
+          <td>Medium uploader</td>
+          <td>Creating 10 Reviewes in a single project</td>
+      </tr>
+      <tr>
+        <th scope="row">6</th>
+        <td style="background-color:#FFD700 ;">Gold</td>
+        <td>Big uploader</td>
+        <td>Creating 25 Reviewes in a single project</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<div>
+    <br>
+    <h3>Timed badges</h3>
+    <table class="table table-bordered table-hover border-dark w-auto text-center">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Rank</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">1</th>
+            <td style="background-color:#CD7F32 ;" > Bronze</td>
+            <td>Low-rate Creator</td>
+            <td>Created 3 new Reviewes in a week</td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td style="background-color:#C0C0C0 ;">Silver</td>
+            <td>Medium-rate Coreator</td>
+            <td>Created 5 new Reviewes in a week</td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td style="background-color:#FFD700 ;">Gold</td>
+            <td>High-rate Creator</td>
+            <td>Created 10 new Reviewes in a week</td>
+        </tr>
+        <tr>
+            <th scope="row">4</th>
+            <td style="background-color:#CD7F32 ;" > Bronze</td>
+            <td>Daily Responder</td>
+            <td>Write at least 1 Comment everyday in a week</td>
+        </tr>
+        <tr>
+            <th scope="row">5</th>
+            <td style="background-color:#C0C0C0 ;">Silver</td>
+            <td>High Demand</td>
+            <td>Get assigned to 3 reviewes in a week</td>
+        </tr>
+        <tr>
+            <th scope="row">6</th>
+            <td style="background-color:#FFD700 ;">Gold</td>
+            <td>Popular</td>
+            <td>Get assigned to 5 reviewes in a week</td>
+        </tr>
+    </tbody>
+  </table>
+</div>
+
+
+</body>
+</html>

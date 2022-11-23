@@ -11,7 +11,7 @@ const isAuth = require("./auth");
 app.set('view engine', 'ejs');
 app.set('port', port);
 
-/** 
+/**
 const secrets = require('./.secrets');
 const dbURL = secrets.dbURL;
 const cookieSecret = secrets.cookieSecret;
