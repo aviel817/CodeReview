@@ -63,11 +63,8 @@
       }
     </style>
 
-    
-    <!-- Custom styles for this template -->
-    <link href="login.css" rel="stylesheet">
   </head>
-  <body class="text-center">
+  <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">GamiRev</a>
@@ -76,7 +73,7 @@
         </button>
       </div>
     </nav>
-<main class="form-signin w-100 m-auto">
+<main class="form-signin w-100 m-auto text-center">
   <form action="/login" method="post">
     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
     <% if(typeof error != 'undefined') { %>
