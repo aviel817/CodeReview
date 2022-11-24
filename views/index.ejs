@@ -13,7 +13,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="index.html">GamiRev</a>
+      <a class="navbar-brand" href="/">GamiRev</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -77,8 +77,20 @@
     <tr>
       <th scope="row"><%= i+1 %></th>
       <td><a href="/existingreview/<%= selfReviews[i]._id %>"><%= selfReviews[i].reviewtitle %></a></td>
-      <td><%= lastCommentsNames[i] %></td>
-      <td><%= selfReviews[i].comments[selfReviews[i].comments.length-1].date %></td>
+      <td><% if(lastCommentsNames.length > i) { %>
+          <%= lastCommentsNames[i] %>
+          <% } else { %>
+            None            
+          <% } %>
+      </td>
+      
+      <td>
+        <% if(selfReviews[i].comments.length != 0) { %>
+          <%= selfReviews[i].comments[selfReviews[i].comments.length-1].date %>
+          <% } else { %>
+            None
+          <% } %>
+     </td>
       <td><%= selfReviews[i].status %></td>
     </tr>
     <% } %>

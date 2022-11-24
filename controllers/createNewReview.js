@@ -22,6 +22,7 @@ router.get('/', async function (req, res) {
 
 router.post('/', urlencodedParser, async(req, res) =>  {  
     console.log(req.body);
+    const assReviewers = req.body.
  
     const existingReview = await Review.findOne({
         reviewtitle: req.body.reviewtitle,
@@ -45,7 +46,7 @@ router.post('/', urlencodedParser, async(req, res) =>  {
             project: req.body.project
         }).save()
         res.status(200);
-        res.send('You have created a new review');
+        res.redirect('/');
     }
 
 });
