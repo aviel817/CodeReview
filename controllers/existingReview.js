@@ -34,22 +34,8 @@ router.get('/:id', async function (req, res) {
                 authorName = uploaderUser.username;
             }
 
-            const assignedReviewersIDS = review.assignedReviewers;
-            var assignedReviewers = [];
-            for (var i=0; i < assignedReviewersIDS.length; i++)
-            {
-                var reviewer = await User.findById(mongoose.Types.ObjectId(review.assignedReviewers[i]));
-                if (reviewer)
-                {
-                    assignedReviewers.push(reviewer.username);
-                }
-                else
-                {
-                    console.log("Error: Reviewer not found!");
-                    return res.sendStatus(500);
-                }
-                
-            }
+            const assignedReviewers = review.assignedReviewers;
+
             const revID = getVarID;
             const reviewCode = review.code;
             const lastReviewCode = reviewCode[reviewCode.length-1];
@@ -95,7 +81,7 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
     };
 
     await Review.findOneAndUpdate(
-        {_id: "632dc94c68daaae3bd3f0080"},
+        {_id: req.params.id},
         { $push : {comments: comment}},
     );
 

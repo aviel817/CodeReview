@@ -11,7 +11,7 @@ const isAuth = require("./auth");
 app.set('view engine', 'ejs');
 app.set('port', port);
 
-/**
+/** 
 const secrets = require('./.secrets');
 const dbURL = secrets.dbURL;
 const cookieSecret = secrets.cookieSecret;
@@ -42,6 +42,7 @@ const loginRoute = require("./controllers/login");
 const registerRoute = require("./controllers/register");
 const createNewReviewRoute = require("./controllers/createNewReview");
 const existingReviewRoute = require("./controllers/existingReview");
+const leaderboardRoute = require("./controllers/leaderboard");
 const mainRoute = require("./controllers/main");
 
 
@@ -53,6 +54,7 @@ app.use('/login', loginRoute);
 app.use('/register', registerRoute);
 app.use('/createNewReview', createNewReviewRoute);
 app.use('/existingReview', existingReviewRoute);
+app.use('/leaderboard', leaderboardRoute);
 app.use('/', mainRoute);
 
 app.listen(app.get('port'), () => {

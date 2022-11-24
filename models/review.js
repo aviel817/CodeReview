@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
     authorID: mongoose.Types.ObjectId,
-    assignedReviewers: [mongoose.Types.ObjectId],
+    assignedReviewers: [String],
     project: String,
     votes: Number,
     creationDate: String,

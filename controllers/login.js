@@ -32,6 +32,7 @@ router.post("/", urlencodedParser, async (req, res) => {
                   console.log("matched");
                   req.session.isAuth = true;
                   req.session.userID = user._id;
+                  req.session.username = user.username;
                   res.redirect('/');
                 } else {
                   // password did not match

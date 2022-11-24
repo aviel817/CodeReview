@@ -22,8 +22,7 @@ router.get('/', async function (req, res) {
 
 router.post('/', urlencodedParser, async(req, res) =>  {  
     console.log(req.body);
-    const assReviewers = req.body.
- 
+    const chosenReviewers = req.body['chosenRows[]'];
     const existingReview = await Review.findOne({
         reviewtitle: req.body.reviewtitle,
         project: req.body.project
@@ -33,9 +32,9 @@ router.post('/', urlencodedParser, async(req, res) =>  {
     }
     else{
         const pattern = date.compile('D/MM/YYYY HH:mm:ss');
-        new Review({
+        const newRev = await new Review({
             authorID: req.session.userID,
-            assignedReviewers: [mongoose.Types.ObjectId(9)],
+            assignedReviewers: chosenReviewers,
             votes: 0,
             creationDate: date.format(new Date(), pattern),
             expirationDate: date.format(date.addDays(new Date(), 3),pattern),
@@ -45,8 +44,7 @@ router.post('/', urlencodedParser, async(req, res) =>  {
             tags: req.body['tags[]'],
             project: req.body.project
         }).save()
-        res.status(200);
-        res.redirect('/');
+        res.send(newRev._id);
     }
 
 });
@@ -72,13 +70,12 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
         var intersec = exist_tags.filter(value => new_tags.includes(value));
         var union = new_tags.length + exist_tags.length - intersec.length;
         var func1 = (intersec.length) / (union);
-        for (let reviewer_id of closed_review.assignedReviewers) {
-            var reviewer_user = await User.findOne({_id: mongoose.Types.ObjectId(reviewer_id)}).exec().then((items) => { return items });;
-            var reviewer_username = reviewer_user.username;
+        for (let reviewer_username of closed_review.assignedReviewers) {
+            var reviewer_user = await User.findOne({username: reviewer_username}).exec().then((items) => { return items });;
             var points = reviewer_user.totalPoints;
             var func2 = Math.log(points+1) / 10;
             var sum = func1*alpha+func2*beta;
-            var cur_val = maxPotentialMap.get(reviewer_id) || 0;
+            var cur_val = maxPotentialMap.get(reviewer_username) || 0;
             maxPotentialMap.set(reviewer_username.toString(), Math.max(sum, cur_val));
             
         }

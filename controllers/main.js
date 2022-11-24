@@ -21,7 +21,7 @@ async function getUserDetails(userID) {
 
 router.get('/', isAuth, async (req, res) => {
     const selfReviews = await Review.find({authorID : req.session.userID}).exec().then((items) => { return items });
-    const relatedReviews = await Review.find({assignedReviewers : req.session.userID}).exec().then((items) => { return items });
+    const relatedReviews = await Review.find({assignedReviewers : req.session.username}).exec().then((items) => { return items });
     const user = User.findById(mongoose.Types.ObjectId(req.session.userID));
 
     var lastCommentsNames = [];
@@ -38,7 +38,7 @@ router.get('/', isAuth, async (req, res) => {
     }
     for (var i=0; i < relatedReviews.length; i++)
     {
-        var author = await User.findOne({userID : mongoose.Types.ObjectId(relatedReviews[i].authorID)}).exec().then((items) => { return items.username });
+        var author = await User.findOne({_id: mongoose.Types.ObjectId(relatedReviews[i].authorID)}).exec().then((items) => { return items.username });
         authors.push(author);
     }
 
