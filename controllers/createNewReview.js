@@ -10,7 +10,15 @@ const Tag = require('../models/tag');
 const date = require('date-and-time');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
-router.get('/', async function (req, res) {
+const isAuth = (req, res, next) => {
+    if (!req.session.isAuth)
+    {
+        return res.redirect('/');
+    }
+    next();
+  };
+
+router.get('/', isAuth, async function (req, res) {
     const user = await User.findById(mongoose.Types.ObjectId(req.session.userID));
     const projs = user.projects;
     const tags = await Tag.find({}).exec().then((items) => { return items });

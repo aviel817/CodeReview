@@ -12,7 +12,15 @@ function getUserDetails(userID) {
     User.findById(mongoose.Types.ObjectId(userID)).then((user)=>user).catch((err)=>console.log(err));
 }
 
-router.get('/:id', async function (req, res) {
+const isAuth = (req, res, next) => {
+    if (!req.session.isAuth)
+    {
+        return res.redirect('/');
+    }
+    next();
+  };
+
+router.get('/:id', isAuth, async function (req, res) {
     //console.log(req.params.id);
     const getVarID = req.params.id;
     var revTitle = "";
