@@ -214,16 +214,16 @@
     project = $('#projSelector').val();
     title = $('#RevTitle').val();
     code = $('#Code').val();
-    chosenRows_usernames = [];
+    chosenRows_ids = [];
     chosenRows_reasons = [];
-    $('.selectedRow').find("td:first").each(function(){chosenRows_usernames.push($(this).html())});
+    $('.selectedRow').find("td:first").each(function(){chosenRows_ids.push($(this).prop("id"))});
     $('.selectedRow').find("td:nth-child(3) textarea").each(function(){chosenRows_reasons.push($(this).val())});
     $.post('/createnewreview/',
       {'project': project,
        'title': title,
        'code': code,
        'tags': [...tags],
-       'chosenRows': chosenRows_usernames,
+       'chosenRows': chosenRows_ids,
        'reason': chosenRows_reasons
       },
       function(data) {
