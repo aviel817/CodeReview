@@ -197,14 +197,14 @@
             selectTable = $( "#selectTable tbody" )
             console.log(data);
             dataFromServer = JSON.parse(data);
-            mapEntries = dataFromServer["maxPotentialMap"].sort((a,b)=> b[1]-a[1]);
+            mapEntries = dataFromServer[0]["maxPotentialMap"].sort((a,b)=> b[1]-a[1]);
             for (let entry of mapEntries)
             {
               //entry = entry.toString().replace(",", ", ");
               entry = entry.toString().split(",");
               selectTable.append(`<tr onclick="toggleClass(this,'selectedRow');"><td>`+entry[0]+`</td><td>`+entry[1]+`</td><td><textarea disabled></textarea></td></tr></option>`);
             }
-            console.log(dataFromServer["idsDict"]);
+            console.log(dataFromServer[0]["idsDict"]);
 
           }
     );
