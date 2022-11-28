@@ -21,7 +21,7 @@ async function getUserDetails(userID) {
 
 router.get('/', isAuth, async (req, res) => {
     const selfReviews = await Review.find({authorID : req.session.userID}).exec().then((items) => { return items });
-    const relatedReviews = await Review.find({assignedReviewers : req.session.username}).exec().then((items) => { return items });
+    const relatedReviews = await Review.find({assignedReviewers : req.session.userID}).exec().then((items) => { return items });
     const user = User.findById(mongoose.Types.ObjectId(req.session.userID));
 
     var lastCommentsNames = [];
