@@ -95,14 +95,15 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
         var intersec = exist_tags.filter(value => new_tags.includes(value));
         var union = new_tags.length + exist_tags.length - intersec.length;
         var func1 = (intersec.length) / (union);
-        for (let reviewer_username of closed_review.assignedReviewers) {
-            var reviewer_user = await User.findOne({username: reviewer_username}).exec().then((items) => { return items });;
+        for (let reviewer_userID of closed_review.assignedReviewers) {
+            var reviewer_user = await User.findOne({_id: reviewer_userID}).exec().then((items) => { return items });;
             var points = reviewer_user.totalPoints;
+            var reviewer_username = reviewer_user.username;
             var func2 = Math.log(points+1) / 10;
             var sum = func1*alpha+func2*beta;
             var cur_val = maxPotentialMap.get(reviewer_username) || 0;
             maxPotentialMap.set(reviewer_username.toString(), Math.max(sum, cur_val));
-            idsDict[reviewer_username] = reviewer_user._id;
+            idsDict[reviewer_username] = reviewer_userID;
         }
     }
     //const filteredArray = array1.filter(value => array2.includes(value));
