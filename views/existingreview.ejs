@@ -79,10 +79,10 @@
 			<div>
 				<h3 class="section-title">Reviewers:</h3>
 				<ul class="list-group list-group-horizontal">
-					<% if (typeof assignedReviewers != 'undefined') { %>
-					<% for(var i=0; i < assignedReviewers.length; i++) { %>
+					<% if (typeof assignedReviewers_names != 'undefined') { %>
+					<% for(var i=0; i < assignedReviewers_names.length; i++) { %>
 						<li class="list-group-item">
-						<%= assignedReviewers[i] %>
+						<%= assignedReviewers_names[i] %>
 						</li>
 					<% } %>
 					<% } %>

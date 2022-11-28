@@ -82,20 +82,25 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
             status: {$ne: 'open'},
             repository: "Processor"
     });
+    
     var titles = []
     const maxPotentialMap = new Map();
     const idsDict = {};
     const currUserID = req.session.userID;
     const alpha = 0.6;
     const beta = 0.4;
-    for (let closed_review of closedReviews) {
+    for (let closed_review of closedReviews)
+    {
         titles.push(closed_review.reviewtitle);
         const exist_tags = closed_review.tags;
 
         var intersec = exist_tags.filter(value => new_tags.includes(value));
         var union = new_tags.length + exist_tags.length - intersec.length;
         var func1 = (intersec.length) / (union);
-        for (let reviewer_userID of closed_review.assignedReviewers) {
+        //console.log(typeof(closed_review.assignedReviewers));
+        //console.log(closed_review.assignedReviewers);
+        for (let reviewer_userID of closed_review.assignedReviewers) 
+        {
             var reviewer_user = await User.findOne({_id: reviewer_userID}).exec().then((items) => { return items });;
             var points = reviewer_user.totalPoints;
             var reviewer_username = reviewer_user.username;

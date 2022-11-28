@@ -42,8 +42,13 @@ router.get('/:id', isAuth, async function (req, res) {
                 authorName = uploaderUser.username;
             }
 
-            const assignedReviewers = review.assignedReviewers;
-
+            const assignedReviewers_ids = review.assignedReviewers;
+            const assignedReviewers_names = [];
+            for (let id of assignedReviewers_ids)
+            {
+                var username = await User.findById(mongoose.Types.ObjectId(id)).then((item)=>item.username);
+                assignedReviewers_names.push(username);
+            }
             const revID = getVarID;
             const reviewCode = review.code;
             const lastReviewCode = reviewCode[reviewCode.length-1];
@@ -60,7 +65,7 @@ router.get('/:id', isAuth, async function (req, res) {
             tags.forEach((item)=> {
                 tagsStr = tagsStr.concat(" #", item);
             });
-            res.render(existingReviewPath, {revID, revTitle, authorName, assignedReviewers, lastReviewCode, reviewComments, userDetails, tagsStr});
+            res.render(existingReviewPath, {revID, revTitle, authorName, assignedReviewers_names, lastReviewCode, reviewComments, userDetails, tagsStr});
             return;
         }
         revTitle = "Not Found";
