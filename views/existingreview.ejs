@@ -25,35 +25,49 @@
 	<body>
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<div class="container-fluid">
-			<a class="navbar-brand" href="index.html">CodeReview</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+			  <a class="navbar-brand" href="/">GamiRev</a>
+			  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			  </button>
+			  <div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-				<li class="nav-item">
-					<a class="nav-link active" aria-current="page" href="/">Home</a>
-				</li>
-				<li class="nav-item dropdown">
+				  <li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-					Changes
+					  Changes
 					</a>
 					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-					<li><a class="dropdown-item" href="#">Open</a></li>
-					<li><a class="dropdown-item" href="#">Approved</a></li>
-					<li><a class="dropdown-item" href="#">Time Exceeded</a></li>
+					  <li><a class="dropdown-item" href="#">Open</a></li>
+					  <li><a class="dropdown-item" href="#">Approved</a></li>
+					  <li><a class="dropdown-item" href="#">Abandoned</a></li>
 					</ul>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#">Repos</a>
-				</li>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="#">Projects</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="/leaderboard">Leaderboard</a>
+				  </li>
 				</ul>
-				<form class="d-flex" action="/logout" method="post">
-				<button class="btn btn-primary" type="submit">Logout</button>
+				<form class="d-flex">
+				  <div style="width: 100px; height:45px;">
+				  <a href="/createNewReview">
+					<img alt="Create New Review" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Cpath%20d%3D%22M0%20256C0%20114.6%20114.6%200%20256%200C397.4%200%20512%20114.6%20512%20256C512%20397.4%20397.4%20512%20256%20512C114.6%20512%200%20397.4%200%20256zM256%20368C269.3%20368%20280%20357.3%20280%20344V280H344C357.3%20280%20368%20269.3%20368%20256C368%20242.7%20357.3%20232%20344%20232H280V168C280%20154.7%20269.3%20144%20256%20144C242.7%20144%20232%20154.7%20232%20168V232H168C154.7%20232%20144%20242.7%20144%20256C144%20269.3%20154.7%20280%20168%20280H232V344C232%20357.3%20242.7%20368%20256%20368z%22%2F%3E%3C%2Fsvg%3E"
+					width="100" height="45">
+				 </a>
+				</div>
+				  <div style="width: 100px; height: 25px; margin-top: 5px;">
+				  <a href="#">
+					<img alt="Notifications" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3C!--! Font Awesome Pro 6.1.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --%3E%3Cpath d='M256 32V51.2C329 66.03 384 130.6 384 208V226.8C384 273.9 401.3 319.2 432.5 354.4L439.9 362.7C448.3 372.2 450.4 385.6 445.2 397.1C440 408.6 428.6 416 416 416H32C19.4 416 7.971 408.6 2.809 397.1C-2.353 385.6-.2883 372.2 8.084 362.7L15.5 354.4C46.74 319.2 64 273.9 64 226.8V208C64 130.6 118.1 66.03 192 51.2V32C192 14.33 206.3 0 224 0C241.7 0 256 14.33 256 32H256zM224 512C207 512 190.7 505.3 178.7 493.3C166.7 481.3 160 464.1 160 448H288C288 464.1 281.3 481.3 269.3 493.3C257.3 505.3 240.1 512 224 512z'/%3E%3C/svg%3E"
+					width="100" height="25">
+				  </a>
+				</div>
 				</form>
+				<form class="d-flex" action="/logout" method="post">
+				  <button class="btn btn-primary" type="submit">Logout</button>
+				</form>
+			  </div>
 			</div>
-			</div>
-		</nav>
+		  </nav>
 		<div class="container d-flex flex-column" style="gap: 50px;">
 			<div>
 				<h1 class="rev-title"><%= revTitle %></h1>
