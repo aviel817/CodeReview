@@ -102,7 +102,7 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
             var sum = func1*alpha+func2*beta;
             var cur_val = maxPotentialMap.get(reviewer_username) || 0;
             maxPotentialMap.set(reviewer_username.toString(), Math.max(sum, cur_val));
-            idsDict[reviewer_username] = reviewer_user.userID;
+            idsDict[reviewer_username] = reviewer_user._id;
         }
     }
     //const filteredArray = array1.filter(value => array2.includes(value));
