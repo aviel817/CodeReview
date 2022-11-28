@@ -84,6 +84,7 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
     });
     var titles = []
     const maxPotentialMap = new Map();
+    const idsDict = {};
     const currUserID = req.session.userID;
     const alpha = 0.6;
     const beta = 0.4;
@@ -101,7 +102,7 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
             var sum = func1*alpha+func2*beta;
             var cur_val = maxPotentialMap.get(reviewer_username) || 0;
             maxPotentialMap.set(reviewer_username.toString(), Math.max(sum, cur_val));
-            
+            idsDict[reviewer_username] = reviewer_user.userID;
         }
     }
     //const filteredArray = array1.filter(value => array2.includes(value));
@@ -109,7 +110,8 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
     //console.log(maxPotentialMap);
     //console.log(titles);
     res.status(200);
-    res.send(JSON.stringify(Array.from(maxPotentialMap.entries())));
+    var dataToSend = [{maxPotentialMap: Array.from(maxPotentialMap.entries()), idsDict: idsDict}];
+    res.send(JSON.stringify(dataToSend));
 });
 
 module.exports = router;

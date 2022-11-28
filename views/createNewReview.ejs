@@ -195,15 +195,16 @@
           },
           function(data) {
             selectTable = $( "#selectTable tbody" )
-            mapEntries = JSON.parse(data);
-            mapEntries = mapEntries.sort((a,b)=> b[1]-a[1]);
+            console.log(data);
+            dataFromServer = JSON.parse(data);
+            mapEntries = dataFromServer["maxPotentialMap"].sort((a,b)=> b[1]-a[1]);
             for (let entry of mapEntries)
             {
               //entry = entry.toString().replace(",", ", ");
               entry = entry.toString().split(",");
               selectTable.append(`<tr onclick="toggleClass(this,'selectedRow');"><td>`+entry[0]+`</td><td>`+entry[1]+`</td><td><textarea disabled></textarea></td></tr></option>`);
             }
-            alert("success " + mapEntries);
+            console.log(dataFromServer["idsDict"]);
 
           }
     );
