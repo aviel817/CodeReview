@@ -8,6 +8,7 @@ const Project = require('../models/project');
 const User = require('../models/user');
 const Tag = require('../models/tag');
 const date = require('date-and-time');
+const Notification = require('../models/notification');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 const isAuth = (req, res, next) => {
@@ -40,18 +41,33 @@ router.post('/', urlencodedParser, async(req, res) =>  {
     }
     else{
         const pattern = date.compile('D/MM/YYYY HH:mm:ss');
+        const reviewTitle = req.body.title;
         const newRev = await new Review({
             authorID: req.session.userID,
             assignedReviewers: chosenReviewers,
             votes: 0,
             creationDate: date.format(new Date(), pattern),
             expirationDate: date.format(date.addDays(new Date(), 3),pattern),
-            reviewtitle: req.body.title,
+            reviewtitle: reviewTitle,
             code: req.body.code,
             status: 'open',
             tags: req.body['tags[]'],
             project: req.body.project
         }).save()
+        var ntfcsArr = []
+        for (var reviewer of chosenReviewers)
+        {
+            var newNotification = {
+                receiver: reviewer,
+                content: "You have been associated as reviewer to the review "+reviewTitle,
+                isRead: false,
+                timeCreated: new Date()
+            };
+            ntfcsArr.push(newNotification);
+        }
+        Notification.insertMany(ntfcsArr, function(err, docs) {
+            if (err) throw err;
+        });
         res.send(newRev._id);
     }
 
