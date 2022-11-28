@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const notificationSchema = new mongoose.Schema({
-    receiver: mongoose.Types.ObjectId,
+    receiver: String,
     content: String,
     isRead: Boolean,
     timeCreated: String
