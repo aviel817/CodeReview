@@ -99,7 +99,7 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
     console.log(selected_project);
     const closedReviews = await Review.find({
             status: {$ne: 'open'},
-            repository: "Processor"
+            repository: selected_project
     });
     
     var titles = []
