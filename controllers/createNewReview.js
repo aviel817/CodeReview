@@ -10,6 +10,8 @@ const Tag = require('../models/tag');
 const date = require('date-and-time');
 const Notification = require('../models/notification');
 const nodemailer = require('nodemailer');
+const constants = require("../constants");
+
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 const isAuth = (req, res, next) => {
@@ -67,7 +69,7 @@ router.post('/', urlencodedParser, async(req, res) =>  {
             subject: 'You have been associated as reviewer - GamiRev',
             text: 'The user ' + req.session.username + ' has associated you as reviewer in his new review ' +reviewTitle+ ' in GamiRev application'
           };
-        transporter.sendMail(mailOptions, function(error, info){
+        constants.transporter.sendMail(mailOptions, function(error, info){
             if (error) {
               console.log(error);
             } else {
