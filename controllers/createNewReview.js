@@ -120,14 +120,18 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
         //console.log(closed_review.assignedReviewers);
         for (let reviewer_userID of closed_review.assignedReviewers) 
         {
-            var reviewer_user = await User.findOne({_id: reviewer_userID}).exec().then((items) => { return items });;
-            var points = reviewer_user.totalPoints;
-            var reviewer_username = reviewer_user.username;
-            var func2 = Math.log(points+1) / 10;
-            var sum = func1*alpha+func2*beta;
-            var cur_val = maxPotentialMap.get(reviewer_username) || 0;
-            maxPotentialMap.set(reviewer_username.toString(), Math.max(sum, cur_val));
-            idsDict[reviewer_username] = reviewer_userID;
+            if (reviewer_userID.equals(currUserID))
+            {
+                continue;
+            }
+                var reviewer_user = await User.findOne({_id: reviewer_userID}).exec().then((items) => { return items });;
+                var points = reviewer_user.totalPoints;
+                var reviewer_username = reviewer_user.username;
+                var func2 = Math.log(points+1) / 10;
+                var sum = func1*alpha+func2*beta;
+                var cur_val = maxPotentialMap.get(reviewer_username) || 0;
+                maxPotentialMap.set(reviewer_username.toString(), Math.max(sum, cur_val));
+                idsDict[reviewer_username] = reviewer_userID;
         }
     }
     //const filteredArray = array1.filter(value => array2.includes(value));

@@ -6,6 +6,7 @@ const expressSession = require("express-session");
 
 const Review = require('../models/review');
 const User = require('../models/user');
+const Notification = require('../models/notification');
 
 const isAuth = (req, res, next) => {
     if (req.session.isAuth)
@@ -22,8 +23,9 @@ async function getUserDetails(userID) {
 router.get('/', isAuth, async (req, res) => {
     const selfReviews = await Review.find({authorID : req.session.userID}).exec().then((items) => { return items });
     const relatedReviews = await Review.find({assignedReviewers : req.session.userID}).exec().then((items) => { return items });
-    const user = User.findById(mongoose.Types.ObjectId(req.session.userID));
-
+    const user = await User.findById(mongoose.Types.ObjectId(req.session.userID));
+    const notifications = await Notification.find({receiver: req.session.userID, isRead: false});
+    console.log(notifications);
     var lastCommentsNames = [];
     var authors = [];
     var username = "";
@@ -43,7 +45,7 @@ router.get('/', isAuth, async (req, res) => {
     }
 
 
-    res.render(path.join(__dirname + "/../views/index.ejs"), {selfReviews, lastCommentsNames, relatedReviews, authors});
+    res.render(path.join(__dirname + "/../views/index.ejs"), {selfReviews, lastCommentsNames, relatedReviews, authors, notifications});
 });
 
 
