@@ -7,6 +7,7 @@ var urlencodedParser = bodyParser.urlencoded({ extended: true });
 const date = require('date-and-time');
 const Review = require('../models/review');
 const User = require('../models/user');
+const sanitizeHtml = require('sanitize-html');
 
 function getUserDetails(userID) {
     User.findById(mongoose.Types.ObjectId(userID)).then((user)=>user).catch((err)=>console.log(err));
@@ -86,10 +87,15 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
 
     const review = await Review.findOne({_id: "632dc94c68daaae3bd3f0080"});
     const pattern = date.compile('D/MM/YYYY HH:mm:ss');
+    //const varToTest = `<script>alert("this is exploit!");</script>`;
+    const cleanComment = sanitizeHtml(req.body.commentText, {
+    allowedTags: [ 'pre', 'code']
+    });
+    
     const comment = {
         userID: mongoose.Types.ObjectId("632dc83468daaae3bd3f0078"),
         date: date.format(new Date(), pattern),
-        content: req.body.commentText,
+        content: cleanComment,
         vote: req.body.radioRate
     };
 

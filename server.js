@@ -8,18 +8,14 @@ const LOCAL_ADDRESS= '0.0.0.0';
 const expressSession = require("express-session");
 const MongoDBStore = require('connect-mongodb-session')(expressSession);
 const isAuth = require("./auth");
+const constants = require("./constants");
+
 app.set('view engine', 'ejs');
 app.set('port', port);
 
-/** 
-const secrets = require('./.secrets');
-const dbURL = secrets.dbURL;
-const cookieSecret = secrets.cookieSecret;
-*/
 
-const dbURL = process.env.dbURL;
-const cookieSecret = process.env.cookieSecret;
-
+const dbURL = constants.dbURL;
+const cookieSecret = constants.cookieSecret;
 
 const store = new MongoDBStore({
     uri: dbURL,
@@ -43,6 +39,7 @@ const registerRoute = require("./controllers/register");
 const createNewReviewRoute = require("./controllers/createNewReview");
 const existingReviewRoute = require("./controllers/existingReview");
 const leaderboardRoute = require("./controllers/leaderboard");
+const projectsRoute = require("./controllers/projects");
 const mainRoute = require("./controllers/main");
 
 
@@ -55,6 +52,7 @@ app.use('/register', registerRoute);
 app.use('/createNewReview', createNewReviewRoute);
 app.use('/existingReview', existingReviewRoute);
 app.use('/leaderboard', leaderboardRoute);
+app.use('/projects', projectsRoute);
 app.use('/', mainRoute);
 
 app.listen(app.get('port'), () => {

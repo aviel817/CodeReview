@@ -9,6 +9,7 @@ const User = require('../models/user');
 const Tag = require('../models/tag');
 const date = require('date-and-time');
 const Notification = require('../models/notification');
+const nodemailer = require('nodemailer');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 const isAuth = (req, res, next) => {
@@ -18,6 +19,11 @@ const isAuth = (req, res, next) => {
     }
     next();
   };
+
+
+  
+
+  
 
 router.get('/', isAuth, async function (req, res) {
     const user = await User.findById(mongoose.Types.ObjectId(req.session.userID));
@@ -55,6 +61,19 @@ router.post('/', urlencodedParser, async(req, res) =>  {
             project: req.body.project
         }).save()
         var ntfcsArr = []
+        const mailOptions = {
+            from: 'GamiRev2022@gmail.com',
+            to: 'aviel1440@gmail.com',
+            subject: 'You have been associated as reviewer - GamiRev',
+            text: 'The user ' + req.session.username + ' has associated you as reviewer in his new review ' +reviewTitle+ ' in GamiRev application'
+          };
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('Email sent: ' + info.response);
+            }
+          });
         for (var reviewer of chosenReviewers)
         {
             var newNotification = {
