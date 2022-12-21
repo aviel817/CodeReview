@@ -6,7 +6,15 @@ const userSchema = new mongoose.Schema({
     totalPoints: Number,
     projects: [String],
     permission : Number,
-    email: String
+    email: String,
+    recievedBadges: [
+        {
+            name: String,
+            amount: Number,
+            Rank: String
+        },
+        require, true
+    ]
 }, {
     collection: 'Users'
 });

@@ -40,6 +40,7 @@ const createNewReviewRoute = require("./controllers/createNewReview");
 const existingReviewRoute = require("./controllers/existingReview");
 const leaderboardRoute = require("./controllers/leaderboard");
 const projectsRoute = require("./controllers/projects");
+const profileRoute = require("./controllers/profile");
 const mainRoute = require("./controllers/main");
 
 
@@ -47,12 +48,14 @@ const mainRoute = require("./controllers/main");
 
 app.use('/css', express.static('css'));
 app.use('/js', express.static('js'));
+app.use('/imgs', express.static('imgs'));
 app.use('/login', loginRoute);
 app.use('/register', registerRoute);
 app.use('/createNewReview', createNewReviewRoute);
 app.use('/existingReview', existingReviewRoute);
 app.use('/leaderboard', leaderboardRoute);
 app.use('/projects', projectsRoute);
+app.use('/profile', profileRoute);
 app.use('/', mainRoute);
 
 app.listen(app.get('port'), () => {
