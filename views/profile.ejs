@@ -20,9 +20,9 @@
         <div style="position: relative; margin: 100px;">
             <img src="/imgs/user-profile.png" width="140" height="140"/>
             <div style="position: absolute; top: 0; left: 150px; display:flex; flex-direction:column;">
-                    <span style="font-size: 26px;">Admin</span>
-                    <span>Head of IT Department</span>
-                    <span style="margin-top: 10px;"><img src="/imgs/mail.png" width="20" height="20"/> admin@gamirev.herokuapp.com</span>
+                    <span style="font-size: 26px;"><%= user.username %></span>
+                    <span><%= user.role %></span>
+                    <span style="margin-top: 10px;"><img src="/imgs/mail.png" width="20" height="20"/> <%= user.email %></span>
             </div>
         </div>
           <ul class="nav nav-tabs" id="myTab" role="tablist" style="margin-bottom: 25px;">
@@ -37,7 +37,7 @@
             <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
                 <div style="position: relative;">
                     <img src="/imgs/points2.png" width="30" height="30"/>
-                    <span style="position: absolute; margin: 5px 0px 0px 15px;">3000 pts</span>
+                    <span style="position: absolute; margin: 5px 0px 0px 15px;"><%= user.totalPoints %> pts</span>
                 </div>
                 <div style="margin-top: 20px; font-weight: bold;">
                   <p>Badges:</p>
@@ -47,7 +47,7 @@
                     <div class="card" style="width: 18rem;">
                       <img class="card-img-top" src="/imgs/badges/bronze.png" alt="bronze">
                       <div class="card-body">
-                        <p class="card-text" style="font-size: 22px; text-align: center;">10</p>
+                        <p class="card-text" style="font-size: 22px; text-align: center;"><%= badges[0] %></p>
                       </div>
                     </div>
                   </div>
@@ -55,7 +55,7 @@
                     <div class="card" style="width: 18rem;">
                       <img class="card-img-top" src="/imgs/badges/silver.png" alt="silver">
                       <div class="card-body">
-                        <p class="card-text" style="font-size: 22px; text-align: center;">7</p>
+                        <p class="card-text" style="font-size: 22px; text-align: center;"><%= badges[1] %></p>
                       </div>
                     </div>
                   </div>
@@ -63,7 +63,7 @@
                     <div class="card" style="width: 18rem;">
                       <img class="card-img-top" src="/imgs/badges/gold.png" alt="gold">
                       <div class="card-body">
-                        <p class="card-text" style="font-size: 22px; text-align: center;">4</p>
+                        <p class="card-text" style="font-size: 22px; text-align: center;"><%= badges[2] %></p>
                       </div>
                     </div>
                   </div>
@@ -72,7 +72,7 @@
                   <p>Stats:</p>
                 </div>
                 <div>
-                  <p>Reviews Created: 1000</p>
+                  <p>Reviews Created: <%= numOfReviewsCreated %></p>
                   <p>Reviews Participated: 1000</p>
                   <p>Total Comments: 5000</p>
                 </div>

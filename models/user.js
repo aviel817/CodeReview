@@ -7,13 +7,14 @@ const userSchema = new mongoose.Schema({
     projects: [String],
     permission : Number,
     email: String,
+    role: String,
     recievedBadges: [
         {
             name: String,
             amount: Number,
             Rank: String
         },
-        require, true
+        require, false
     ]
 }, {
     collection: 'Users'

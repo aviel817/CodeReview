@@ -107,4 +107,24 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
     res.redirect('/existingreview/'+req.params.id);
 });
 
+router.post('/:id/removeReviewer', urlencodedParser, async(req, res) =>  {  
+    //const existingReviewPath = path.join(__dirname + "/../views/existingreview.ejs");
+    let result = req.body.content.trim();
+    result = result.replace(/\s+/g, " ");
+    const userName = result.split(" ")[0];
+    console.log(userName);
+    const user = await User.findOne({username: userName})
+    console.log(user);
+    Review.updateOne({_id: mongoose.Types.ObjectId(req.params.id)},
+                     {$pull: {'assignedReviewers': user._id}}).exec();
+    res.redirect('/existingreview/'+req.params.id);
+});
+
+
+router.post('/:id/changeCode', urlencodedParser, async(req, res) =>  {  
+    console.log("request to change code sent");
+    console.log(req.body.code);
+    res.redirect('/existingreview/'+req.params.id);
+});
+
 module.exports = router;

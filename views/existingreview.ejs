@@ -6,7 +6,7 @@
 
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
-		<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.3/dist/jquery.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -84,7 +84,7 @@
 				<ul class="list-group list-group-horizontal">
 					<% if (typeof assignedReviewers_names != 'undefined') { %>
 					<% for(var i=0; i < assignedReviewers_names.length; i++) { %>
-						<li class="list-group-item">
+						<li class="list-group-item reviewersNames">
 						<%= assignedReviewers_names[i] %>
 						</li>
 					<% } %>
@@ -104,7 +104,7 @@
 			<div style="margin-bottom: 30px;">
 				Code:
 				<div class="code-block" id="code">
-					<pre><code id="codeTxt" class="language-js"><textarea disabled><%= lastReviewCode %></textarea></code>
+					<pre><code id="codeTxt" class="language-js"><textarea id="codeArea" disabled><%= lastReviewCode %></textarea></code>
 					</pre>
 				</div>
 			</div>
@@ -178,8 +178,17 @@
 			</form>
 		</div>
 		<script>
-			let editMode = false;
 
+			function load_js()
+			{
+				var head= document.getElementsByTagName('head')[0];
+				var script= document.createElement('script');
+				script.src= 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js';
+				head.appendChild(script);
+			}
+	
+			let editMode = false;
+			const codeTextOrigin = $("#codeTxt").text();
 			document.getElementById("codeButton").onclick = () => {
             let txt = document.getElementById("commentText");
             if(txt.selectionStart == txt.selectionEnd)
@@ -192,25 +201,84 @@
             txt.value = `${before}<pre><code class="language-js">${sel}</code></pre>${after}`;
         };
 			document.getElementById("editBtn").onclick = () => {
+				var full_url = document.URL; // Get current url
+				var url_array = full_url.split('/') // Split the string into an array with / as separator
+				var last_segment = url_array[url_array.length-1];  // Get the last part of the array (-1)
 				if (!editMode)
 				{
 					editMode = true;
 					codeEdit = $(document.createElement("textarea"));
-					codeEdit.text($("#codeTxt").text());
+					codeEdit.text(codeTextOrigin);
 					codeEdit.attr('id', 'editCode');
-					codeEdit.attr('style', 'width: 600px; height: 400px;');
+					//codeEdit.attr('style', 'width: 600px; height: 400px;');
 					$("#code").children().remove();
 					$("#code").append(codeEdit);
+					
+					let saveBut = document.createElement("button");
 
-					reviewersList = $(".list-group-item")
-					const c = document.createElement("span");
-					c.innerText = "X";
-					reviewersList.after(c);
+					$(saveBut).addClass("btn btn-primary");
+					$(saveBut).html('Save');
+					$(saveBut).attr('style', 'float: right; margin-top: 10px;');
+					$(saveBut).attr('id', 'saveBut');
+					saveBut.addEventListener('click', function () {
+						$.post('/existingreview/' + last_segment + '/changeCode',
+							{"code": $("#editCode").val()},
+							function (data)
+							{
+								console.log(data);
+							}
+						);
+					});
+
+					$("#code").append(saveBut);
+					reviewersList = $(".reviewersNames");
+					reviewersList.map((i, obj)=> {
+						c = document.createElement("span");
+						c.addEventListener('click', function() {
+							 //alert(this.parentNode.innerHTML);
+							
+							//alert( last_segment ); // Alert last segment
+							this.parentNode.remove();
+							$.ajax('/existingreview/' + last_segment + '/removeReviewer', {
+								type: 'POST',
+								data: { 
+									'content': this.parentNode.innerHTML.trim()
+								},
+								function(data) {
+									alert(data);
+								}
+							});
+							
+						 });
+						c.innerText = "X";
+						//console.log(obj);
+						obj.append(c);
+					});
+					//reviewersList.after(c);
 				}
 				else
 				{
 					editMode = false;
-					$("#codeTxt").prop("disabled", true);
+					$("#code").children().remove();
+					preBlock = $(document.createElement("pre"));
+					codeClass = $(document.createElement("code"));
+					codeClass.addClass("language-js");
+					codeClass.prop('id', 'codeTxt');
+					codeEdit = $(document.createElement("textarea"));
+					codeEdit.text(codeTextOrigin);
+					codeEdit.attr('style', 'width: 600px; height: 400px;');
+					codeEdit.prop('disabled', true);
+					codeClass.append(codeEdit);
+					preBlock.append(codeClass);
+					$("#code").append(preBlock);
+					load_js();
+
+					reviewersList = $(".reviewersNames")
+					reviewersList.map((i, item) => {
+						$(item).find("span").remove();
+					});
+
+					$('#saveBut').remove();
 				}
 			} 
 		</script>
