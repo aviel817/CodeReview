@@ -71,7 +71,10 @@
 		<div class="container d-flex flex-column" style="gap: 50px;">
 			<div>
 				<h1 class="rev-title"><%= revTitle %></h1>
-				<h3 class="section-title">Author:</h3>
+				<div class="d-flex flex-row">
+					<h3 class="section-title">Author:</h3>
+					<button id="editBtn" class="btn btn-secondary ms-auto">Edit</button>
+				</div>
 				<ul class="list-group list-group-flush">
 					<li class="list-group-item"><%= authorName %></li>
 				</ul>
@@ -101,7 +104,7 @@
 			<div style="margin-bottom: 30px;">
 				Code:
 				<div class="code-block" id="code">
-					<pre><code class="language-js"><textarea disabled><%= lastReviewCode %></textarea></code>
+					<pre><code id="codeTxt" class="language-js"><textarea disabled><%= lastReviewCode %></textarea></code>
 					</pre>
 				</div>
 			</div>
@@ -175,6 +178,8 @@
 			</form>
 		</div>
 		<script>
+			let editMode = false;
+
 			document.getElementById("codeButton").onclick = () => {
             let txt = document.getElementById("commentText");
             if(txt.selectionStart == txt.selectionEnd)
@@ -185,7 +190,29 @@
             const sel = txt.value.substring(txt.selectionStart, txt.selectionEnd);
             const after = txt.value.substring(txt.selectionEnd);
             txt.value = `${before}<pre><code class="language-js">${sel}</code></pre>${after}`;
-        }; 
+        };
+			document.getElementById("editBtn").onclick = () => {
+				if (!editMode)
+				{
+					editMode = true;
+					codeEdit = $(document.createElement("textarea"));
+					codeEdit.text($("#codeTxt").text());
+					codeEdit.attr('id', 'editCode');
+					codeEdit.attr('style', 'width: 600px; height: 400px;');
+					$("#code").children().remove();
+					$("#code").append(codeEdit);
+
+					reviewersList = $(".list-group-item")
+					const c = document.createElement("span");
+					c.innerText = "X";
+					reviewersList.after(c);
+				}
+				else
+				{
+					editMode = false;
+					$("#codeTxt").prop("disabled", true);
+				}
+			} 
 		</script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js"></script>
 	</body>
