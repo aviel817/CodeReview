@@ -25,7 +25,8 @@ router.get('/', isAuth, async (req, res) => {
     const relatedReviews = await Review.find({assignedReviewers : req.session.userID}).exec().then((items) => { return items });
     const user = await User.findById(mongoose.Types.ObjectId(req.session.userID));
     const notifications = await Notification.find({receiver: req.session.userID, isRead: false});
-    console.log(notifications);
+    //console.log(notifications);
+    const userID = req.session.userID;
     var lastCommentsNames = [];
     var authors = [];
     var username = "";
@@ -45,7 +46,7 @@ router.get('/', isAuth, async (req, res) => {
     }
 
 
-    res.render(path.join(__dirname + "/../views/index.ejs"), {selfReviews, lastCommentsNames, relatedReviews, authors, notifications});
+    res.render(path.join(__dirname + "/../views/index.ejs"), {selfReviews, lastCommentsNames, relatedReviews, authors, notifications, userID});
 });
 
 
