@@ -16,6 +16,8 @@ const isAuth = (req, res, next) => {
 
 router.get('/:id', isAuth, async function (req, res) {
   const user = await User.findById(mongoose.Types.ObjectId(req.session.userID));
+  const userID = req.session.userID;
+
   const badges = [0, 0, 0];
   user.recievedBadges.map((badge, i) => {
     if(badge.Rank === 'Bronze')
@@ -32,8 +34,9 @@ router.get('/:id', isAuth, async function (req, res) {
     }
   });
   const numOfReviewsCreated = await Review.countDocuments({authorID: mongoose.Types.ObjectId(req.params.id)});
+  const reviewsParticipated = await Review.countDocuments({assignedReviewers: mongoose.Types.ObjectId(req.params.id)});
   //const numOfComments = await Review.countDocuments({})
-	res.render(path.join(__dirname + "/../views/profile.ejs"), {user, badges, numOfReviewsCreated});
+	res.render(path.join(__dirname + "/../views/profile.ejs"), {user, badges, numOfReviewsCreated, reviewsParticipated, userID});
 });
 
 

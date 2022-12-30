@@ -65,8 +65,8 @@
     <div class="col">
       <div class="card w-75">
         <div class="card-body">
-          <h5 class="card-title"><%= projects[i].projectName %></h5>
-          <p class="card-text">Amount of reviews: <%= reviewsCount[i] %></p>
+          <h5 class="card-title"><a href="/projects/<%= projects[i].projectName %>"><%= projects[i].projectName %></a></h5>
+          <p class="card-text"><p><%= projects[i].projectDescription %></p><p>Amount of reviews: <%= reviewsCount[i] %></p></p>
         </div>
       </div>
     </div>
