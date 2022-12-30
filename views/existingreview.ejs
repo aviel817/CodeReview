@@ -81,6 +81,7 @@
 			</div>
 			<div>
 				<h3 class="section-title">Reviewers:</h3>
+				<!--
 				<ul class="list-group list-group-horizontal">
 					<% if (typeof assignedReviewers_names != 'undefined') { %>
 					<% for(var i=0; i < assignedReviewers_names.length; i++) { %>
@@ -89,6 +90,30 @@
 						</li>
 					<% } %>
 					<% } %>
+				-->
+				<table class="table table-bordered border-dark">
+					<tr>
+						<th>Names</th>
+						<% if (typeof assignedReviewers_names != 'undefined') { %>
+							<% for(var i=0; i < assignedReviewers_names.length; i++) { %>
+								<td class="reviewersNames">
+									<%= assignedReviewers_names[i] %>
+								</td>
+							<% } %>
+						<% } %>
+					</tr>
+					<tr>
+						<th>Last votes</th>
+						
+						<% if (typeof assignedReviewers_votes != 'undefined') { %>
+							<% for(var i=0; i < assignedReviewers_votes.length; i++) { %>
+								<td>
+									<%= assignedReviewers_votes[i] %>
+								</td>
+							<% } %>
+						<% } %>
+					</tr>
+				</table>
 					<!--
 					<li class="list-group-item">Reviewer 1</li>
 					<li class="list-group-item">Reviewer 2</li>
@@ -118,6 +143,7 @@
 				<div class="comment-wrapper">
 					<div class="author-wrapper">
 						<h2 class="author-name"><%= userDetails[i].username %></h2>
+						<p><%= userDetails[i].totalPoints %> pts</p>
 					</div>
 
 					<div class="content-wrapper">
@@ -131,6 +157,7 @@
 
 					<div class="date-wrapper">
 						<p class="date-text"><%= reviewComments[i].date %></p>
+						<p class="vote">Vote: <%= reviewComments[i].vote %></p>
 					</div>
 				</div>
 					<% if(i != reviewComments.length-1) { %>
@@ -142,10 +169,13 @@
 
 
 			<!-- Add Comment Box -->
-			<form class="add-comment-wrapper" action="/existingreview/<%= revID %>" method="post">
+			<form class="add-comment-wrapper" action="/existingreview/<%= revID %>" method="post" enctype="multipart/form-data">
 				<div class="codeButton">
 					<button class="btn btn-sm btn-primary" id="codeButton" type="button">CODE</button>
 				</div>
+				<div class="codeFile">
+					<input class="form-control form-control-sm" type="file" id="formFileMultiple" multiple>
+				  </div>
 				<div class="comment-box-wrapper">
 					<textarea id="commentText" class="comment-box" placeholder="Write your comment here..." role="textbox" name="commentText" contenteditable></textarea>
 				</div>

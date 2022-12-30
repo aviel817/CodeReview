@@ -19,6 +19,13 @@ const reviewSchema = new mongoose.Schema({
         vote: String
       },
       require, true
+    ],
+    lastVotes: [
+      {
+        userID: mongoose.Types.ObjectId,
+        userVote: String
+      },
+      require, true
     ]
   }, {
     collection: 'Reviews'

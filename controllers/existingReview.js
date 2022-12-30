@@ -8,6 +8,7 @@ const date = require('date-and-time');
 const Review = require('../models/review');
 const User = require('../models/user');
 const sanitizeHtml = require('sanitize-html');
+const multer = require('multer');
 
 function getUserDetails(userID) {
     User.findById(mongoose.Types.ObjectId(userID)).then((user)=>user).catch((err)=>console.log(err));
@@ -45,10 +46,13 @@ router.get('/:id', isAuth, async function (req, res) {
 
             const assignedReviewers_ids = review.assignedReviewers;
             const assignedReviewers_names = [];
+            const assignedReviewers_votes = [];
             for (let id of assignedReviewers_ids)
             {
                 var username = await User.findById(mongoose.Types.ObjectId(id)).then((item)=>item.username);
+                var review_vote = await Review.findOne({"lastVotes.userID": mongoose.Types.ObjectId(id)}, {"lastVotes.$": 1});
                 assignedReviewers_names.push(username);
+                assignedReviewers_votes.push(review_vote.lastVotes[0].userVote);
             }
             const revID = getVarID;
             const reviewCode = review.code;
@@ -66,7 +70,7 @@ router.get('/:id', isAuth, async function (req, res) {
             tags.forEach((item)=> {
                 tagsStr = tagsStr.concat(" #", item);
             });
-            res.render(existingReviewPath, {revID, revTitle, authorName, assignedReviewers_names, lastReviewCode, reviewComments, userDetails, tagsStr});
+            res.render(existingReviewPath, {revID, revTitle, authorName, assignedReviewers_names, assignedReviewers_votes, lastReviewCode, reviewComments, userDetails, tagsStr});
             return;
         }
         revTitle = "Not Found";
@@ -80,9 +84,18 @@ router.get('/:id', isAuth, async function (req, res) {
 
 });
 
+var storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, 'uploads/')
+        },
+        filename: (req, file, cb) => {
+            cb(null, file.fieldname + '-' + Date.now())
+        }
+    });
+     
+var upload = multer({ storage: storage });
 
-
-router.post('/:id', urlencodedParser, async(req, res) =>  {  
+router.post('/:id', upload.single('codeFile') ,urlencodedParser, async(req, res) =>  {  
     const existingReviewPath = path.join(__dirname + "/../views/existingreview.ejs");
 
     const review = await Review.findOne({_id: "632dc94c68daaae3bd3f0080"});
@@ -126,5 +139,8 @@ router.post('/:id/changeCode', urlencodedParser, async(req, res) =>  {
     console.log(req.body.code);
     res.redirect('/existingreview/'+req.params.id);
 });
+
+
+
 
 module.exports = router;

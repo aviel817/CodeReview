@@ -45,7 +45,7 @@ const mainRoute = require("./controllers/main");
 
 
 
-
+app.use('/uploads', express.static('uploads'));
 app.use('/css', express.static('css'));
 app.use('/js', express.static('js'));
 app.use('/imgs', express.static('imgs'));
