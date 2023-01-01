@@ -85,19 +85,19 @@ router.get('/:id', isAuth, async function (req, res) {
 });
 
 var storage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, 'uploads/')
-        },
-        filename: (req, file, cb) => {
-            cb(null, file.fieldname + '-' + Date.now())
-        }
+        destination: (req, file, cb) => {
+            cb(null, 'uploads/')
+        },
+        filename: (req, file, cb) => {
+            cb(null, file.fieldname + '-' + Date.now())
+        }
     });
-     
+    
 var upload = multer({ storage: storage });
 
 router.post('/:id', upload.single('codeFile') ,urlencodedParser, async(req, res) =>  {  
     const existingReviewPath = path.join(__dirname + "/../views/existingreview.ejs");
-
+    console.log(req.body);
     const review = await Review.findOne({_id: "632dc94c68daaae3bd3f0080"});
     const pattern = date.compile('D/MM/YYYY HH:mm:ss');
     //const varToTest = `<script>alert("this is exploit!");</script>`;
