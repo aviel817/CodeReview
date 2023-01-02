@@ -32,7 +32,11 @@ app.use(
 })
 );
 
-
+app.use(express.json());
+app.use(express.urlencoded({
+    extended: true,
+ })
+);
 
 const loginRoute = require("./controllers/login");
 const registerRoute = require("./controllers/register");
@@ -41,6 +45,7 @@ const existingReviewRoute = require("./controllers/existingReview");
 const leaderboardRoute = require("./controllers/leaderboard");
 const projectsRoute = require("./controllers/projects");
 const profileRoute = require("./controllers/profile");
+const badgesRoute = require("./controllers/badges");
 const mainRoute = require("./controllers/main");
 
 
@@ -56,6 +61,7 @@ app.use('/existingReview', existingReviewRoute);
 app.use('/leaderboard', leaderboardRoute);
 app.use('/projects', projectsRoute);
 app.use('/profile', profileRoute);
+app.use('/badges', badgesRoute);
 app.use('/', mainRoute);
 
 app.listen(app.get('port'), () => {

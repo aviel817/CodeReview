@@ -2,13 +2,9 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require("mongoose");
 const path = require('path');
-const Review = require('../models/review');
-const Project = require('../models/project');
 const User = require('../models/user');
+const Review = require('../models/review');
 const Notification = require('../models/notification');
-const Tag = require('../models/tag');
-const date = require('date-and-time');
-
 
 const isAuth = (req, res, next) => {
     if (!req.session.isAuth)
@@ -20,10 +16,12 @@ const isAuth = (req, res, next) => {
 
 
 router.get('/', isAuth, async function (req, res) {
-	const users = await User.find().sort({totalPoints: -1}).limit(10).exec();
+  const user = await User.findById(mongoose.Types.ObjectId(req.session.userID));
   const userID = req.session.userID;
   const notifications = await Notification.find({receiver: userID, isRead: false});
-	res.render(path.join(__dirname + "/../views/leaderboard.ejs"), {userID, notifications, users});
+
+
+	res.render(path.join(__dirname + "/../views/badges.ejs"), {notifications, userID});
 });
 
 

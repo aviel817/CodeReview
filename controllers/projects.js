@@ -5,6 +5,7 @@ const path = require('path');
 const Project = require('../models/project');
 const Review = require('../models/review');
 const User = require('../models/user');
+const Notification = require('../models/notification');
 
 const isAuth = (req, res, next) => {
     if (!req.session.isAuth)
@@ -17,13 +18,15 @@ const isAuth = (req, res, next) => {
 
 router.get('/', isAuth, async function (req, res) {
     const projects = await Project.find({});
+    const userID = req.session.userID;
+    const notifications = await Notification.find({receiver: userID, isRead: false});
     const reviewsCount = [];
     for (let proj of projects)
     {
         var count = await Review.find({project: proj.projectName}).count();
         reviewsCount.push(count);
     }
-	res.render(path.join(__dirname + "/../views/projects.ejs"), {projects, reviewsCount});
+	res.render(path.join(__dirname + "/../views/projects.ejs"), {userID, notifications, projects, reviewsCount});
 });
 
 router.get('/:id', isAuth, async function (req, res) {

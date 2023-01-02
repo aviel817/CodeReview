@@ -8,7 +8,9 @@ const date = require('date-and-time');
 const Review = require('../models/review');
 const User = require('../models/user');
 const sanitizeHtml = require('sanitize-html');
-const multer = require('multer');
+const upload = require('../middlewares/upload');
+const Notification = require('../models/notification');
+
 
 function getUserDetails(userID) {
     User.findById(mongoose.Types.ObjectId(userID)).then((user)=>user).catch((err)=>console.log(err));
@@ -24,6 +26,8 @@ const isAuth = (req, res, next) => {
 
 router.get('/:id', isAuth, async function (req, res) {
     //console.log(req.params.id);
+    const userID = req.session.userID;
+    const notifications = await Notification.find({receiver: req.session.userID, isRead: false});
     const getVarID = req.params.id;
     var revTitle = "";
     var paramList = [];
@@ -35,6 +39,7 @@ router.get('/:id', isAuth, async function (req, res) {
         {
             revTitle = review.reviewtitle;
             const authorID = review.authorID;
+            const projectName = review.project;
             var uploaderUser = await User.findById(mongoose.Types.ObjectId(authorID));
             if (!uploaderUser)
             {
@@ -70,7 +75,7 @@ router.get('/:id', isAuth, async function (req, res) {
             tags.forEach((item)=> {
                 tagsStr = tagsStr.concat(" #", item);
             });
-            res.render(existingReviewPath, {revID, revTitle, authorName, assignedReviewers_names, assignedReviewers_votes, lastReviewCode, reviewComments, userDetails, tagsStr});
+            res.render(existingReviewPath, {userID, notifications, revID, revTitle, authorName, projectName, assignedReviewers_names, assignedReviewers_votes, lastReviewCode, reviewComments, userDetails, tagsStr});
             return;
         }
         revTitle = "Not Found";
@@ -84,20 +89,13 @@ router.get('/:id', isAuth, async function (req, res) {
 
 });
 
-var storage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, 'uploads/')
-        },
-        filename: (req, file, cb) => {
-            cb(null, file.fieldname + '-' + Date.now())
-        }
-    });
-     
-var upload = multer({ storage: storage });
 
-router.post('/:id', upload.single('codeFile') ,urlencodedParser, async(req, res) =>  {  
+
+
+router.post('/:id', upload.single('codeFile'), async(req, res) =>  {  
     const existingReviewPath = path.join(__dirname + "/../views/existingreview.ejs");
-
+    console.log(req.body);
+    console.log(req.file);
     const review = await Review.findOne({_id: "632dc94c68daaae3bd3f0080"});
     const pattern = date.compile('D/MM/YYYY HH:mm:ss');
     //const varToTest = `<script>alert("this is exploit!");</script>`;
@@ -105,6 +103,7 @@ router.post('/:id', upload.single('codeFile') ,urlencodedParser, async(req, res)
     allowedTags: [ 'pre', 'code']
     });
     
+
     const comment = {
         userID: mongoose.Types.ObjectId("632dc83468daaae3bd3f0078"),
         date: date.format(new Date(), pattern),

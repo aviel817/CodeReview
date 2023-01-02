@@ -22,18 +22,16 @@ const isAuth = (req, res, next) => {
     next();
   };
 
-
-  
-
-  
-
 router.get('/', isAuth, async function (req, res) {
+    const userID = req.session.userID;
     const user = await User.findById(mongoose.Types.ObjectId(req.session.userID));
     const projs = user.projects;
     const tags = await Tag.find({}).exec().then((items) => { return items });
+    const notifications = await Notification.find({receiver: req.session.userID, isRead: false});
     
-    console.log(projs);
-	res.render(path.join(__dirname + "/../views/createNewReview.ejs"), {projs, tags});
+    const users = await User.find({}).exec().then((items)=> {return items} );
+
+	res.render(path.join(__dirname + "/../views/createNewReview.ejs"), {userID, notifications, users, projs, tags});
 });
 
 

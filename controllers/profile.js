@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const path = require('path');
 const User = require('../models/user');
 const Review = require('../models/review');
+const Notification = require('../models/notification');
 
 const isAuth = (req, res, next) => {
     if (!req.session.isAuth)
@@ -17,6 +18,7 @@ const isAuth = (req, res, next) => {
 router.get('/:id', isAuth, async function (req, res) {
   const user = await User.findById(mongoose.Types.ObjectId(req.session.userID));
   const userID = req.session.userID;
+  const notifications = await Notification.find({receiver: userID, isRead: false});
 
   const badges = [0, 0, 0];
   user.recievedBadges.map((badge, i) => {
@@ -36,7 +38,7 @@ router.get('/:id', isAuth, async function (req, res) {
   const numOfReviewsCreated = await Review.countDocuments({authorID: mongoose.Types.ObjectId(req.params.id)});
   const reviewsParticipated = await Review.countDocuments({assignedReviewers: mongoose.Types.ObjectId(req.params.id)});
   //const numOfComments = await Review.countDocuments({})
-	res.render(path.join(__dirname + "/../views/profile.ejs"), {user, badges, numOfReviewsCreated, reviewsParticipated, userID});
+	res.render(path.join(__dirname + "/../views/profile.ejs"), {user, notifications, badges, numOfReviewsCreated, reviewsParticipated, userID});
 });
 
 
