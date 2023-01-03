@@ -31,6 +31,8 @@ router.get('/', isAuth, async function (req, res) {
 
 router.get('/:id', isAuth, async function (req, res) {
     const projectName = req.params.id;
+    const userID = req.session.userID;
+    const notifications = await Notification.find({receiver: userID, isRead: false});
     const reviews = await Review.find({project: req.params.id});
     var lastCommentsNames = [];
 
@@ -44,7 +46,7 @@ router.get('/:id', isAuth, async function (req, res) {
         }
     }
     console.log(reviews.length);
-	res.render(path.join(__dirname + "/../views/projectlist.ejs"), {projectName, reviews, lastCommentsNames});
+	res.render(path.join(__dirname + "/../views/projectlist.ejs"), {userID, notifications, projectName, reviews, lastCommentsNames});
 });
 
 

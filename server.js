@@ -33,11 +33,12 @@ app.use(
 );
 
 app.use(express.json());
+/** 
 app.use(express.urlencoded({
     extended: true,
  })
 );
-
+ */
 const loginRoute = require("./controllers/login");
 const registerRoute = require("./controllers/register");
 const createNewReviewRoute = require("./controllers/createNewReview");

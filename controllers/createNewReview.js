@@ -97,6 +97,7 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
     const selected_project = req.body['project']; 
     //console.log(new_tags);
     console.log(selected_project);
+    console.log(new_tags);
     const closedReviews = await Review.find({
             status: {$ne: 'open'},
             repository: selected_project

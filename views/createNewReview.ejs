@@ -86,7 +86,7 @@
           <% } %>
         <% } %>
       </select>
-      <button id="addToTableBtn" class="btn btn-secondary" style="margin-left: 40px;">Add to table</button>
+      <button id="addToTableBtn" onclick="addToTable()" class="btn btn-secondary" style="margin-left: 40px;">Add to table</button>
     </div>
     <div class="form-group">
     <label for="ChooseReviewers">Choose Reviewers:</label>
@@ -154,7 +154,10 @@
 
   function addToTable()
   {
-    $("#selManReviewer")
+    selectTable = $( "#selectTable tbody" )
+    selectedUserID = $("#selManReviewer > option:checked").attr("data-tokens")
+    selectedUserName = $("#selManReviewer > option:checked").val()
+    selectTable.append(`<tr onclick="toggleClass(this,'selectedRow');"><td id="`+selectedUserID+`">`+selectedUserName+`</td><td>Manual</td><td><textarea disabled></textarea></td></tr></option>`);
   }
 
 

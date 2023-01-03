@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const projectSchema = new mongoose.Schema({
     projectName: String,
     projectManager: mongoose.Types.ObjectId,
-    projectDescription: String
+    projectDescription: String,
+    projectImg: String
   }, {
     collection: 'Projects'
 });

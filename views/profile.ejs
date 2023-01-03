@@ -83,7 +83,13 @@
             
             <div class="tab-pane fade" id="activity" role="tabpanel" aria-labelledby="activity-tab">
               <div>
-                <p><b><u>Projects:</u></b> A, B, C, D</p>
+                <p><b><u>Projects:</u></b> 
+                  <% if (typeof projects != 'undefined') { %>
+                      <% for (var i=0; i < projects.length; i++) { %>
+                          <a href="/projects/<%= projects[i] %>"> <%= projects[i] %></a><% if (i != projects.length-1) { %>,<% } %>
+                      <% } %>
+                  <% } %>
+                  </p>
               </div>
               <div style="margin-top: 20px;">
                 <p style="font-weight: bold;">Recent assigned reviews:</p>
@@ -98,18 +104,23 @@
                     </tr>
                   </thead>
                   <tbody>
-                    
+                    <% if (typeof recentlyAssignedRevs != 'undefined') { %>
+                      <% for (var i=0; i < recentlyAssignedRevs.length; i++) { %>
                     <tr>
-                      <th scope="row">1</th>
-                      <td><a href=""></a>a</td>
+                      <th scope="row"><%= i+1 %></th>
+                      <td><a href="../existingreview/<%= recentlyAssignedRevs[i]._id %>"><%= recentlyAssignedRevs[i].reviewtitle %></a></td>
                       <td>
-                        b
+                        <%= recentlyAssignedRevs[i].creationDate %>
                       </td>
                       <td>
-                        c
+                          None
                       </td>
-                      <td>d</td>
+                      <td>
+                        <%= recentlyAssignedRevs[i].status %>
+                      </td>
                     </tr>
+                      <% } %>
+                    <% } %>
                   </tbody>
                 </table>
               </div>

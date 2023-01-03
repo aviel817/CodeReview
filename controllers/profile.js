@@ -5,6 +5,7 @@ const path = require('path');
 const User = require('../models/user');
 const Review = require('../models/review');
 const Notification = require('../models/notification');
+const Project = require('../models/project');
 
 const isAuth = (req, res, next) => {
     if (!req.session.isAuth)
@@ -16,7 +17,8 @@ const isAuth = (req, res, next) => {
 
 
 router.get('/:id', isAuth, async function (req, res) {
-  const user = await User.findById(mongoose.Types.ObjectId(req.session.userID));
+  const viewingID = req.params.id;
+  const user = await User.findById(mongoose.Types.ObjectId(viewingID));
   const userID = req.session.userID;
   const notifications = await Notification.find({receiver: userID, isRead: false});
 
@@ -35,14 +37,14 @@ router.get('/:id', isAuth, async function (req, res) {
       badges[2] += badge.amount;
     }
   });
-  const numOfReviewsCreated = await Review.countDocuments({authorID: mongoose.Types.ObjectId(req.params.id)});
-  const reviewsParticipated = await Review.countDocuments({assignedReviewers: mongoose.Types.ObjectId(req.params.id)});
+  const numOfReviewsCreated = await Review.countDocuments({authorID: mongoose.Types.ObjectId(viewingID)});
+  const reviewsParticipated = await Review.countDocuments({assignedReviewers: mongoose.Types.ObjectId(viewingID)});
 
   const commentsCountQuery = await Review.aggregate([
     [
       {
         '$match': {
-          'comments.userID': mongoose.Types.ObjectId('632dc83468daaae3bd3f0078')
+          'comments.userID': mongoose.Types.ObjectId(viewingID)
         }
       }, {
         '$unwind': {
@@ -50,7 +52,7 @@ router.get('/:id', isAuth, async function (req, res) {
         }
       }, {
         '$match': {
-          'comments.userID': mongoose.Types.ObjectId('632dc83468daaae3bd3f0078')
+          'comments.userID': mongoose.Types.ObjectId(viewingID)
         }
       }, {
         '$project': {
@@ -64,8 +66,11 @@ router.get('/:id', isAuth, async function (req, res) {
   ]);
 
   const numOfComments = commentsCountQuery[0].commentsCount;
+  const projects = await User.findById(mongoose.Types.ObjectId(viewingID)).then((item) => item.projects);
+  const recentlyAssignedRevs = await Review.find({assignedReviewers: mongoose.Types.ObjectId(viewingID)},{_id: 1, reviewtitle: 1, creationDate: 1, status: 1}).limit(10);
+  console.log(recentlyAssignedRevs);
 
-	res.render(path.join(__dirname + "/../views/profile.ejs"), {user, userID, notifications, badges, numOfReviewsCreated, reviewsParticipated, numOfComments});
+	res.render(path.join(__dirname + "/../views/profile.ejs"), {user, userID, notifications, badges, numOfReviewsCreated, reviewsParticipated, numOfComments, projects, recentlyAssignedRevs});
 });
 
 
