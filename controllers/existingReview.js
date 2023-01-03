@@ -56,8 +56,14 @@ router.get('/:id', isAuth, async function (req, res) {
             {
                 var username = await User.findById(mongoose.Types.ObjectId(id)).then((item)=>item.username);
                 var review_vote = await Review.findOne({"lastVotes.userID": mongoose.Types.ObjectId(id)}, {"lastVotes.$": 1});
-                assignedReviewers_names.push(username);
-                assignedReviewers_votes.push(review_vote.lastVotes[0].userVote);
+                if (username)
+                {
+                    assignedReviewers_names.push(username);
+                }
+                if (review_vote)
+                {
+                    assignedReviewers_votes.push(review_vote.lastVotes[0].userVote);
+                }
             }
             const revID = getVarID;
             const reviewCode = review.code;
@@ -89,21 +95,20 @@ router.get('/:id', isAuth, async function (req, res) {
 
 });
 
-
+/**
+ * Sending new comment
+ */
 router.post('/:id', upload.single('codeFile'), async(req, res) =>  {  
     const existingReviewPath = path.join(__dirname + "/../views/existingreview.ejs");
-    console.log(req.body);
-    console.log(req.file);
-    const review = await Review.findOne({_id: "632dc94c68daaae3bd3f0080"});
+    const review = await Review.findOne({_id: req.params.id});
+    const userID = req.session.userID;
     const pattern = date.compile('D/MM/YYYY HH:mm:ss');
-    //const varToTest = `<script>alert("this is exploit!");</script>`;
     const cleanComment = sanitizeHtml(req.body.commentText, {
     allowedTags: [ 'pre', 'code']
     });
     
-
     const comment = {
-        userID: mongoose.Types.ObjectId("632dc83468daaae3bd3f0078"),
+        userID: mongoose.Types.ObjectId(userID),
         date: date.format(new Date(), pattern),
         content: cleanComment,
         vote: req.body.radioRate

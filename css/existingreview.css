@@ -245,3 +245,7 @@ pre {
 .reviewersNames > span:hover {
 	color:red;
 }
+
+#reviewers > tbody {
+	border-collapse: collapse;
+}

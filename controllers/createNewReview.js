@@ -29,7 +29,7 @@ router.get('/', isAuth, async function (req, res) {
     const tags = await Tag.find({}).exec().then((items) => { return items });
     const notifications = await Notification.find({receiver: req.session.userID, isRead: false});
     
-    const users = await User.find({}).exec().then((items)=> {return items} );
+    const users = await User.find({_id: {$ne: userID}}).exec().then((items)=> {return items} );
 
 	res.render(path.join(__dirname + "/../views/createNewReview.ejs"), {userID, notifications, users, projs, tags});
 });

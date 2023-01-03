@@ -82,10 +82,11 @@
       <select class="selectpicker" id="selManReviewer" data-live-search="true">
       <% if (typeof(users) != 'undefined') { %>
         <% for(var i=0; i < users.length; i++) { %>
-        <option data-tokens="<%= users[i].username %>"><%= users[i].username %></option>
+        <option data-tokens="<%= users[i]._id %>"><%= users[i].username %></option>
           <% } %>
         <% } %>
       </select>
+      <button id="addToTableBtn" class="btn btn-secondary" style="margin-left: 40px;">Add to table</button>
     </div>
     <div class="form-group">
     <label for="ChooseReviewers">Choose Reviewers:</label>
@@ -151,6 +152,10 @@
     }
   }
 
+  function addToTable()
+  {
+    $("#selManReviewer")
+  }
 
 
   $( document ).ready(function() {

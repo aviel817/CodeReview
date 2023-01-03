@@ -37,8 +37,35 @@ router.get('/:id', isAuth, async function (req, res) {
   });
   const numOfReviewsCreated = await Review.countDocuments({authorID: mongoose.Types.ObjectId(req.params.id)});
   const reviewsParticipated = await Review.countDocuments({assignedReviewers: mongoose.Types.ObjectId(req.params.id)});
-  //const numOfComments = await Review.countDocuments({})
-	res.render(path.join(__dirname + "/../views/profile.ejs"), {user, notifications, badges, numOfReviewsCreated, reviewsParticipated, userID});
+
+  const commentsCountQuery = await Review.aggregate([
+    [
+      {
+        '$match': {
+          'comments.userID': mongoose.Types.ObjectId('632dc83468daaae3bd3f0078')
+        }
+      }, {
+        '$unwind': {
+          'path': '$comments'
+        }
+      }, {
+        '$match': {
+          'comments.userID': mongoose.Types.ObjectId('632dc83468daaae3bd3f0078')
+        }
+      }, {
+        '$project': {
+          'comments.userID': 1, 
+          'comments.content': 1
+        }
+      }, {
+        '$count': 'commentsCount'
+      }
+    ]
+  ]);
+
+  const numOfComments = commentsCountQuery[0].commentsCount;
+
+	res.render(path.join(__dirname + "/../views/profile.ejs"), {user, userID, notifications, badges, numOfReviewsCreated, reviewsParticipated, numOfComments});
 });
 
 
