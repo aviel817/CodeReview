@@ -27,7 +27,7 @@ const isAuth = (req, res, next) => {
 router.get('/:id', isAuth, async function (req, res) {
     //console.log(req.params.id);
     const userID = req.session.userID;
-    const notifications = await Notification.find({receiver: req.session.userID, isRead: false});
+    const notifications = await Notification.find({receiver: req.session.userID, isRead: false}).exec();
     const getVarID = req.params.id;
     var revTitle = "";
     var paramList = [];

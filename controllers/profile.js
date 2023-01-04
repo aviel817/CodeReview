@@ -18,12 +18,22 @@ const isAuth = (req, res, next) => {
 
 router.get('/:id', isAuth, async function (req, res) {
   const viewingID = req.params.id;
-  const user = await User.findById(mongoose.Types.ObjectId(viewingID));
+  if (!mongoose.Types.ObjectId.isValid(viewingID))
+  {
+    return res.redirect('/404');
+  }
+  const user = await User.findById(mongoose.Types.ObjectId(viewingID)).exec();
   const userID = req.session.userID;
   const notifications = await Notification.find({receiver: userID, isRead: false});
 
   const badges = [0, 0, 0];
-  user.recievedBadges.map((badge, i) => {
+  console.log(user);
+  if (!user)
+  {
+    return res.redirect('/404');
+  }
+
+  user?.recievedBadges.map((badge, i) => {
     if(badge.Rank === 'Bronze')
     {
       badges[0] += badge.amount;
@@ -65,7 +75,7 @@ router.get('/:id', isAuth, async function (req, res) {
     ]
   ]);
 
-  const numOfComments = commentsCountQuery[0].commentsCount;
+  const numOfComments = commentsCountQuery[0]?.commentsCount || 0;
   const projects = await User.findById(mongoose.Types.ObjectId(viewingID)).then((item) => item.projects);
   const recentlyAssignedRevs = await Review.find({assignedReviewers: mongoose.Types.ObjectId(viewingID)},{_id: 1, reviewtitle: 1, creationDate: 1, status: 1}).limit(10);
   console.log(recentlyAssignedRevs);
