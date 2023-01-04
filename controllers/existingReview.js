@@ -115,9 +115,11 @@ router.post('/:id', upload.single('codeFile'), async(req, res) =>  {
     };
 
     await Review.findOneAndUpdate(
-        {_id: req.params.id},
+        {_id: userID},
         { $push : {comments: comment}},
     );
+
+    User.findOneAndUpdate({_id: userID}, {$inc : {'totalPoints' : 1}}).exec();
 
     res.redirect('/existingreview/'+req.params.id);
 });

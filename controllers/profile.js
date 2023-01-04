@@ -27,7 +27,7 @@ router.get('/:id', isAuth, async function (req, res) {
   const notifications = await Notification.find({receiver: userID, isRead: false});
 
   const badges = [0, 0, 0];
-  console.log(user);
+  
   if (!user)
   {
     return res.redirect('/404');
@@ -78,7 +78,6 @@ router.get('/:id', isAuth, async function (req, res) {
   const numOfComments = commentsCountQuery[0]?.commentsCount || 0;
   const projects = await User.findById(mongoose.Types.ObjectId(viewingID)).then((item) => item.projects);
   const recentlyAssignedRevs = await Review.find({assignedReviewers: mongoose.Types.ObjectId(viewingID)},{_id: 1, reviewtitle: 1, creationDate: 1, status: 1}).limit(10);
-  console.log(recentlyAssignedRevs);
 
 	res.render(path.join(__dirname + "/../views/profile.ejs"), {user, userID, notifications, badges, numOfReviewsCreated, reviewsParticipated, numOfComments, projects, recentlyAssignedRevs});
 });
