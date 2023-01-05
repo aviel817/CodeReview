@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const router = express.Router();
 const path = require('path');
 var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({ extended: true });
 const date = require('date-and-time');
 const Review = require('../models/review');
 const User = require('../models/user');
@@ -13,6 +12,7 @@ const Notification = require('../models/notification');
 const queries = require('./queries');
 const dataFuncs = require('./dataFuncs');
 
+var urlencodedParser = bodyParser.urlencoded({ extended: true });
 
 const isAuth = (req, res, next) => {
     if (!req.session.isAuth)
@@ -95,7 +95,7 @@ router.get('/:id', isAuth, async function (req, res) {
 /**
  * Sending new comment
  */
-router.post('/:id', upload.single('codeFile'), async(req, res) =>  {  
+router.post('/:id', urlencodedParser, async(req, res) =>  {  
     const existingReviewPath = path.join(__dirname + "/../views/existingreview.ejs");
     const review = await Review.findOne({_id: req.params.id});
     const userID = req.session.userID;
@@ -103,33 +103,34 @@ router.post('/:id', upload.single('codeFile'), async(req, res) =>  {
     const cleanComment = sanitizeHtml(req.body.commentText, {
     allowedTags: [ 'pre', 'code']
     });
-    
+    console.log(req.body);
     const comment = {
         userID: mongoose.Types.ObjectId(userID),
         date: date.format(new Date(), pattern),
         content: cleanComment,
         vote: req.body.radioRate
     };
-
+    console.log(comment);
     if (dataFuncs.countComments(userID) == 1)
     {
         const badge = {
             name: "First timer",
             amount: 1,
             Rank: "Bronze"
-        }
+        };
         await User.findOneAndUpdate(
             {_id: userID},
             { $push : {recievedBadges: badge},
               $inc : {'totalPoints' : 2}}
         );
     }
+
     await Review.findOneAndUpdate(
-        {_id: userID},
+        {_id: mongoose.Types.ObjectId(review._id)},
         { $push : {comments: comment}},
     );
 
-    User.findOneAndUpdate({_id: userID}, {$inc : {'totalPoints' : 1}}).exec();
+    await User.findOneAndUpdate({_id: userID}, {$inc : {'totalPoints' : 1}}).exec();
 
     res.redirect('/existingreview/'+req.params.id);
 });
