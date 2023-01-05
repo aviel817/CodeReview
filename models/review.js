@@ -4,7 +4,6 @@ const reviewSchema = new mongoose.Schema({
     authorID: mongoose.Types.ObjectId,
     assignedReviewers: [mongoose.Types.ObjectId],
     project: String,
-    votes: Number,
     creationDate: String,
     expirationDate: String,
     reviewtitle: String,

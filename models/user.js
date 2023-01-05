@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
     password: String,
     totalPoints: Number,
     projects: [String],
-    permission : Number,
+    permission : String,
     email: String,
     role: String,
     recievedBadges: [

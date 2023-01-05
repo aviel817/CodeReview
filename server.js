@@ -47,6 +47,7 @@ const leaderboardRoute = require("./controllers/leaderboard");
 const projectsRoute = require("./controllers/projects");
 const profileRoute = require("./controllers/profile");
 const badgesRoute = require("./controllers/badges");
+const notificationRoute = require("./controllers/notifications");
 const mainRoute = require("./controllers/main");
 
 
@@ -63,6 +64,7 @@ app.use('/leaderboard', leaderboardRoute);
 app.use('/projects', projectsRoute);
 app.use('/profile', profileRoute);
 app.use('/badges', badgesRoute);
+app.use('/notification', notificationRoute);
 app.use('/', mainRoute);
 
 app.listen(app.get('port'), () => {
