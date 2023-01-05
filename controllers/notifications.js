@@ -13,7 +13,6 @@ router.post('/updateRead', urlencodedParser, async(req, res) =>  {
     {
         const userID = req.session.userID;
         const queryRes = await Notification.updateMany({receiver: userID}, { isRead: true });
-        console.log(queryRes.modifiedCount);
         res.status(200);
         res.send("success");
     }
