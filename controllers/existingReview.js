@@ -10,11 +10,9 @@ const User = require('../models/user');
 const sanitizeHtml = require('sanitize-html');
 const upload = require('../middlewares/upload');
 const Notification = require('../models/notification');
+const queries = require('./queries');
+const dataFuncs = require('./dataFuncs');
 
-
-function getUserDetails(userID) {
-    User.findById(mongoose.Types.ObjectId(userID)).then((user)=>user).catch((err)=>console.log(err));
-}
 
 const isAuth = (req, res, next) => {
     if (!req.session.isAuth)
@@ -25,22 +23,21 @@ const isAuth = (req, res, next) => {
   };
 
 router.get('/:id', isAuth, async function (req, res) {
-    //console.log(req.params.id);
     const userID = req.session.userID;
-    const notifications = await Notification.find({receiver: req.session.userID, isRead: false}).exec();
+    const notifications = await queries.getNotifications(userID);
     const getVarID = req.params.id;
     var revTitle = "";
     var paramList = [];
     const existingReviewPath = path.join(__dirname + "/../views/existingreview.ejs");
     if (mongoose.Types.ObjectId.isValid(getVarID))
     {
-        const review = await Review.findById(mongoose.Types.ObjectId(getVarID));
+        const review = await queries.getReviewByID(getVarID);
         if (review)
         {
             revTitle = review.reviewtitle;
             const authorID = review.authorID;
             const projectName = review.project;
-            var uploaderUser = await User.findById(mongoose.Types.ObjectId(authorID));
+            var uploaderUser = await queries.getUserByID(authorID);
             if (!uploaderUser)
             {
                 authorName = "Not Found";
@@ -54,7 +51,7 @@ router.get('/:id', isAuth, async function (req, res) {
             const assignedReviewers_votes = [];
             for (let id of assignedReviewers_ids)
             {
-                var username = await User.findById(mongoose.Types.ObjectId(id)).then((item)=>item.username);
+                var username = await queries.getUsernameByID(id);
                 var review_vote = await Review.findOne({"lastVotes.userID": mongoose.Types.ObjectId(id)}, {"lastVotes.$": 1});
                 if (username)
                 {
@@ -75,7 +72,7 @@ router.get('/:id', isAuth, async function (req, res) {
             var user = null;
             for (var i=0; i < reviewComments.length; i++)
             {
-                user = await User.findById(mongoose.Types.ObjectId(reviewComments[i].userID));
+                user = await queries.getUserByID(reviewComments[i].userID);
                 userDetails.push(user);
             }
             tags.forEach((item)=> {
@@ -114,6 +111,19 @@ router.post('/:id', upload.single('codeFile'), async(req, res) =>  {
         vote: req.body.radioRate
     };
 
+    if (dataFuncs.countComments(userID) == 1)
+    {
+        const badge = {
+            name: "First timer",
+            amount: 1,
+            Rank: "Bronze"
+        }
+        await User.findOneAndUpdate(
+            {_id: userID},
+            { $push : {recievedBadges: badge},
+              $inc : {'totalPoints' : 2}}
+        );
+    }
     await Review.findOneAndUpdate(
         {_id: userID},
         { $push : {comments: comment}},
@@ -130,7 +140,7 @@ router.post('/:id/removeReviewer', urlencodedParser, async(req, res) =>  {
     result = result.replace(/\s+/g, " ");
     const userName = result.split(" ")[0];
     console.log(userName);
-    const user = await User.findOne({username: userName})
+    const user = await queries.getUserByName(userName);
     console.log(user);
     Review.updateOne({_id: mongoose.Types.ObjectId(req.params.id)},
                      {$pull: {'assignedReviewers': user._id}}).exec();

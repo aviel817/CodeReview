@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require("mongoose");
 const path = require('path');
-const User = require('../models/user');
 const Review = require('../models/review');
-const Notification = require('../models/notification');
-const Project = require('../models/project');
+
+const dataFuncs = require('./dataFuncs');
+const queries = require('./queries');
 
 const isAuth = (req, res, next) => {
     if (!req.session.isAuth)
@@ -22,9 +22,9 @@ router.get('/:id', isAuth, async function (req, res) {
   {
     return res.redirect('/404');
   }
-  const user = await User.findById(mongoose.Types.ObjectId(viewingID)).exec();
+  const user = await queries.getUserByID(viewingID);
   const userID = req.session.userID;
-  const notifications = await Notification.find({receiver: userID, isRead: false});
+  const notifications = await queries.getNotifications(userID);
 
   const badges = [0, 0, 0];
   
@@ -47,36 +47,11 @@ router.get('/:id', isAuth, async function (req, res) {
       badges[2] += badge.amount;
     }
   });
-  const numOfReviewsCreated = await Review.countDocuments({authorID: mongoose.Types.ObjectId(viewingID)});
-  const reviewsParticipated = await Review.countDocuments({assignedReviewers: mongoose.Types.ObjectId(viewingID)});
-
-  const commentsCountQuery = await Review.aggregate([
-    [
-      {
-        '$match': {
-          'comments.userID': mongoose.Types.ObjectId(viewingID)
-        }
-      }, {
-        '$unwind': {
-          'path': '$comments'
-        }
-      }, {
-        '$match': {
-          'comments.userID': mongoose.Types.ObjectId(viewingID)
-        }
-      }, {
-        '$project': {
-          'comments.userID': 1, 
-          'comments.content': 1
-        }
-      }, {
-        '$count': 'commentsCount'
-      }
-    ]
-  ]);
-
-  const numOfComments = commentsCountQuery[0]?.commentsCount || 0;
-  const projects = await User.findById(mongoose.Types.ObjectId(viewingID)).then((item) => item.projects);
+  const numOfReviewsCreated = await dataFuncs.countReviewsCreated(viewingID);
+  const reviewsParticipated = await dataFuncs.countReviewsParticipated(viewingID);
+  const numOfComments = await dataFuncs.countComments(viewingID);
+  
+  const projects = await queries.getUserProjects(viewingID);
   const recentlyAssignedRevs = await Review.find({assignedReviewers: mongoose.Types.ObjectId(viewingID)},{_id: 1, reviewtitle: 1, creationDate: 1, status: 1}).limit(10);
 
 	res.render(path.join(__dirname + "/../views/profile.ejs"), {user, userID, notifications, badges, numOfReviewsCreated, reviewsParticipated, numOfComments, projects, recentlyAssignedRevs});
