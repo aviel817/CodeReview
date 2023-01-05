@@ -29,7 +29,7 @@
       <br>
       <form action="/register" method="post" style="margin: auto; width: 30%;">
         <h1>Register to GamiRev</h1>
-        <% if(typeof error != 'undefined') { %>
+        <% if(typeof error != 'undefined' && error != '') { %>
         <div class="alert alert-warning alert-dismissible fade show" role="alert">
           <%= error %>
           <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">

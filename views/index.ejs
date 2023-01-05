@@ -18,71 +18,75 @@
 
 <h1><u>Reviews:</u></h1>
 <br><br>
-<h5><u><b>My reviews:</b></u></h5>
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Title</th>
-      <th scope="col">Last Comment By</th>
-      <th scope="col">Updated</th>
-      <th scope="col">Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% for(var i=0; i < selfReviews.length; i++) { %>
-    <tr>
-      <th scope="row"><%= i+1 %></th>
-      <td><a href="/existingreview/<%= selfReviews[i]._id %>"><%= selfReviews[i].reviewtitle %></a></td>
-      <td><% if(lastCommentsNames.length > i) { %>
-          <%= lastCommentsNames[i] %>
-          <% } else { %>
-            None            
-          <% } %>
+<div>
+  <h5><u><b>My reviews:</b></u></h5>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Title</th>
+        <th scope="col">Last Comment By</th>
+        <th scope="col">Updated</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for(var i=0; i < selfReviews.length; i++) { %>
+      <tr>
+        <th scope="row"><%= i+1 %></th>
+        <td><a class="link-dark" href="/existingreview/<%= selfReviews[i]._id %>"><%= selfReviews[i].reviewtitle %></a></td>
+        <td><% if(lastCommentsNames.length > i) { %>
+            <%= lastCommentsNames[i] %>
+            <% } else { %>
+              None            
+            <% } %>
+        </td>
+        
+        <td>
+          <% if(selfReviews[i].comments.length != 0) { %>
+            <%= selfReviews[i].comments[selfReviews[i].comments.length-1].date %>
+            <% } else { %>
+              None
+            <% } %>
       </td>
-      
-      <td>
-        <% if(selfReviews[i].comments.length != 0) { %>
-          <%= selfReviews[i].comments[selfReviews[i].comments.length-1].date %>
+        <td><%= selfReviews[i].status %></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+<br>
+<div style="margin-top: 10px;">
+  <h5><u><b>Related reviews:</b></u></h5>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Title</th>
+        <th scope="col">Author</th>
+        <th scope="col">Updated</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for(var i=0; i < relatedReviews.length; i++) { %>
+      <tr>
+        <th scope="row"><%= i+1 %></th>
+        <td><a class="link-dark" href="/existingreview/<%= relatedReviews[i]._id %>"><%= relatedReviews[i].reviewtitle %></a></td>
+        <td><a class="link-dark" href="/profile/<%= relatedReviews[i].authorID %>"><%= authors[i] %></a></td>
+        <td>
+          <% if (relatedReviews[i].comments.length != 0) { %>
+            <%= relatedReviews[i].comments[relatedReviews[i].comments.length-1].date %>
           <% } else { %>
             None
           <% } %>
-     </td>
-      <td><%= selfReviews[i].status %></td>
-    </tr>
-    <% } %>
-  </tbody>
-</table>
-<br>
-<h5><u><b>Related reviews:</b></u></h5>
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Title</th>
-      <th scope="col">Author</th>
-      <th scope="col">Updated</th>
-      <th scope="col">Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% for(var i=0; i < relatedReviews.length; i++) { %>
-    <tr>
-      <th scope="row"><%= i+1 %></th>
-      <td><a href="/existingreview/<%= relatedReviews[i]._id %>"><%= relatedReviews[i].reviewtitle %></a></td>
-      <td><%= authors[i] %></td>
-      <td>
-        <% if (relatedReviews[i].comments.length != 0) { %>
-          <%= relatedReviews[i].comments[relatedReviews[i].comments.length-1].date %>
-        <% } else { %>
-          None
-        <% } %>
-      </td>
-      <td><%= relatedReviews[i].status %></td>
-    </tr>
-    <% } %>
-  </tbody>
-</table>
+        </td>
+        <td><%= relatedReviews[i].status %></td>
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
 </div>
 </body>
 </html>

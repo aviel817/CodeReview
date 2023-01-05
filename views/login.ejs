@@ -78,7 +78,7 @@
 <main class="form-signin w-100 m-auto text-center">
   <form action="/login" method="post">
     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-    <% if(typeof error != 'undefined') { %>
+    <% if(typeof error != 'undefined' && error != '') { %>
       <div class="alert alert-warning alert-dismissible fade show" role="alert">
         <%= error %>
         <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">

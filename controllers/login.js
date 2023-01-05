@@ -11,7 +11,6 @@ const isAuth = require("../auth");
 // create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-
 router.get('/', isAuth, (req, res) => {
     res.render(path.join(__dirname + "/../views/login.ejs"));
   });
@@ -25,6 +24,7 @@ router.post("/", urlencodedParser, async (req, res) => {
             username: req.body.username
         });
         if(user){
+            error = ''
             dbPass = user.password;
               try {
                 if (await argon2.verify(dbPass, req.body.password)) {

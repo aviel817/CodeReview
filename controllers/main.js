@@ -44,7 +44,6 @@ router.get('/', isAuth, async (req, res) => {
         authors.push(author);
     }
 
-
     res.render(path.join(__dirname + "/../views/index.ejs"), {selfReviews, lastCommentsNames, relatedReviews, authors, notifications, userID});
 });
 

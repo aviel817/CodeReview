@@ -47,6 +47,7 @@
         <tr>
         <th scope="col">#</th>
         <th scope="col">Title</th>
+        <th scope="col">Author</th>
         <th scope="col">Last Comment By</th>
         <th scope="col">Updated</th>
         <th scope="col">Status</th>
@@ -55,23 +56,28 @@
     <tbody>
         <% for(var i=0; i < reviews.length; i++) { %>
         <tr>
-        <th scope="row"><%= i+1 %></th>
-        <td><a href="/existingreview/<%= reviews[i]._id %>"><%= reviews[i].reviewtitle %></a></td>
-        <td><% if(lastCommentsNames.length > i) { %>
-            <%= lastCommentsNames[i] %>
-            <% } else { %>
-                None            
-            <% } %>
-        </td>
-        
-        <td>
-            <% if(reviews[i].comments.length != 0) { %>
-            <%= reviews[i].comments[reviews[i].comments.length-1].date %>
-            <% } else { %>
-                None
-            <% } %>
-        </td>
-        <td><%= reviews[i].status %></td>
+            <th scope="row"><%= i+1 %></th>
+            <td>
+                <a class="link-dark" href="/existingreview/<%= reviews[i]._id %>"><%= reviews[i].reviewtitle %></a>
+            </td>
+            <td>
+                <a class="link-dark" href="/profile/<%= reviews[i].authorID %>"><%= authors[i] %></a>
+            </td>
+            <td><% if(lastCommentsNames.length > i) { %>
+                <%= lastCommentsNames[i] %>
+                <% } else { %>
+                    None            
+                <% } %>
+            </td>
+
+            <td>
+                <% if(reviews[i].comments.length != 0) { %>
+                <%= reviews[i].comments[reviews[i].comments.length-1].date %>
+                <% } else { %>
+                    None
+                <% } %>
+            </td>
+            <td><%= reviews[i].status %></td>
         </tr>
         <% } %>
     </tbody>

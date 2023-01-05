@@ -35,6 +35,7 @@ router.get('/:id', isAuth, async function (req, res) {
     const notifications = await Notification.find({receiver: userID, isRead: false});
     const reviews = await Review.find({project: req.params.id});
     var lastCommentsNames = [];
+    var authors = [];
 
     for (var i=0; i < reviews.length; i++)
     {
@@ -44,9 +45,11 @@ router.get('/:id', isAuth, async function (req, res) {
             username = commentsUser.username;
             lastCommentsNames.push(username);
         }
+        var author = await User.findOne({_id: mongoose.Types.ObjectId(reviews[i].authorID)}).exec().then((items) => { return items.username });
+        authors.push(author);
     }
     console.log(reviews.length);
-	res.render(path.join(__dirname + "/../views/projectlist.ejs"), {userID, notifications, projectName, reviews, lastCommentsNames});
+	res.render(path.join(__dirname + "/../views/projectlist.ejs"), {userID, notifications, projectName, reviews, lastCommentsNames, authors});
 });
 
 
