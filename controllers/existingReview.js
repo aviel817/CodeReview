@@ -110,8 +110,17 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
         content: cleanComment,
         vote: req.body.radioRate
     };
-    console.log(comment);
-    if (dataFuncs.countComments(userID) == 1)
+
+
+    await Review.findOneAndUpdate(
+        {_id: mongoose.Types.ObjectId(review._id)},
+        { $push : {comments: comment}},
+    );
+
+    
+    const totalComments = await dataFuncs.countComments(userID);
+
+    if (totalComments === 1)
     {
         const badge = {
             name: "First timer",
@@ -124,12 +133,6 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
               $inc : {'totalPoints' : 2}}
         );
     }
-
-    await Review.findOneAndUpdate(
-        {_id: mongoose.Types.ObjectId(review._id)},
-        { $push : {comments: comment}},
-    );
-
     await User.findOneAndUpdate({_id: userID}, {$inc : {'totalPoints' : 1}}).exec();
 
     res.redirect('/existingreview/'+req.params.id);
