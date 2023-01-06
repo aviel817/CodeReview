@@ -14,7 +14,7 @@ module.exports = {
     },
 
     getUsernameByID: async (userID) => {
-        return await module.exports.getUserByID(userID)?.username;
+        return await module.exports.getUserByID(userID).then((user) => user.username);
     },
 
     getUserByName: async (username) => {

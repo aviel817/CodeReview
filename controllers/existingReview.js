@@ -60,8 +60,11 @@ router.get('/:id', isAuth, async function (req, res) {
                 if (review_vote)
                 {
                     assignedReviewers_votes.push(review_vote.lastVotes[0].userVote);
+                } else {
+                    assignedReviewers_votes.push("None");
                 }
             }
+
             const revID = getVarID;
             const reviewCode = review.code;
             const lastReviewCode = reviewCode[reviewCode.length-1];
@@ -81,15 +84,17 @@ router.get('/:id', isAuth, async function (req, res) {
             res.render(existingReviewPath, {userID, notifications, revID, revTitle, authorName, projectName, assignedReviewers_names, assignedReviewers_votes, lastReviewCode, reviewComments, userDetails, tagsStr});
             return;
         }
+        /**
         revTitle = "Not Found";
         res.render(existingReviewPath, {revTitle});
         return;
+         */
     }
-    
-    
+    res.status(404).sendFile(path.join(__dirname + "/../views/404.html"));
+    /** 
     revTitle = "error";
     res.render(existingReviewPath, {revTitle});
-
+    */
 });
 
 /**
