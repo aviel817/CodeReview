@@ -52,14 +52,33 @@ router.get('/:id', isAuth, async function (req, res) {
             for (let id of assignedReviewers_ids)
             {
                 var username = await queries.getUsernameByID(id);
-                var review_vote = await Review.findOne({"lastVotes.userID": mongoose.Types.ObjectId(id)}, {"lastVotes.$": 1});
+                var review_vote = await Review.aggregate([
+                    {
+                      '$match': {
+                        '_id': mongoose.Types.ObjectId(getVarID)
+                      }
+                    }, {
+                      '$unwind': {
+                        'path': '$lastVotes'
+                      }
+                    }, {
+                      '$match': {
+                        'lastVotes.userID': mongoose.Types.ObjectId(id)
+                      }
+                    }, {
+                      '$project': {
+                        'lastVotes.userVote': 1
+                      }
+                    }
+                  ]);
+
                 if (username)
                 {
                     assignedReviewers_names.push(username);
                 }
-                if (review_vote)
+                if (review_vote && review_vote.length > 0)
                 {
-                    assignedReviewers_votes.push(review_vote.lastVotes[0].userVote);
+                    assignedReviewers_votes.push(review_vote[0].lastVotes.userVote);
                 } else {
                     assignedReviewers_votes.push("None");
                 }

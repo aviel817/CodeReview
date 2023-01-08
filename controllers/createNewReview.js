@@ -51,7 +51,6 @@ router.post('/', urlencodedParser, async(req, res) =>  {
         const newRev = await new Review({
             authorID: req.session.userID,
             assignedReviewers: chosenReviewers,
-            votes: 0,
             creationDate: date.format(new Date(), pattern),
             expirationDate: date.format(date.addDays(new Date(), 3),pattern),
             reviewtitle: reviewTitle,
