@@ -18,10 +18,10 @@ router.get('/', isAuth, async (req, res) => {
     const relatedReviews = await queries.getRelatedReviews(userID);
 
     const notifications = await queries.getNotifications(userID);
-    const lastCommentsNames = await queries.getLastCommentsNames(selfReviews);
+    const [lastCommentsIDs, lastCommentsNames] = await queries.getLastComments(selfReviews);
     const authors = await queries.getReviewAuthors(relatedReviews);
 
-    res.render(path.join(__dirname + "/../views/index.ejs"), {selfReviews, lastCommentsNames, relatedReviews, authors, notifications, userID});
+    res.render(path.join(__dirname + "/../views/index.ejs"), {selfReviews, lastCommentsIDs, lastCommentsNames, relatedReviews, authors, notifications, userID});
 });
 
 

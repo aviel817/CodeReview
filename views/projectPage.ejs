@@ -64,7 +64,7 @@
                 <a class="link-dark" href="/profile/<%= reviews[i].authorID %>"><%= authors[i] %></a>
             </td>
             <td><% if(lastCommentsNames.length > i) { %>
-                <%= lastCommentsNames[i] %>
+                <a class="link-dark" href="/profile/<%= lastCommentsIDs[i] %>"><%= lastCommentsNames[i] %></a>
                 <% } else { %>
                     None            
                 <% } %>

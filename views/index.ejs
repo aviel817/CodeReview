@@ -36,7 +36,7 @@
         <th scope="row"><%= i+1 %></th>
         <td><a class="link-dark" href="/existingreview/<%= selfReviews[i]._id %>"><%= selfReviews[i].reviewtitle %></a></td>
         <td><% if(lastCommentsNames.length > i) { %>
-            <%= lastCommentsNames[i] %>
+            <a class="link-dark" href="/profile/<%= lastCommentsIDs[i] %>"><%= lastCommentsNames[i] %></a>
             <% } else { %>
               None            
             <% } %>

@@ -54,19 +54,22 @@ module.exports = {
         return authors;
     },
 
-    getLastCommentsNames: async (reviews) => {
+    getLastComments: async (reviews) => {
         
         var lastCommentsNames = [];
+        var lastCommentsIDs = [];
         for (var i=0; i < reviews.length; i++)
         {
             if (reviews[i].comments.length != 0)
             {
                 var commentsUser = await User.findById(mongoose.Types.ObjectId(reviews[i].comments[reviews[i].comments.length-1].userID)).then((user)=> {return user}).catch((err)=>console.log(err));
                 username = commentsUser.username;
+                userID = commentsUser._id;
                 lastCommentsNames.push(username);
+                lastCommentsIDs.push(userID);
             }
         }
-        return lastCommentsNames;
+        return [lastCommentsIDs, lastCommentsNames];
     }
 
 }

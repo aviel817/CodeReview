@@ -24,7 +24,7 @@ router.get('/', isAuth, async function (req, res) {
         var count = await Review.find({project: proj.projectName}).count();
         reviewsCount.push(count);
     }
-	res.render(path.join(__dirname + "/../views/projects.ejs"), {userID, notifications, projects, reviewsCount});
+	res.render(path.join(__dirname + "/../views/projectsList.ejs"), {userID, notifications, projects, reviewsCount});
 });
 
 router.get('/:id', isAuth, async function (req, res) {
@@ -33,9 +33,9 @@ router.get('/:id', isAuth, async function (req, res) {
     const notifications = await queries.getNotifications(userID);
     const reviews = await Review.find({project: req.params.id});
     const authors = await queries.getReviewAuthors(reviews);
-    const lastCommentsNames = await queries.getLastCommentsNames(reviews);
+    const [lastCommentsIDs, lastCommentsNames] = await queries.getLastComments(reviews);
 
-	res.render(path.join(__dirname + "/../views/projectlist.ejs"), {userID, notifications, projectName, reviews, lastCommentsNames, authors});
+	res.render(path.join(__dirname + "/../views/projectPage.ejs"), {userID, notifications, projectName, reviews, lastCommentsIDs, lastCommentsNames, authors});
 });
 
 
