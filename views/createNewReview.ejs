@@ -63,7 +63,12 @@
   <label for="Code">Code:</label>
   <textarea name="code" class="form-control" id="Code" rows="5" required></textarea>
 </div>
+<div class="form-group" id="codeFile">
+  <label for="codeFile">Upload Files:</label>
+  <input name="codeFile" class="form-control form-control-sm" type="file" id="formFileMultiple">
+  </div>
 <div>
+  <br>
   <label for="Tags">Tags</label>
   <select class="selectpicker" id="selectTag" data-live-search="true">
     <% if (typeof(tags) != 'undefined') { %>
@@ -198,19 +203,51 @@
     chosenRows_reasons = [];
     $('.selectedRow').find("td:first").each(function(){chosenRows_ids.push($(this).prop("id"))});
     $('.selectedRow').find("td:nth-child(3) textarea").each(function(){chosenRows_reasons.push($(this).val())});
-    $.post('/createnewreview/',
-      {'project': project,
+    let dataFile = document.getElementById("formFileMultiple");
+    dataFile = dataFile.files[0];
+    var iterData = {
+       'project': project,
        'title': title,
        'code': code,
        'tags': [...tags],
        'chosenRows': chosenRows_ids,
-       'reason': chosenRows_reasons
+       'reason': chosenRows_reasons,
+       'codeFile': dataFile}
+    var formData = new FormData();
+    /**for (const key in iterData)
+    {
+      formData.append(`${key}`, iterData[key]);
+    }**/
+    formData.append('codeFile', dataFile)
+ /**
+    $.post('/createnewreview/',
+      {
+       'project': project,
+       'title': title,
+       'code': code,
+       'tags': [...tags],
+       'chosenRows': chosenRows_ids,
+       'reason': chosenRows_reasons 
       },
       function(data) {
         window.location.href = "/existingreview/"+data;
       }
     );
-  
+    **/
+    $.ajax({
+      url: '/createnewreview/uploadFile/',
+      method: 'post',
+      data: 
+      {
+        'codeFile': formData
+      },
+      contentType: false,
+      processData: false,
+      success: function(data) {
+        console.log('file sent!');
+      }
+  });
+
   });
  
 });

@@ -11,8 +11,11 @@ const date = require('date-and-time');
 const Notification = require('../models/notification');
 const nodemailer = require('nodemailer');
 const constants = require("../constants");
+const upload = require('../middlewares/upload');
 
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
+
+var urlencodedParser = bodyParser.urlencoded({ extended: true });
+var urlencodedParser2 = bodyParser.urlencoded({ extended: false });
 
 const isAuth = (req, res, next) => {
     if (!req.session.isAuth)
@@ -35,8 +38,10 @@ router.get('/', isAuth, async function (req, res) {
 });
 
 
-router.post('/', urlencodedParser, async(req, res) =>  {  
-    console.log(req.body);
+router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =>  {  
+    console.log(JSON.stringify(req.body.codeFile))
+    console.log(req.body.chosenRows)
+    console.log(req.body['chosenRows[]'])
     const chosenReviewers = req.body['chosenRows[]'];
     const existingReview = await Review.findOne({
         reviewtitle: req.body.reviewtitle,
@@ -91,7 +96,7 @@ router.post('/', urlencodedParser, async(req, res) =>  {
 
 });
 
-router.post('/updateList', urlencodedParser, async(req, res) =>  { 
+router.post('/updateList', urlencodedParser2, async(req, res) =>  { 
     const new_tags = req.body['tags[]'];
     const selected_project = req.body['project']; 
     //console.log(new_tags);
@@ -141,6 +146,13 @@ router.post('/updateList', urlencodedParser, async(req, res) =>  {
     res.status(200);
     var dataToSend = [{maxPotentialMap: Array.from(maxPotentialMap.entries()), idsDict: idsDict}];
     res.send(JSON.stringify(dataToSend));
+});
+
+router.post('/uploadFile', urlencodedParser, upload.single('codeFile'), async(req, res) =>  {  
+    console.log(req.body)
+    console.log(req.file)
+    res.status(200);
+    res.send('success!');
 });
 
 module.exports = router;
