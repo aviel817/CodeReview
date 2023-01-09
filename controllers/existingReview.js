@@ -37,6 +37,8 @@ router.get('/:id', isAuth, async function (req, res) {
             revTitle = review.reviewtitle;
             const authorID = review.authorID;
             const projectName = review.project;
+            const files = review.files;
+
             var uploaderUser = await queries.getUserByID(authorID);
             if (!uploaderUser)
             {
@@ -85,8 +87,7 @@ router.get('/:id', isAuth, async function (req, res) {
             }
 
             const revID = getVarID;
-            const reviewCode = review.code;
-            const lastReviewCode = reviewCode[reviewCode.length-1];
+            const reviewText = review.text;
             const reviewComments = review.comments;
             const tags = review.tags;
             var userDetails = [];
@@ -100,7 +101,10 @@ router.get('/:id', isAuth, async function (req, res) {
             tags.forEach((item)=> {
                 tagsStr = tagsStr.concat(" #", item);
             });
-            res.render(existingReviewPath, {userID, notifications, revID, revTitle, authorName, projectName, assignedReviewers_names, assignedReviewers_votes, lastReviewCode, reviewComments, userDetails, tagsStr});
+            res.render(existingReviewPath,
+               {userID, notifications, revID, revTitle, authorName,
+                 projectName, assignedReviewers_names, assignedReviewers_votes,
+                 reviewText, reviewComments, userDetails, tagsStr, files});
             return;
         }
         /**

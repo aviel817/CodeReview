@@ -42,7 +42,8 @@
 <br><br>
 
 <div class="container" style="width: 50%; border-style:dashed;border-radius: 5px; padding: 10px; margin-left: auto; margin-right: auto;">
-<div>
+<form id="createReviewForm">
+  <div>
   Projects:
   <br>
   <select id="projSelector" class="selectpicker" data-live-search="true">
@@ -60,12 +61,12 @@
   </div>
   <br>
 <div class="form-group">
-  <label for="Code">Code:</label>
-  <textarea name="code" class="form-control" id="Code" rows="5" required></textarea>
+  <label for="Desc">Review description:</label>
+  <textarea name="text" class="form-control" id="text" rows="5" required></textarea>
 </div>
 <div class="form-group" id="codeFile">
-  <label for="codeFile">Upload Files:</label>
-  <input name="codeFile" class="form-control form-control-sm" type="file" id="formFileMultiple">
+  <label for="codeFiles">Upload Files:</label>
+  <input name="codeFiles" class="form-control form-control-sm" type="file" id="formFileMultiple" multiple>
   </div>
 <div>
   <br>
@@ -127,6 +128,7 @@
       <button id="createReviewBtn" type="submit" class="btn btn-primary">Create</button>
   </div>
   </div>
+  </form>
 </div>
 <script>
   var addTagToSet = document.getElementById("btn");
@@ -195,59 +197,52 @@
     );
   });
 
-  $("#createReviewBtn").click(function(){
+  $("#createReviewForm").submit(function(e){
+    e.preventDefault();
     project = $('#projSelector').val();
     title = $('#RevTitle').val();
-    code = $('#Code').val();
+    text = $('#text').val();
     chosenRows_ids = [];
     chosenRows_reasons = [];
     $('.selectedRow').find("td:first").each(function(){chosenRows_ids.push($(this).prop("id"))});
     $('.selectedRow').find("td:nth-child(3) textarea").each(function(){chosenRows_reasons.push($(this).val())});
     let dataFile = document.getElementById("formFileMultiple");
-    dataFile = dataFile.files[0];
-    var iterData = {
-       'project': project,
-       'title': title,
-       'code': code,
-       'tags': [...tags],
-       'chosenRows': chosenRows_ids,
-       'reason': chosenRows_reasons,
-       'codeFile': dataFile}
+    dataFile = dataFile.files;
+
     var formData = new FormData();
-    /**for (const key in iterData)
+    filesLen = dataFile.length;
+
+    for (var i=0; i < filesLen; i++)
     {
-      formData.append(`${key}`, iterData[key]);
-    }**/
-    formData.append('codeFile', dataFile)
- /**
+      formData.append('codeFiles', dataFile[i]);
+    }
+
+ 
     $.post('/createnewreview/',
       {
        'project': project,
        'title': title,
-       'code': code,
+       'text': text,
        'tags': [...tags],
        'chosenRows': chosenRows_ids,
        'reason': chosenRows_reasons 
       },
-      function(data) {
-        window.location.href = "/existingreview/"+data;
+      function(dataID) {
+        formData.append('reviewID', dataID);
+        $.ajax({
+          url: '/createnewreview/uploadFile/',
+          method: 'post',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(data) {
+            console.log('file sent!');
+            window.location.href = "/existingreview/"+dataID;
+          }
+        });
       }
     );
-    **/
-    $.ajax({
-      url: '/createnewreview/uploadFile/',
-      method: 'post',
-      data: 
-      {
-        'codeFile': formData
-      },
-      contentType: false,
-      processData: false,
-      success: function(data) {
-        console.log('file sent!');
-      }
-  });
-
+    
   });
  
 });

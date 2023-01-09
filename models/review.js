@@ -7,7 +7,7 @@ const reviewSchema = new mongoose.Schema({
     creationDate: String,
     expirationDate: String,
     reviewtitle: String,
-    code: [String],
+    text: String,
     status: String,
     tags: [String],
     comments: [
@@ -25,6 +25,13 @@ const reviewSchema = new mongoose.Schema({
         userVote: String
       },
       require, true
+    ],
+    files: [
+      {
+        name: String,
+        uploadDate: String,
+        data: Buffer
+      }
     ]
   }, {
     collection: 'Reviews'

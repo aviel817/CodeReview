@@ -89,22 +89,29 @@
 			<div>
 				Tags:<br /> <%= tagsStr %>
 			</div>
+			<div>
+				Description:
+				<div class="reviewText">
+					<pre><code class="language-js"><textarea disabled><%= reviewText %></textarea></code></pre>
+				</div>
+			</div>
+			
 			<div style="margin-bottom: 30px;">
 				Code:
 				<div class="code-block" id="code">
-					<pre><code id="codeTxt" class="language-js"><textarea id="codeArea" disabled><%= lastReviewCode %></textarea></code>
+					<pre><code id="codeTxt" class="language-js"><textarea id="codeArea" disabled><% if (typeof files != 'undefined' && files.length > 0) { %><% } %></textarea></code>
 					</pre>
 				</div>
 			</div>
 			<div>
 				<h3><u>Files:</u></h3>
-				<ul class="list-group">
-					<li class="list-group-item">An item</li>
-					<li class="list-group-item">A second item</li>
-					<li class="list-group-item">A third item</li>
-					<li class="list-group-item">A fourth item</li>
-					<li class="list-group-item">And a fifth one</li>
-				  </ul>
+				<% if (typeof files != 'undefined') { %>
+					<ul class="list-group files">
+						<% for (var i=0; i < files.length; i++) { %>
+							<li onclick="showFile(this, `<%= files[i].data %>`)" class="list-group-item"><%= files[i].name %></li>
+						<% } %>
+					</ul>
+				<% } %>
 			</div>
 
 			<!-- Comments Section -->
@@ -189,7 +196,37 @@
 				script.src= 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js';
 				head.appendChild(script);
 			}
-	
+
+			function showFile(element, fileData)
+			{
+				let selected = $('.files').find('li.selected');
+				if (selected != element)
+				{
+					selected.toggleClass('selected');
+					$(element).toggleClass('selected');
+				}
+
+				$("#code").children().remove();
+				preBlock = $(document.createElement("pre"));
+				codeClass = $(document.createElement("code"));
+				codeClass.addClass("language-js");
+				codeClass.prop('id', 'codeTxt');
+				codeEdit = $(document.createElement("textarea"));
+				codeEdit.text(fileData);
+				codeEdit.attr('style', 'width: 600px; height: 400px;');
+				codeEdit.prop('disabled', true);
+				codeClass.append(codeEdit);
+				preBlock.append(codeClass);
+				$("#code").append(preBlock);
+				load_js();
+			}
+
+			function firstFile()
+			{
+				let files = $('.files').find('li');
+				showFile(files[0], `<%= files[0].data %>`);
+			}
+			firstFile();
 			let editMode = false;
 			const codeTextOrigin = $("#codeTxt").text();
 			document.getElementById("codeButton").onclick = () => {

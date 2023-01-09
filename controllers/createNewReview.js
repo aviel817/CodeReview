@@ -39,9 +39,7 @@ router.get('/', isAuth, async function (req, res) {
 
 
 router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =>  {  
-    console.log(JSON.stringify(req.body.codeFile))
-    console.log(req.body.chosenRows)
-    console.log(req.body['chosenRows[]'])
+
     const chosenReviewers = req.body['chosenRows[]'];
     const existingReview = await Review.findOne({
         reviewtitle: req.body.reviewtitle,
@@ -59,7 +57,7 @@ router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =
             creationDate: date.format(new Date(), pattern),
             expirationDate: date.format(date.addDays(new Date(), 3),pattern),
             reviewtitle: reviewTitle,
-            code: req.body.code,
+            text: req.body.text,
             status: 'open',
             tags: req.body['tags[]'],
             project: req.body.project
@@ -148,9 +146,21 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
     res.send(JSON.stringify(dataToSend));
 });
 
-router.post('/uploadFile', urlencodedParser, upload.single('codeFile'), async(req, res) =>  {  
-    console.log(req.body)
-    console.log(req.file)
+router.post('/uploadFile', urlencodedParser, upload.array('codeFiles'), async(req, res) =>  {  
+    for (var i=0; i < req.files.length; i++)
+    {
+        var fileData = new Buffer.from(req.files[i].buffer, "base64")
+        var pattern = date.compile('D/MM/YYYY HH:mm:ss');
+        var file = {
+            name: req.files[i].originalname,
+            uploadDate: date.format(new Date(), pattern),
+            data: fileData
+        };
+    
+        await Review.findOneAndUpdate({_id: req.body.reviewID},
+                                      {$push: {files: file}});    
+    }
+    
     res.status(200);
     res.send('success!');
 });
