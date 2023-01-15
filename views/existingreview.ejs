@@ -92,14 +92,17 @@
 			<div>
 				Description:
 				<div class="reviewText">
-					<pre><code class="language-js"><textarea disabled><%= reviewText %></textarea></code></pre>
+					<textarea disabled><%= reviewText %></textarea>
 				</div>
 			</div>
 			
 			<div style="margin-bottom: 30px;">
 				Code:
 				<div class="code-block" id="code">
-					<pre><code id="codeTxt" class="language-js"><textarea id="codeArea" disabled><% if (typeof files != 'undefined' && files.length > 0) { %><% } %></textarea></code>
+					<pre><code id="codeTxt" class="language-js">
+						<% if (typeof files != 'undefined' && files.length > 0) { %>
+							<textarea id="codeArea" disabled></textarea>
+							<% } %></code>
 					</pre>
 				</div>
 			</div>
@@ -222,20 +225,21 @@
 			}
 
 
-			function firstFile(files)
+			function firstFile(filesObj)
 			{
-				<% if (files.length > 0) { %>
-					showFile(files[0], `<%= files[0].data %>`);
+				<% if (files != 'undefined') { %>
+					fileData = `<%- String(files[0].data).replace(/`/g, "&#96;") %>`;
+				<% } else { %>
+					fileData = '';
 				<% } %>
-				console.log(files);
+				showFile(filesObj[0], fileData);
+				console.log(filesObj);
 			}
 			let files = $('.files').find('li');
 			if (files.length > 0)
 			{
 				firstFile(files);
 			}
-
-
 
 			let editMode = false;
 			const codeTextOrigin = $("#codeTxt").text();

@@ -52,7 +52,7 @@ router.post('/', urlencodedParser, async(req, res) =>  {
                         username: req.body.username,
                         password: hash,
                         totalPoints: 0,
-                        projects: [0, 1],
+                        projects: [],
                         permission: 0,
                         email: req.body.email
                     }).save()
