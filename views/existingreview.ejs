@@ -227,13 +227,12 @@
 
 			function firstFile(filesObj)
 			{
-				<% if (files != 'undefined') { %>
+				<% if (files != 'undefined' && files.length > 0) { %>
 					fileData = `<%- String(files[0].data).replace(/`/g, "&#96;") %>`;
 				<% } else { %>
 					fileData = '';
 				<% } %>
 				showFile(filesObj[0], fileData);
-				console.log(filesObj);
 			}
 			let files = $('.files').find('li');
 			if (files.length > 0)
