@@ -221,25 +221,36 @@
 				load_js();
 			}
 
-			function firstFile()
+
+			function firstFile(files)
 			{
-				let files = $('.files').find('li');
-				showFile(files[0], `<%= files[0].data %>`);
+				<% if (files.length > 0) { %>
+					showFile(files[0], `<%= files[0].data %>`);
+				<% } %>
+				console.log(files);
 			}
-			firstFile();
+			let files = $('.files').find('li');
+			if (files.length > 0)
+			{
+				firstFile(files);
+			}
+
+
+
 			let editMode = false;
 			const codeTextOrigin = $("#codeTxt").text();
+
 			document.getElementById("codeButton").onclick = () => {
-            let txt = document.getElementById("commentText");
-            if(txt.selectionStart == txt.selectionEnd)
-            {
-                return;
-            }
-            const before = txt.value.substring(0, txt.selectionStart);
-            const sel = txt.value.substring(txt.selectionStart, txt.selectionEnd);
-            const after = txt.value.substring(txt.selectionEnd);
-            txt.value = `${before}<pre><code class="language-js">${sel}</code></pre>${after}`;
-        };
+				let txt = document.getElementById("commentText");
+				if(txt.selectionStart == txt.selectionEnd)
+				{
+					return;
+				}
+				const before = txt.value.substring(0, txt.selectionStart);
+				const sel = txt.value.substring(txt.selectionStart, txt.selectionEnd);
+				const after = txt.value.substring(txt.selectionEnd);
+				txt.value = `${before}<pre><code class="language-js">${sel}</code></pre>${after}`;
+        	};
 			document.getElementById("editBtn").onclick = () => {
 				var full_url = document.URL; // Get current url
 				var url_array = full_url.split('/') // Split the string into an array with / as separator
