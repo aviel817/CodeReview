@@ -152,7 +152,7 @@
 
 
 			<!-- Add Comment Box -->
-			<form class="add-comment-wrapper" action="/existingreview/<%= revID %>" method="post" >
+			<form class="add-comment-wrapper" id="addCommentForm">
 				<div class="codeButton">
 					<button class="btn btn-sm btn-primary" id="codeButton" type="button">CODE</button>
 				</div>
@@ -191,6 +191,51 @@
 			</form>
 		</div>
 		<script>
+			
+			$( document ).ready(function() {
+				$("#addCommentForm").submit(function(e){
+					e.preventDefault();
+					let dataFile = document.getElementById("formFileMultiple");
+					dataFile = dataFile.files;
+
+					var formData = new FormData();
+					filesLen = dataFile.length;
+
+					let revID = `<%= revID %>`;
+
+					for (var i=0; i < filesLen; i++)
+					{
+						formData.append('codeFiles', dataFile[i]);
+					}
+					$.post(`/existingreview/${revID}`,
+						{
+							commentText: $("#commentText").val(),
+							radioRate: $('input[name="radioRate"]:checked').val()
+						},
+						function(commentID)
+						{
+							if (filesLen > 0)
+							{
+								formData.append('reviewID', revID);
+								formData.append('commentID', commentID);
+								$.ajax({
+									url: `/existingreview/${revID}/uploadFile`,
+									method: 'post',
+									data: formData,
+									processData: false,
+									contentType: false,
+									success: function(data) {
+										console.log('file sent!');
+									}
+								});
+							}
+							alert("stop")
+							window.location.href = `/existingreview/${revID}`;
+						}
+					);
+				});
+			});
+
 
 			function load_js()
 			{

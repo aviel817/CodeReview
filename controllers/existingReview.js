@@ -5,6 +5,7 @@ const path = require('path');
 var bodyParser = require('body-parser');
 const date = require('date-and-time');
 const Review = require('../models/review');
+const CommentFile = require('../models/commentFile');
 const User = require('../models/user');
 const sanitizeHtml = require('sanitize-html');
 const upload = require('../middlewares/upload');
@@ -131,7 +132,7 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
     const cleanComment = sanitizeHtml(req.body.commentText, {
     allowedTags: [ 'pre', 'code']
     });
-    console.log(req.body);
+
     const comment = {
         userID: mongoose.Types.ObjectId(userID),
         date: date.format(new Date(), pattern),
@@ -140,7 +141,7 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
     };
 
 
-    await Review.findOneAndUpdate(
+    const updatedReview = await Review.findOneAndUpdate(
         {_id: mongoose.Types.ObjectId(review._id)},
         { $push : {comments: comment}},
     );
@@ -162,9 +163,34 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
         );
     }
     await User.findOneAndUpdate({_id: userID}, {$inc : {'totalPoints' : 1}}).exec();
-
-    res.redirect('/existingreview/'+req.params.id);
+    res.send(updatedReview.comments[updatedReview.comments.length-1]._id);
 });
+
+router.post('/:id/uploadFile', urlencodedParser, upload.array('codeFiles'), async(req, res) =>  {  
+  console.log(req.files);
+  if (req.files.length == 0)
+  {
+    return res.status(400).send();
+  }
+
+  for (var i=0; i < req.files.length; i++)
+  {
+      var fileData = new Buffer.from(req.files[i].buffer, "base64")
+      var pattern = date.compile('D/MM/YYYY HH:mm:ss');
+      var file = {
+          name: req.files[i].originalname,
+          uploadDate: date.format(new Date(), pattern),
+          data: fileData,
+          reviewID: req.params.id,
+          commentID: req.body.commentID
+      };
+  
+      CommentFile.create(file, (err) => { console.log(err); });    
+  }
+  
+  res.send(req.params.id);
+});
+
 
 router.post('/:id/removeReviewer', urlencodedParser, async(req, res) =>  {  
     //const existingReviewPath = path.join(__dirname + "/../views/existingreview.ejs");
