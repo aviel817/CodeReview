@@ -12,7 +12,8 @@ const Notification = require('../models/notification');
 const nodemailer = require('nodemailer');
 const constants = require("../constants");
 const upload = require('../middlewares/upload');
-
+const queries = require('./queries');
+const algorithm = require('./algorithm');
 
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
 var urlencodedParser2 = bodyParser.urlencoded({ extended: false });
@@ -27,10 +28,9 @@ const isAuth = (req, res, next) => {
 
 router.get('/', isAuth, async function (req, res) {
     const userID = req.session.userID;
-    const user = await User.findById(mongoose.Types.ObjectId(req.session.userID));
-    const projs = user.projects;
+    const projs = await queries.getUserProjects(userID);
     const tags = await Tag.find({}).exec().then((items) => { return items });
-    const notifications = await Notification.find({receiver: req.session.userID, isRead: false});
+    const notifications = await queries.getNotifications(userID);
     
     const users = await User.find({_id: {$ne: userID}}).exec().then((items)=> {return items} );
 
@@ -107,10 +107,15 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
     
     var titles = []
     const maxPotentialMap = new Map();
+    const pointsMap = new Map();
+    const workloadMap = new Map();
+    const sharedReviewsMap = new Map();
+    const countReviews = new Map();
+
     const idsDict = {};
     const currUserID = req.session.userID;
-    const alpha = 0.6;
-    const beta = 0.4;
+    const algParams = [0.35, 0.3, 0.05, 0.3];
+
     for (let closed_review of closedReviews)
     {
         titles.push(closed_review.reviewtitle);
@@ -118,29 +123,59 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
 
         var intersec = exist_tags.filter(value => new_tags.includes(value));
         var union = new_tags.length + exist_tags.length - intersec.length;
-        var func1 = (intersec.length) / (union);
-        //console.log(typeof(closed_review.assignedReviewers));
-        //console.log(closed_review.assignedReviewers);
+        var SharedTagsFunc = (intersec.length) / (union);
+
+
         for (let reviewer_userID of closed_review.assignedReviewers) 
         {
             if (reviewer_userID.equals(currUserID))
             {
                 continue;
             }
-                var reviewer_user = await User.findOne({_id: reviewer_userID}).exec().then((items) => { return items });;
+            var reviewer_user = await queries.getUserByID(reviewer_userID);
+            var reviewer_username = reviewer_user.username;
+
+            if (!(pointsMap.has(reviewer_username)))
+            {
                 var points = reviewer_user.totalPoints;
-                var reviewer_username = reviewer_user.username;
-                var func2 = Math.log(points+1) / 10;
-                var sum = func1*alpha+func2*beta;
-                var cur_val = maxPotentialMap.get(reviewer_username) || 0;
-                maxPotentialMap.set(reviewer_username.toString(), Math.max(sum, cur_val));
-                idsDict[reviewer_username] = reviewer_userID;
+                var pointsFunc = Math.log(points+1) / 10;
+                pointsMap.set(reviewer_username, pointsFunc);
+            }
+
+            if (!sharedReviewsMap.has(reviewer_username))
+            {
+                var sharedReviews = await algorithm.sharedReviews(currUserID, reviewer_userID, new_tags);
+                sharedReviewsMap.set(reviewer_username, sharedReviews);
+            }
+
+            if (!workloadMap.has(reviewer_username))
+            {
+                var workload = await algorithm.workload(reviewer_userID);
+                workloadMap.set(reviewer_username, workload);
+            }
+            countReviews.set(reviewer_username, countReviews.get(reviewer_username) + 1 || 1);
+
+            var cur_val = (maxPotentialMap.get(reviewer_username) || 0) + SharedTagsFunc;
+            maxPotentialMap.set(reviewer_username.toString(), cur_val);
+            idsDict[reviewer_username] = reviewer_userID;
         }
     }
-    //const filteredArray = array1.filter(value => array2.includes(value));
-    //console.log("entries:");
-    //console.log(maxPotentialMap);
-    //console.log(titles);
+    /**
+    console.log(maxPotentialMap);
+    console.log(pointsMap);
+    console.log(workloadMap);
+    console.log(sharedReviewsMap);
+    console.log(countReviews);
+    */
+    for (const [key, value] of maxPotentialMap)
+    {
+        algValue = algParams[0] * (value / countReviews.get(key)) +
+                   algParams[1] * sharedReviewsMap.get(key) +
+                   algParams[2] * pointsMap.get(key) +
+                   algParams[3] * await algorithm.calcWorkload(workloadMap.get(key));
+        maxPotentialMap.set(key, algValue);
+    }
+    
     res.status(200);
     var dataToSend = [{maxPotentialMap: Array.from(maxPotentialMap.entries()), idsDict: idsDict}];
     res.send(JSON.stringify(dataToSend));

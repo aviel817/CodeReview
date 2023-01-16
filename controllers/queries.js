@@ -1,4 +1,3 @@
-const express = require('express');
 const mongoose = require("mongoose");
 
 const User = require('../models/user');
@@ -17,8 +16,8 @@ module.exports = {
         return await module.exports.getUserByID(userID).then((user) => user.username);
     },
 
-    getUserByName: async (username) => {
-        User.findOne({username: userName})
+    getUserByName: async (userName) => {
+        return await User.findOne({username: userName});
     },
 
     getUserProjects: async (userID) => {

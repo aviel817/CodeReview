@@ -132,7 +132,6 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
     const cleanComment = sanitizeHtml(req.body.commentText, {
     allowedTags: [ 'pre', 'code']
     });
-
     const comment = {
         userID: mongoose.Types.ObjectId(userID),
         date: date.format(new Date(), pattern),
@@ -146,7 +145,69 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
         { $push : {comments: comment}},
     );
 
-    
+    const checkIfReviewer = await Review.aggregate([
+      {
+        '$match': {
+          '_id': mongoose.Types.ObjectId(review._id)
+        }
+      }, {
+        '$project': {
+          'assignedReviewers': 1
+        }
+      }, {
+        '$match': {
+          'assignedReviewers': mongoose.Types.ObjectId(userID)
+        }
+      }
+    ]);
+
+    if (checkIfReviewer)
+    {
+      console.log("is reviewer");
+      let updateLastVote = await Review.aggregate([
+        {
+          '$match': {
+            '_id': mongoose.Types.ObjectId(review._id)
+          }
+        }, {
+          '$project': {
+            'lastVotes.userID': 1, 
+            'lastVotes.userVote': 1
+          }
+        }, {
+          '$unwind': {
+            'path': '$lastVotes'
+          }
+        }, {
+          '$match': {
+            'lastVotes.userID': mongoose.Types.ObjectId(userID)
+          }
+        }
+      ]);
+
+      if (updateLastVote.length === 0)
+      {
+        console.log("last vote not exist - pushing")
+        const lastVote = {
+          userID: userID,
+          userVote: req.body.radioRate
+        }
+        await Review.findOneAndUpdate({_id: mongoose.Types.ObjectId(review._id)},
+                                      { $push: {lastVotes: lastVote}});
+      } else 
+      {
+        const updatingUserID = updateLastVote[0].lastVotes.userID;
+        await Review.updateOne({_id: mongoose.Types.ObjectId(review._id)},
+        [
+          { $unset: 'lastVotes.userVote'},
+          { $set: { 'lastVotes.userVote': req.body.radioRate }}
+        ],
+        {arrayFilters: [
+         {'lastVotes.userID': updatingUserID}
+         ]});
+      }
+    }
+
     const totalComments = await dataFuncs.countComments(userID);
 
     if (totalComments === 1)
@@ -191,7 +252,7 @@ router.post('/:id/uploadFile', urlencodedParser, upload.array('codeFiles'), asyn
   res.send(req.params.id);
 });
 
-
+/** 
 router.post('/:id/removeReviewer', urlencodedParser, async(req, res) =>  {  
     //const existingReviewPath = path.join(__dirname + "/../views/existingreview.ejs");
     let result = req.body.content.trim();
@@ -204,7 +265,7 @@ router.post('/:id/removeReviewer', urlencodedParser, async(req, res) =>  {
                      {$pull: {'assignedReviewers': user._id}}).exec();
     res.redirect('/existingreview/'+req.params.id);
 });
-
+*/
 
 router.post('/:id/changeCode', urlencodedParser, async(req, res) =>  {  
     console.log("request to change code sent");
