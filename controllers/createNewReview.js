@@ -14,6 +14,7 @@ const constants = require("../constants");
 const upload = require('../middlewares/upload');
 const queries = require('./queries');
 const algorithm = require('./algorithm');
+const { resolveSoa } = require('dns');
 
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
 var urlencodedParser2 = bodyParser.urlencoded({ extended: false });
@@ -96,6 +97,10 @@ router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =
 
 router.post('/updateList', urlencodedParser2, async(req, res) =>  { 
     const new_tags = req.body['tags[]'];
+    if (typeof new_tags === 'undefined')
+    {
+        return res.send(JSON.stringify([{maxPotentialMap: [], idsDict: []}]));
+    }
     const selected_project = req.body['project']; 
     //console.log(new_tags);
     console.log(selected_project);

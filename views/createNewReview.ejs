@@ -206,6 +206,19 @@
     chosenRows_reasons = [];
     $('.selectedRow').find("td:first").each(function(){chosenRows_ids.push($(this).prop("id"))});
     $('.selectedRow').find("td:nth-child(3) textarea").each(function(){chosenRows_reasons.push($(this).val())});
+    
+    if (chosenRows_ids.length == 0)
+    {
+      alert("No reviewers were chosen!");
+      return;
+    }
+
+    if (chosenRows_ids.length < 3)
+    {
+      alert("Choose at least 3 reviewers!");
+      return;
+    }
+    
     let dataFile = document.getElementById("formFileMultiple");
     dataFile = dataFile.files;
 
