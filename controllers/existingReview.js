@@ -12,6 +12,8 @@ const upload = require('../middlewares/upload');
 const Notification = require('../models/notification');
 const queries = require('./queries');
 const dataFuncs = require('./dataFuncs');
+const commentFile = require('../models/commentFile');
+const stream = require('stream');
 
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
 
@@ -92,12 +94,18 @@ router.get('/:id', isAuth, async function (req, res) {
             const reviewComments = review.comments;
             const tags = review.tags;
             var userDetails = [];
+            var commentFilesMap = new Map();
             var tagsStr = "";
             var user = null;
             for (var i=0; i < reviewComments.length; i++)
             {
                 user = await queries.getUserByID(reviewComments[i].userID);
                 userDetails.push(user);
+                var commentFiles = await commentFile.find({commentID: reviewComments[i]._id});
+                if (commentFiles.length > 0)
+                {
+                  commentFilesMap.set(reviewComments[i]._id, commentFiles);
+                }
             }
             tags.forEach((item)=> {
                 tagsStr = tagsStr.concat(" #", item);
@@ -105,7 +113,7 @@ router.get('/:id', isAuth, async function (req, res) {
             res.render(existingReviewPath,
                {userID, notifications, revID, revTitle, authorName,
                  projectName, assignedReviewers_names, assignedReviewers_votes,
-                 reviewText, reviewComments, userDetails, tagsStr, files});
+                 reviewText, reviewComments, userDetails, tagsStr, files, commentFilesMap});
             return;
         }
         /**
@@ -143,7 +151,9 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
     const updatedReview = await Review.findOneAndUpdate(
         {_id: mongoose.Types.ObjectId(review._id)},
         { $push : {comments: comment}},
+        { returnDocument: 'after' }
     );
+
 
     const checkIfReviewer = await Review.aggregate([
       {
@@ -228,7 +238,6 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
 });
 
 router.post('/:id/uploadFile', urlencodedParser, upload.array('codeFiles'), async(req, res) =>  {  
-  console.log(req.files);
   if (req.files.length == 0)
   {
     return res.status(400).send();
@@ -273,7 +282,26 @@ router.post('/:id/changeCode', urlencodedParser, async(req, res) =>  {
     res.redirect('/existingreview/'+req.params.id);
 });
 
+router.get('/:id/download/:fileID', async (req, res) => {
+  const commentFile = await CommentFile.findById(req.params.fileID);
+  if (commentFile)
+  {
+    const fileContents = Buffer.from(commentFile.data, "base64");
 
+    var readStream = new stream.PassThrough();
+    readStream.end(fileContents);
+  
+    res.set('Content-disposition', 'attachment; filename=' + commentFile.name);
+    res.set('Content-Type', 'text/plain');
+  
+    return readStream.pipe(res);
+  }
+  else
+  {
+    return res.status(400);
+  }
+
+});
 
 
 module.exports = router;

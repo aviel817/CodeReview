@@ -138,10 +138,21 @@
 						-->
 					</div>
 
+
 					<div class="date-wrapper">
 						<p class="date-text"><%= reviewComments[i].date %></p>
 						<p class="vote">Vote: <%= reviewComments[i].vote %></p>
 					</div>
+				</div>
+				<div class="commentFiles" style="padding: 5px;">
+					<% if (commentFilesMap.has(reviewComments[i]._id)) { %>
+					<div class="attachedFiles" style="border: 1px solid rgb(203, 203, 203); padding: 5px;">
+						Attached Files:
+						<% for (var k=0; k < commentFilesMap.get(reviewComments[i]._id).length; k++) { %>
+							<a class="link-dark" href="<%= revID %>/download/<%= commentFilesMap.get(reviewComments[i]._id)[k]._id %>" download="<%= commentFilesMap.get(reviewComments[i]._id)[k].name %>"><%= commentFilesMap.get(reviewComments[i]._id)[k].name %></a>
+						<% } %>
+					</div>
+					<% } %>
 				</div>
 					<% if(i != reviewComments.length-1) { %>
 						<div class="breakline"></div>
@@ -235,7 +246,10 @@
 					);
 				});
 			});
-
+			function getFile(fileObj)
+			{
+				console.log($(fileObj).attr("id"));
+			}
 
 			function load_js()
 			{
