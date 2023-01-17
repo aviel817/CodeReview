@@ -112,42 +112,34 @@ router.get('/:id', isAuth, async function (req, res) {
                 tagsStr = tagsStr.concat(" #", item);
             });
             const userPermission = await queries.getUserPermission(userID);
-            
-            permission = {}
-            console.log(authorID)
-            console.log(userID.equals(authorID))
-            console.log(userPermission)
+            const userProjects = await queries.getUserProjects(userID);
+            permission = {'approve': false, 'comment': false, 'vote': false, 'edit': false};
+
             if (userPermission == 'admin')
             {
-              permission = {'approve': true, 'comment': true, 'edit': true}
+              permission = {'approve': true, 'comment': true, 'vote': true, 'edit': true}
             } else if (userPermission == 'ProjectManager') {
               const managingProjs = await queries.getProjectByProjMgrID(userID);
               for (var k=0; k < managingProjs.length; k++)
               {
                 if (managingProjs[k].projectName == projectName)
                 {
-                  permission = {'approve': true, 'comment': true, 'edit': true};
+                  permission = {'approve': true, 'comment': true, 'vote': true, 'edit': true};
                   break;
                 }
               }
               if (userID.equals(authorID))
               {
-                permission = {'approve': false, 'comment': false, 'edit': true};
-              }
-              else
-              {
-                permission = {'approve': false, 'comment': false, 'edit': false};
+                permission = {'approve': false, 'comment': true, 'vote': false, 'edit': true};
               }
             } else if (userID.equals(authorID)) {
-              console.log("entered author");
-              permission = {'approve': false, 'comment': false, 'edit': true};
+              permission = {'approve': false, 'comment': true, 'vote': false, 'edit': true};
             } else if (assignedReviewers_ids.includes(userID)) {
-              permission = {'approve': false, 'comment': true, 'edit': false};
-            } else {
-              permission = {'approve': false, 'comment': false, 'edit': false};
+              permission = {'approve': false, 'comment': true, 'vote': false, 'edit': false};
+            } else if (userProjects.includes(projectName)) {
+              permission = {'approve': false, 'comment': true, 'vote': false, 'edit': false};
             }
 
-            console.log(permission)
             res.render(existingReviewPath,
                {userID, notifications, revID, revTitle, authorName,
                  projectName, assignedReviewers_names, assignedReviewers_votes,

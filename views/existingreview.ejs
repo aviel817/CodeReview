@@ -28,15 +28,14 @@
 		<div class="container d-flex flex-column" style="gap: 50px;">
 			<div>
 				<h1 class="rev-title"><%= revTitle %></h1>
-				<ul class="list-group list-group-horizontal" style="width: 100%;">
-					<li class="list-group-item">status: <%= status %></li>
-					<li class="list-group-item">A second item</li>
-					<li class="list-group-item">A third item</li>
-				  </ul>
+				<div class="row" style="margin-top: 50px; font-size: 18px;">
+					<div class="col">Author: <%= authorName %></div>
+					<div class="col">Status: <%= status %></div>
+					<div class="col">Project name: <a href="/projects/<%= projectName %>"><%= projectName %></a></div>
+				</div>
 				
 
-				<div class="d-flex flex-row">
-					<h3 class="section-title flex-grow-1">Author:</h3>
+				<div class="d-flex flex-row float-end">
 					<% if (typeof permission != 'undefined') { %>
 						<% if (permission.edit) { %>
 							<button id="editBtn" class="btn btn-secondary">Edit</button>
@@ -47,15 +46,6 @@
 					<% } %>
 				</div>				
 
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item"><%= authorName %></li>
-				</ul>
-			</div>
-			<div>
-				<p  class="section-title">Project name:</p>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item"><a href="/projects/<%= projectName %>"><%= projectName %></a></li>
-				</ul>
 			</div>
 			<div>
 				<h3 class="section-title">Reviewers:</h3>
