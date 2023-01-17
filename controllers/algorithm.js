@@ -3,7 +3,7 @@ const Review = require('../models/review');
 
 module.exports = {
 
-        sharedReviews: async (authorID, assignedReviewerID, newTagsList) => {
+        sharedReviews: async (authorID, assignedReviewerID, newTagsList, project) => {
             var numOfSharedReviews = await Review.aggregate([
                 {
                   '$project': {
@@ -37,7 +37,8 @@ module.exports = {
                     'status': 'Approved', 
                     'tags': {
                       '$in': newTagsList
-                    }
+                    },
+                    'project': project
                   }
                 }, {
                   '$count': 'sharedReviewsCount'
@@ -64,7 +65,8 @@ module.exports = {
                     ], 
                     'tags': {
                       '$in': newTagsList
-                    }
+                    },
+                    'project': project
                   }
                 }, {
                   '$count': 'numOfReviews'

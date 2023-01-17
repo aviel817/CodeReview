@@ -29,8 +29,9 @@
 			<div>
 				<h1 class="rev-title"><%= revTitle %></h1>
 				<div class="d-flex flex-row">
-					<h3 class="section-title">Author:</h3>
-					<button id="editBtn" class="btn btn-secondary ms-auto">Edit</button>
+					<h3 class="section-title flex-grow-1">Author:</h3>
+					<button id="editBtn" class="btn btn-secondary">Edit</button>
+					<button id="appBtn" class="btn btn-success ms-1">Approve</button>
 				</div>
 				<ul class="list-group list-group-flush">
 					<li class="list-group-item"><%= authorName %></li>
@@ -95,28 +96,29 @@
 					<textarea disabled><%= reviewText %></textarea>
 				</div>
 			</div>
-			
+			<% if (typeof files != 'undefined' && files.length > 0) { %>
 			<div style="margin-bottom: 30px;">
 				Code:
 				<div class="code-block" id="code">
 					<pre><code id="codeTxt" class="language-js">
-						<% if (typeof files != 'undefined' && files.length > 0) { %>
+						
 							<textarea id="codeArea" disabled></textarea>
-							<% } %></code>
+							</code>
 					</pre>
 				</div>
 			</div>
+			
 			<div>
 				<h3><u>Files:</u></h3>
-				<% if (typeof files != 'undefined') { %>
+
 					<ul class="list-group files">
 						<% for (var i=0; i < files.length; i++) { %>
 							<li onclick="showFile(this, `<%= files[i].data %>`)" class="list-group-item"><%= files[i].name %></li>
 						<% } %>
 					</ul>
-				<% } %>
-			</div>
 
+			</div>
+			<% } %>
 			<!-- Comments Section -->
 			<div class="comments-wrapper">
 				<div class="header-wrapper">
@@ -245,6 +247,18 @@
 						}
 					);
 				});
+
+				$("#appBtn").click(function() {
+					let revID = `<%= revID %>`;
+					$.post(`/existingreview/${revID}/approve`,
+							{
+								approved: true
+							},
+							function(data)
+							{
+								window.location.href = `/existingreview/${revID}`;
+							});
+				})
 			});
 			function getFile(fileObj)
 			{
@@ -287,7 +301,7 @@
 			function firstFile(filesObj)
 			{
 				<% if (files != 'undefined' && files.length > 0) { %>
-					fileData = `<%- String(files[0].data).replace(/`/g, "&#96;") %>`;
+					fileData = `<%- String(files[0].data).replace(/`/g, "&#96;") %>`; //`
 				<% } else { %>
 					fileData = '';
 				<% } %>

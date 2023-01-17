@@ -69,6 +69,15 @@ module.exports = {
             }
         }
         return [lastCommentsIDs, lastCommentsNames];
+    },
+
+    changeStatusToApproved: async (reviewID) => {
+        await Review.updateOne({_id: mongoose.Types.ObjectId(reviewID)},
+                                [
+                                { $unset: 'status'},
+                                { $set: { 'status': 'Approved' }}
+                                ]);
+
     }
 
 }

@@ -102,14 +102,13 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
         return res.send(JSON.stringify([{maxPotentialMap: [], idsDict: []}]));
     }
     const selected_project = req.body['project']; 
-    //console.log(new_tags);
     console.log(selected_project);
     console.log(new_tags);
     const closedReviews = await Review.find({
             status: {$ne: 'open'},
-            repository: selected_project
+            project: selected_project
     });
-    
+
     var titles = []
     const maxPotentialMap = new Map();
     const pointsMap = new Map();
@@ -149,7 +148,7 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
 
             if (!sharedReviewsMap.has(reviewer_username))
             {
-                var sharedReviews = await algorithm.sharedReviews(currUserID, reviewer_userID, new_tags);
+                var sharedReviews = await algorithm.sharedReviews(currUserID, reviewer_userID, new_tags, selected_project);
                 sharedReviewsMap.set(reviewer_username, sharedReviews);
             }
 

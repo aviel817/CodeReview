@@ -171,7 +171,7 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
       }
     ]);
 
-    if (checkIfReviewer)
+    if (checkIfReviewer.length > 0)
     {
       console.log("is reviewer");
       let updateLastVote = await Review.aggregate([
@@ -280,6 +280,32 @@ router.post('/:id/changeCode', urlencodedParser, async(req, res) =>  {
     console.log("request to change code sent");
     console.log(req.body.code);
     res.redirect('/existingreview/'+req.params.id);
+});
+
+router.post('/:id/approve', urlencodedParser, async(req, res) =>  {
+  console.log(req.body);
+  const reviewID = req.params.id;
+  if (mongoose.Types.ObjectId.isValid(reviewID))
+  {
+    const review = await queries.getReviewByID(reviewID);
+    if (review && req.body.approved === 'true')
+    {
+      var posVotes = 0;
+      for (const reviewVote of review.lastVotes)
+      {
+        if (parseInt(reviewVote.userVote) > 0)
+        {
+          posVotes += 1;
+        }
+      }
+      if ((posVotes / review.assignedReviewers.length) > 0.6 )
+      {
+        await queries.changeStatusToApproved(reviewID);
+        return res.send("status changed");
+      }
+    } 
+  }
+  return res.status(400).send();
 });
 
 router.get('/:id/download/:fileID', async (req, res) => {
