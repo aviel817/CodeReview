@@ -167,7 +167,7 @@
 				
 			</div>
 
-
+			<% if (typeof permission != 'undefined' && permission.comment) { %>
 			<!-- Add Comment Box -->
 			<form class="add-comment-wrapper" id="addCommentForm">
 				<div class="codeButton">
@@ -179,9 +179,9 @@
 				<div class="comment-box-wrapper">
 					<textarea id="commentText" class="comment-box" placeholder="Write your comment here..." role="textbox" name="commentText" contenteditable></textarea>
 				</div>
+				<% if (typeof permission != 'undefined' && permission.vote) { %>
 				<div class="rate-wrapper">
 					<h1 class="rate-title">Rate:</h1>
-					<% if (typeof permission != 'undefined' && permission.comment) { %>
 					<div class="rate-options">
 						<div class="form-check">
 							<input class="form-check-input" type="radio" name="radioRate" id="radio1" value="-2">
@@ -204,10 +204,11 @@
 							<label class="form-check-label grey" for="radio5">+2</label>
 						</div>
 					</div>
-					<% } %>
 				</div>
+				<% } %>
 				<button type="submit" class="add-button">Add Comment</button>
 			</form>
+			<% } %>
 		</div>
 		<script>
 			
