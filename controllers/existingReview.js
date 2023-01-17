@@ -25,6 +25,37 @@ const isAuth = (req, res, next) => {
     next();
   };
 
+async function isManager(userID, projectName)
+{
+  const managingProjs = await queries.getProjectByProjMgrID(userID);
+  for (var k=0; k < managingProjs.length; k++)
+  {
+    if (managingProjs[k].projectName == projectName)
+    {
+      console.log(managingProjs[k].projectName)
+      console.log(projectName)
+      return true;
+    }
+  }
+  return false;
+}
+
+function isAuthor(userID, authorID)
+{
+  return userID.equals(authorID);
+}
+
+function isReviewer(assignedReviewers_ids, userID)
+{
+  return assignedReviewers_ids.includes(userID);
+}
+
+function isProjectUser(userProjects, projectName)
+{
+  return userProjects.includes(projectName);
+}
+
+
 router.get('/:id', isAuth, async function (req, res) {
     const userID = req.session.userID;
     const notifications = await queries.getNotifications(userID);
@@ -40,7 +71,7 @@ router.get('/:id', isAuth, async function (req, res) {
             revTitle = review.reviewtitle;
             const authorID = review.authorID;
             const projectName = review.project;
-            const status = review.status;
+            const revStatus = review.status;
             const files = review.files;
 
             var uploaderUser = await queries.getUserByID(authorID);
@@ -113,38 +144,39 @@ router.get('/:id', isAuth, async function (req, res) {
             });
             const userPermission = await queries.getUserPermission(userID);
             const userProjects = await queries.getUserProjects(userID);
-            permission = {'approve': false, 'comment': false, 'vote': false, 'edit': false};
 
-            if (userPermission == 'admin')
-            {
-              permission = {'approve': true, 'comment': true, 'vote': true, 'edit': true}
-            } else if (userPermission == 'ProjectManager') {
-              const managingProjs = await queries.getProjectByProjMgrID(userID);
-              for (var k=0; k < managingProjs.length; k++)
-              {
-                if (managingProjs[k].projectName == projectName)
-                {
-                  permission = {'approve': true, 'comment': true, 'vote': true, 'edit': true};
-                  break;
-                }
-              }
-              if (userID.equals(authorID))
-              {
-                permission = {'approve': false, 'comment': true, 'vote': false, 'edit': true};
-              }
-            } else if (userID.equals(authorID)) {
-              permission = {'approve': false, 'comment': true, 'vote': false, 'edit': true};
-            } else if (assignedReviewers_ids.includes(userID)) {
-              permission = {'approve': false, 'comment': true, 'vote': false, 'edit': false};
-            } else if (userProjects.includes(projectName)) {
-              permission = {'approve': false, 'comment': true, 'vote': false, 'edit': false};
+            permissions = {
+                admin: {'approve': true, 'comment': true, 'vote': true, 'edit': true},
+                projectManager: {'approve': true, 'comment': true, 'vote': true, 'edit': true},
+                reviewAuthor: {'approve': false, 'comment': true, 'vote': false, 'edit': true},
+                reviewer: {'approve': false, 'comment': true, 'vote': false, 'edit': false},
+                projectUser: {'approve': false, 'comment': true, 'vote': false, 'edit': false},
+                user: {'approve': false, 'comment': false, 'vote': false, 'edit': false}
+            }
+
+            permission = permissions.user;
+
+            if (userPermission == 'admin') {
+              permission = permissions.admin;
+            }
+            else if ( (userPermission == 'ProjectManager') && (await isManager(userID, projectName)) ) {
+              permission = permissions.projectManager;
+            }
+            else if (isAuthor(userID, authorID)) {
+              permission = permissions.reviewAuthor;
+            }
+            else if (isReviewer(assignedReviewers_ids, userID)) {
+              permission = permissions.reviewer;
+            }
+            else if (isProjectUser(userProjects, projectName)) {
+              permission = permissions.projectUser;
             }
 
             res.render(existingReviewPath,
                {userID, notifications, revID, revTitle, authorName,
                  projectName, assignedReviewers_names, assignedReviewers_votes,
                  reviewText, reviewComments, userDetails, tagsStr, files, commentFilesMap,
-                 permission, status});
+                 permission, revStatus});
             return;
         }
         /**
@@ -202,7 +234,7 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
       }
     ]);
 
-    if (checkIfReviewer.length > 0)
+    if (checkIfReviewer.length > 0 && req.body.radioRate != '')
     {
       console.log("is reviewer");
       let updateLastVote = await Review.aggregate([
