@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const User = require('../models/user');
 const Review = require('../models/review');
 const Notification = require('../models/notification');
+const Project = require('../models/project');
 
 module.exports = {
 /**
@@ -26,6 +27,10 @@ module.exports = {
 
     getNotifications: async (userID) => {
         return await Notification.find({receiver: userID, isRead: false});
+    },
+
+    getUserPermission: async (userID) => {
+        return await module.exports.getUserByID(userID).then((user) => user.permission);
     },
 
 /**
@@ -62,10 +67,16 @@ module.exports = {
             if (reviews[i].comments.length != 0)
             {
                 var commentsUser = await User.findById(mongoose.Types.ObjectId(reviews[i].comments[reviews[i].comments.length-1].userID)).then((user)=> {return user}).catch((err)=>console.log(err));
-                username = commentsUser.username;
-                userID = commentsUser._id;
-                lastCommentsNames.push(username);
-                lastCommentsIDs.push(userID);
+                if (commentsUser)
+                {
+                    let username = commentsUser.username;
+                    let userID = commentsUser._id;
+                    lastCommentsNames.push(username);
+                    lastCommentsIDs.push(userID);
+                } else {
+                    console.log("ERROR: Reading Comment User!");
+                    return null;
+                }
             }
         }
         return [lastCommentsIDs, lastCommentsNames];
@@ -78,6 +89,14 @@ module.exports = {
                                 { $set: { 'status': 'Approved' }}
                                 ]);
 
+    },
+
+/**
+ * Projects Functions 
+ */
+
+    getProjectByProjMgrID: async (projMgrID) => {
+        return await Project.find({projectManager: mongoose.Types.ObjectId(projMgrID)});
     }
 
 }

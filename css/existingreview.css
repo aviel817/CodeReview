@@ -94,6 +94,7 @@ pre {
 	align-items: center;
 	justify-content: center;
 	gap: 15px;
+	width: 45%;
 }
 
 .add-button {

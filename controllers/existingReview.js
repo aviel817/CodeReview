@@ -110,10 +110,42 @@ router.get('/:id', isAuth, async function (req, res) {
             tags.forEach((item)=> {
                 tagsStr = tagsStr.concat(" #", item);
             });
+            const userPermission = await queries.getUserPermission(userID);
+            
+            permission = {}
+            if (userPermission == 'admin')
+            {
+              permission = {'approve': true, 'comment': true, 'edit': true}
+            }
+            else if (userPermission == 'ProjectManager')
+            {
+              const managingProjs = await queries.getProjectByProjMgrID(userID);
+              for (var k=0; k < managingProjs.length; k++)
+              {
+                if (managingProjs[k].projectName == projectName)
+                {
+                  permission = {'approve': true, 'comment': true, 'edit': true};
+                  break;
+                }
+              }
+            }
+            else if (authorID == userID)
+            {
+              permission = {'approve': false, 'comment': false, 'edit': true};
+            }
+            else if (assignedReviewers_ids.includes(userID))
+            {
+              permission = {'approve': false, 'comment': true, 'edit': false};
+            }
+            else
+            {
+              permission = {'approve': false, 'comment': false, 'edit': false};
+            }
+
             res.render(existingReviewPath,
                {userID, notifications, revID, revTitle, authorName,
                  projectName, assignedReviewers_names, assignedReviewers_votes,
-                 reviewText, reviewComments, userDetails, tagsStr, files, commentFilesMap});
+                 reviewText, reviewComments, userDetails, tagsStr, files, commentFilesMap, permission});
             return;
         }
         /**
