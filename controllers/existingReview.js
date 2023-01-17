@@ -40,6 +40,7 @@ router.get('/:id', isAuth, async function (req, res) {
             revTitle = review.reviewtitle;
             const authorID = review.authorID;
             const projectName = review.project;
+            const status = review.status;
             const files = review.files;
 
             var uploaderUser = await queries.getUserByID(authorID);
@@ -113,12 +114,13 @@ router.get('/:id', isAuth, async function (req, res) {
             const userPermission = await queries.getUserPermission(userID);
             
             permission = {}
+            console.log(authorID)
+            console.log(userID.equals(authorID))
+            console.log(userPermission)
             if (userPermission == 'admin')
             {
               permission = {'approve': true, 'comment': true, 'edit': true}
-            }
-            else if (userPermission == 'ProjectManager')
-            {
+            } else if (userPermission == 'ProjectManager') {
               const managingProjs = await queries.getProjectByProjMgrID(userID);
               for (var k=0; k < managingProjs.length; k++)
               {
@@ -128,24 +130,29 @@ router.get('/:id', isAuth, async function (req, res) {
                   break;
                 }
               }
-            }
-            else if (authorID == userID)
-            {
+              if (userID.equals(authorID))
+              {
+                permission = {'approve': false, 'comment': false, 'edit': true};
+              }
+              else
+              {
+                permission = {'approve': false, 'comment': false, 'edit': false};
+              }
+            } else if (userID.equals(authorID)) {
+              console.log("entered author");
               permission = {'approve': false, 'comment': false, 'edit': true};
-            }
-            else if (assignedReviewers_ids.includes(userID))
-            {
+            } else if (assignedReviewers_ids.includes(userID)) {
               permission = {'approve': false, 'comment': true, 'edit': false};
-            }
-            else
-            {
+            } else {
               permission = {'approve': false, 'comment': false, 'edit': false};
             }
 
+            console.log(permission)
             res.render(existingReviewPath,
                {userID, notifications, revID, revTitle, authorName,
                  projectName, assignedReviewers_names, assignedReviewers_votes,
-                 reviewText, reviewComments, userDetails, tagsStr, files, commentFilesMap, permission});
+                 reviewText, reviewComments, userDetails, tagsStr, files, commentFilesMap,
+                 permission, status});
             return;
         }
         /**

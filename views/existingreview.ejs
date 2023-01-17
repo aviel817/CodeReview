@@ -28,6 +28,13 @@
 		<div class="container d-flex flex-column" style="gap: 50px;">
 			<div>
 				<h1 class="rev-title"><%= revTitle %></h1>
+				<ul class="list-group list-group-horizontal" style="width: 100%;">
+					<li class="list-group-item">status: <%= status %></li>
+					<li class="list-group-item">A second item</li>
+					<li class="list-group-item">A third item</li>
+				  </ul>
+				
+
 				<div class="d-flex flex-row">
 					<h3 class="section-title flex-grow-1">Author:</h3>
 					<% if (typeof permission != 'undefined') { %>
@@ -38,7 +45,8 @@
 							<button id="appBtn" class="btn btn-success ms-1">Approve</button>
 						<% } %>
 					<% } %>
-				</div>
+				</div>				
+
 				<ul class="list-group list-group-flush">
 					<li class="list-group-item"><%= authorName %></li>
 				</ul>
