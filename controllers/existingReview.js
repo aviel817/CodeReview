@@ -147,9 +147,9 @@ router.get('/:id', isAuth, async function (req, res) {
 
             permissions = {
                 admin: {'approve': true, 'comment': true, 'vote': true, 'edit': true},
-                projectManager: {'approve': true, 'comment': true, 'vote': true, 'edit': true},
+                projectManager: {'approve': true, 'comment': true, 'vote': false, 'edit': true},
                 reviewAuthor: {'approve': false, 'comment': true, 'vote': false, 'edit': true},
-                reviewer: {'approve': false, 'comment': true, 'vote': false, 'edit': false},
+                reviewer: {'approve': false, 'comment': true, 'vote': true, 'edit': false},
                 projectUser: {'approve': false, 'comment': true, 'vote': false, 'edit': false},
                 user: {'approve': false, 'comment': false, 'vote': false, 'edit': false}
             }
@@ -162,14 +162,24 @@ router.get('/:id', isAuth, async function (req, res) {
             else if ( (userPermission == 'ProjectManager') && (await isManager(userID, projectName)) ) {
               permission = permissions.projectManager;
             }
-            else if (isAuthor(userID, authorID)) {
-              permission = permissions.reviewAuthor;
+            
+            if(isAuthor(userID, authorID)) {
+              permission.edit = true;
+              permission.comment = true;
             }
-            else if (isReviewer(assignedReviewers_ids, userID)) {
-              permission = permissions.reviewer;
+            if (isReviewer(assignedReviewers_ids, userID)) {
+              permission.comment = true;
+              permission.vote = true;
             }
-            else if (isProjectUser(userProjects, projectName)) {
-              permission = permissions.projectUser;
+            if (isProjectUser(userProjects, projectName)) {
+              permission.comment = true;
+            }
+            
+            if (revStatus != 'open')
+            {
+              permission.vote = false;
+              permission.comment = false;
+              permission.approve = false;
             }
 
             res.render(existingReviewPath,

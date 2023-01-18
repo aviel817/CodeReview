@@ -8,6 +8,7 @@
 	font-size: 20px;
 }
 
+
 .code-block {
 	color: #333;
 	width: 60%;
@@ -30,6 +31,7 @@
 }
 
 pre {
+	color: #333;
 	width: 100%;
 	max-height: 500px;
 }
