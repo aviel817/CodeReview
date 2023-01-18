@@ -25,28 +25,30 @@
 	<body>
 		<%- include("nav") %>
 		
-		<div class="container d-flex flex-column" style="gap: 50px;">
+		<div class="container d-flex flex-column flex-wrap" style="gap: 50px;">
 			<div>
 				<h1 class="rev-title"><%= revTitle %></h1>
-				<div class="row" style="margin-top: 50px; font-size: 18px;">
-					<div class="col">Author: <%= authorName %></div>
-					<div class="col">Status: <%= revStatus %></div>
-					<div class="col">Project name: <a href="/projects/<%= projectName %>"><%= projectName %></a></div>
+				<div class="list-group list-group-horizontal d-flex flex-row" style="margin-top: 50px;">
+						<li class="list-group-item w-25">Author: <%= authorName %></li>
+						<li class="list-group-item w-25">Status: <%= revStatus %></li>
+						<li class="list-group-item w-25">Project name: <a href="/projects/<%= projectName %>"><%= projectName %></a></li>
+						<li class="list-group-item w-25">Creation Date: <%= creationDate %></li>
+						<li class="list-group-item w-25">Expiration Date: <%= expDate %></li>
 				</div>
-				
 
-				<div class="d-flex flex-row float-end">
+				<div class="d-flex flex-row float-end mt-1">
 					<% if (typeof permission != 'undefined') { %>
 						<% if (permission.edit) { %>
-							<button id="editBtn" class="btn btn-secondary">Edit</button>
+							<button id="editBtn" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#editModal">Edit</button>
 						<% } %>
 						<% if (permission.approve) { %>
 							<button id="appBtn" class="btn btn-success ms-1">Approve</button>
 						<% } %>
 					<% } %>
-				</div>				
-
+				</div>
+								
 			</div>
+
 			<div>
 				<h3 class="section-title">Reviewers:</h3>
 				<table id="reviewers" class="table table-bordered border-dark">
@@ -85,13 +87,15 @@
 				</div>
 			</div>
 			<% if (typeof files != 'undefined' && files.length > 0) { %>
-			<div style="margin-bottom: 30px;">
-				Code:
-				<div class="code-block" id="code">
-					<pre><code id="codeTxt" class="language-js">
-							<textarea id="codeArea" disabled></textarea>
-							</code>
-					</pre>
+			<div>
+			Code:
+				<div style="max-width: 1100px; margin: auto; margin-bottom: 30px;">
+					<div class="code-block" id="code">
+						<pre><code id="codeTxt" class="language-js">
+								<textarea id="codeArea" disabled></textarea>
+								</code>
+						</pre>
+					</div>
 				</div>
 			</div>
 			
@@ -119,18 +123,15 @@
 					</div>
 
 					<div class="content-wrapper">
-						<p class="content-text"><pre><code class="language-js"></code><%- reviewComments[i].content %></code></pre></p>
-						<!--
-						<div class="code-block" id="code">
-							<pre><code class="language-js"><textarea disabled>document.getElementById("demo").innerHTML = 10.50;</textarea></code></pre>
-						</div>
-						-->
+						<p class="content-text"><%- reviewComments[i].content %></p>
 					</div>
 
 
 					<div class="date-wrapper">
 						<p class="date-text"><%= reviewComments[i].date %></p>
-						<p class="vote">Vote: <%= reviewComments[i].vote %></p>
+						<% if (reviewComments[i].vote != undefined) { %>
+							<p class="vote">Vote: <%= reviewComments[i].vote %></p>
+						<% } %>
 					</div>
 				</div>
 				<div class="commentFiles" style="padding: 5px;">
@@ -291,7 +292,7 @@
 			function firstFile(filesObj)
 			{
 				<% if (files != 'undefined' && files.length > 0) { %>
-					fileData = `<%- String(files[0].data).replace(/`/g, "&#96;") %>`; //`
+					fileData = `<%= files[0].data %>`
 				<% } else { %>
 					fileData = '';
 				<% } %>

@@ -123,6 +123,8 @@ router.get('/:id', isAuth, async function (req, res) {
 
             const revID = getVarID;
             const reviewText = review.text;
+            const creationDate = review.creationDate;
+            const expDate = review.expirationDate;
             const reviewComments = review.comments;
             const tags = review.tags;
             var userDetails = [];
@@ -183,7 +185,7 @@ router.get('/:id', isAuth, async function (req, res) {
             }
 
             res.render(existingReviewPath,
-               {userID, notifications, revID, revTitle, authorName,
+               {userID, notifications, revID, revTitle, creationDate, expDate, authorName,
                  projectName, assignedReviewers_names, assignedReviewers_votes,
                  reviewText, reviewComments, userDetails, tagsStr, files, commentFilesMap,
                  permission, revStatus});
@@ -211,7 +213,10 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
     const userID = req.session.userID;
     const pattern = date.compile('D/MM/YYYY HH:mm:ss');
     const cleanComment = sanitizeHtml(req.body.commentText, {
-    allowedTags: [ 'pre', 'code']
+    allowedTags: [ 'pre', 'code'],
+    allowedClasses: {
+      'code': ['language-js']
+    }
     });
     const comment = {
         userID: mongoose.Types.ObjectId(userID),
@@ -244,7 +249,7 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
       }
     ]);
 
-    if (checkIfReviewer.length > 0 && req.body.radioRate != '')
+    if (checkIfReviewer.length > 0 && req.body.radioRate != undefined)
     {
       console.log("is reviewer");
       let updateLastVote = await Review.aggregate([
