@@ -18,14 +18,27 @@
 <body>
     <%- include("nav") %>
     <div class="container">
-        <div style="position: relative; margin: 100px;">
-            <img src="/imgs/user-profile.png" width="140" height="140"/>
-            <div style="position: absolute; top: 0; left: 150px; display:flex; flex-direction:column;">
-                    <span style="font-size: 26px;"><%= user.username %></span>
-                    <span><%= user.role %></span>
-                    <span style="margin-top: 10px;"><img src="/imgs/mail.png" width="20" height="20"/> <%= user.email %></span>
-            </div>
+      <div class="d-flex flex-row" style="margin: 100px;">
+        <div class="d-flex">
+          <div class="flex-shrink-0">
+              <img src="/imgs/user-profile.png" width="140" height="140"/>
+          </div>
+          <div class="flex-grow-1 ms-3">                    
+            <p><span style="font-size: 24px; font-weight: bold;"><%= user.username %></span> <br> <%= user.role %></p>
+            <p style="margin-top: 10px; clear:right;"><img src="/imgs/mail.png" width="20" height="20"/><%= user.email %></p>
+          </div>
         </div>
+
+        <div class="card ms-auto">
+          <div class="card-body">
+            <p style="font-weight: bold;">Stats:</p>
+            <p>Reviews Created: <%= numOfReviewsCreated %></p>
+            <p>Reviews Participated: <%= reviewsParticipated %></p>
+            <p>Total Comments: <%= numOfComments %></p>
+          </div>
+        </div>
+
+      </div>
         <a href="/badges" style="position: absolute; right: 50px;" class="btn btn-primary">Badges</button>
           <ul class="nav nav-tabs" id="myTab" role="tablist" style="margin-bottom: 25px;">
             <li class="nav-item">
@@ -45,9 +58,10 @@
                 <div style="margin-top: 20px; font-weight: bold;">
                   <p>Badges:</p>
                 </div>
-                <div class="row">
+                <div class="row justify-content-center text-center">
                   <div class="col-md-3">
                     <div class="card" style="width: 18rem;">
+                      <div class="card-header">Bronze</div>
                       <img class="card-img-top" src="/imgs/badges/bronze.png" alt="bronze">
                       <div class="card-body">
                         <p class="card-text" style="font-size: 22px; text-align: center;"><%= badges[0] %></p>
@@ -56,6 +70,7 @@
                   </div>
                   <div class="col-md-3">
                     <div class="card" style="width: 18rem;">
+                      <div class="card-header">Silver</div>
                       <img class="card-img-top" src="/imgs/badges/silver.png" alt="silver">
                       <div class="card-body">
                         <p class="card-text" style="font-size: 22px; text-align: center;"><%= badges[1] %></p>
@@ -64,6 +79,7 @@
                   </div>
                   <div class="col-md-3">
                     <div class="card" style="width: 18rem;">
+                      <div class="card-header">Gold</div>
                       <img class="card-img-top" src="/imgs/badges/gold.png" alt="gold">
                       <div class="card-body">
                         <p class="card-text" style="font-size: 22px; text-align: center;"><%= badges[2] %></p>
@@ -71,18 +87,12 @@
                     </div>
                   </div>
                 </div>
-                <div style="font-weight: bold;">
-                  <p>Stats:</p>
-                </div>
-                <div>
-                  <p>Reviews Created: <%= numOfReviewsCreated %></p>
-                  <p>Reviews Participated: <%= reviewsParticipated %></p>
-                  <p>Total Comments: <%= numOfComments %></p>
-                </div>
+
               </div>
             
             <div class="tab-pane fade" id="activity" role="tabpanel" aria-labelledby="activity-tab">
-              <div>
+              <div class="card" >
+                <div class="card-body">
                 <p><b><u>Projects:</u></b> 
                   <% if (typeof projects != 'undefined') { %>
                       <% for (var i=0; i < projects.length; i++) { %>
@@ -90,6 +100,7 @@
                       <% } %>
                   <% } %>
                   </p>
+                </div>
               </div>
               <div style="margin-top: 20px;">
                 <p style="font-weight: bold;">Recent assigned reviews:</p>
