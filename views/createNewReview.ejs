@@ -80,6 +80,7 @@
   </select>
 </div>
 <button class="btn btn-secondary" type="button" id="btn" name="add">add</button>
+<button class="btn btn-info" type="button" id="btnClr" name="clear">Clear</button>
 <p id="tagsList"></p>
     <br><br>
     <button class="btn" style="background-color: #99FF33;" type="button" id="upRevList" name="upRevList">Get Reviewers List</button>
@@ -132,9 +133,11 @@
 </div>
 <script>
   var addTagToSet = document.getElementById("btn");
+  var clearTagsBtn = document.getElementById("btnClr");
   const tags = new Set();
   const reviewers = new Set();
   addTagToSet.addEventListener("click",InsertTag);
+  clearTagsBtn.addEventListener("click", clearTags);
 
   function InsertTag(event) {
     selectElement = document.querySelector('#selectTag');
@@ -145,6 +148,12 @@
     tagsList.innerHTML = 'Tags: #';
     tagsList.innerHTML += [...tags].join(', #');
     
+  }
+
+  function clearTags(event) {
+    tags.clear();
+    tagsList = document.getElementById("tagsList");
+    tagsList.innerHTML = '';
   }
 
   function toggleClass(el, className) {
