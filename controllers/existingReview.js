@@ -63,6 +63,7 @@ router.get('/:id', isAuth, async function (req, res) {
     var revTitle = "";
     var paramList = [];
     const existingReviewPath = path.join(__dirname + "/../views/existingreview.ejs");
+
     if (mongoose.Types.ObjectId.isValid(getVarID))
     {
         const review = await queries.getReviewByID(getVarID);
@@ -203,6 +204,26 @@ router.get('/:id', isAuth, async function (req, res) {
     res.render(existingReviewPath, {revTitle});
     */
 });
+
+router.get('/:id/edit', isAuth, async function (req, res) {
+//check permission
+const editReviewPath = path.join(__dirname + "/../views/editReview.ejs");
+const userID = req.session.userID;
+const notifications = await queries.getNotifications(userID);
+const review = await queries.getReviewByID(req.params.id);
+const assignedReviewers_ids = review.assignedReviewers;
+const assignedReviewers_names = [];
+for (let id of assignedReviewers_ids)
+{
+  var username = await queries.getUsernameByID(id);
+  assignedReviewers_names.push(username);
+}
+
+
+res.render(editReviewPath, {userID, notifications, assignedReviewers_names});
+
+});
+
 
 /**
  * Sending new comment
