@@ -4,6 +4,7 @@ const User = require('../models/user');
 const Review = require('../models/review');
 const Notification = require('../models/notification');
 const Project = require('../models/project');
+const date = require('date-and-time');
 
 module.exports = {
 /**
@@ -87,6 +88,18 @@ module.exports = {
                                 [
                                 { $unset: 'status'},
                                 { $set: { 'status': 'Approved' }}
+                                ]);
+
+    },
+
+    changeStatusToAbandoned: async (reviewID) => {
+        var pattern = date.compile('D/MM/YYYY HH:mm:ss');
+        await Review.updateOne({_id: mongoose.Types.ObjectId(reviewID)},
+                                [
+                                { $unset: 'status' },
+                                { $unset: 'expirationDate'},
+                                { $set: { 'status': 'Abandoned' } },
+                                { $set: { 'expirationDate': date.format(new Date(), pattern)} }
                                 ]);
 
     },

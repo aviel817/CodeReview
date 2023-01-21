@@ -43,6 +43,7 @@
 						<% } %>
 						<% if (permission.approve) { %>
 							<button id="appBtn" class="btn btn-success ms-1">Approve</button>
+							<button id="abnBtn" class="btn btn-danger ms-1">Abandon</button>
 						<% } %>
 					<% } %>
 				</div>
@@ -104,7 +105,10 @@
 
 					<ul class="list-group files">
 						<% for (var i=0; i < files.length; i++) { %>
-							<li onclick="showFile(this, `<%= files[i].data %>`)" class="list-group-item"><%= files[i].name %></li>
+							<div class="d-flex flex-row align-items-center gap-3 p-1">
+								<li onclick="showFile(this, `<%= files[i].data %>`)" class="list-group-item w-25"><%= files[i].name %></li>
+								<a class="link-dark" href='data:text/plain;charset=utf-8, <%= encodeURIComponent(files[i].data) %>' download="<%= files[i].name %>">Download</a>
+							</div>
 						<% } %>
 					</ul>
 
@@ -240,8 +244,9 @@
 				});
 
 				$("#appBtn").click(function() {
-					let revID = `<%= revID %>`;
-					$.post(`/existingreview/${revID}/approve`,
+					if (confirm('Are you sure you want to approve the review?')) {
+						let revID = `<%= revID %>`;
+						$.post(`/existingreview/${revID}/approve`,
 							{
 								approved: true
 							},
@@ -249,7 +254,23 @@
 							{
 								window.location.href = `/existingreview/${revID}`;
 							});
+					}
+				});
+
+				$("#abnBtn").click(function() {
+					if (confirm('Are you sure you want to abandon the review?')) {
+						let revID = `<%= revID %>`;
+						$.post(`/existingreview/${revID}/abandon`,
+							{
+								abandon: true
+							},
+							function(data)
+							{
+								window.location.href = `/existingreview/${revID}`;
+							});
+					}
 				})
+
 			});
 			function getFile(fileObj)
 			{

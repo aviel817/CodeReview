@@ -265,6 +265,6 @@ pre {
 	border-collapse: collapse;
 }
 
-ul > .selected {
+.list-group-item.selected {
 	color: blue;
 }

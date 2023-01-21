@@ -382,7 +382,6 @@ router.post('/:id/changeCode', urlencodedParser, async(req, res) =>  {
 });
 
 router.post('/:id/approve', urlencodedParser, async(req, res) =>  {
-  console.log(req.body);
   const reviewID = req.params.id;
   if (mongoose.Types.ObjectId.isValid(reviewID))
   {
@@ -402,6 +401,22 @@ router.post('/:id/approve', urlencodedParser, async(req, res) =>  {
         await queries.changeStatusToApproved(reviewID);
         return res.send("status changed");
       }
+    } 
+  }
+  return res.status(400).send();
+});
+
+
+router.post('/:id/abandon', urlencodedParser, async(req, res) =>  {
+  const reviewID = req.params.id;
+  if (mongoose.Types.ObjectId.isValid(reviewID))
+  {
+    const review = await queries.getReviewByID(reviewID);
+    if (review && req.body.abandon === 'true')
+    {
+
+        await queries.changeStatusToAbandoned(reviewID);
+        return res.send("status changed");
     } 
   }
   return res.status(400).send();
