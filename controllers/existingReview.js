@@ -135,7 +135,7 @@ router.get('/:id', isAuth, async function (req, res) {
             if (userPermission == 'admin') {
               permission = permissions.admin;
             }
-            else if ( (userPermission == 'ProjectManager') && (await isManager(userID, projectName)) ) {
+            else if ( (userPermission == 'ProjectManager') && (await permFuncs.isManager(userID, projectName)) ) {
               permission = permissions.projectManager;
             }
             

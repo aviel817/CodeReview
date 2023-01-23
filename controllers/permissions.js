@@ -1,3 +1,5 @@
+const queries = require('./queries');
+
 module.exports = {
 
     isManager: async (userID, projectName) =>
