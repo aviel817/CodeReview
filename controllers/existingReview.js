@@ -333,6 +333,50 @@ router.post('/:id/approve', urlencodedParser, async(req, res) =>  {
       if ((posVotes / review.assignedReviewers.length) > 0.6 )
       {
         await queries.changeStatusToApproved(reviewID);
+        //Badges
+        const lowCommentBadge = queries.getBadgeByName('low participant');
+        const mediumCommentBadge = queries.getBadgeByName('medium participant');
+        const topCommentBadge = queries.getBadgeByName('Highly Involved');
+        for( var reviewer of review.assignedReviewers)
+        {
+          const reviewerComments = badgeFuncs.numCommentsInReview(reviewID,reviewer);
+          switch(reviewerComments)
+          {
+            case (lowCommentBadge.value):
+              const lowBadgeExsist = badgeFuncs.checkIfBadgeExists(reviewer,lowCommentBadge.name) ;
+              if(lowBadgeExsist.length == 0)
+              {
+                badgeFuncs.createUserBronzeBadge(reviewer,lowCommentBadge);
+              }
+              else {
+                badgeFuncs.updateBronzeBadge(reviewer, lowCommentBadge.name);
+              }
+            break;
+          
+            case (mediumCommentBadge.value):
+              const mediumBadgeExist = badgeFuncs.checkIfBadgeExists(reviewer,mediumCommentBadge.name); 
+              if(mediumBadgeExist.length == 0)
+              {
+                badgeFuncs.createUserSilverBadge(reviewer, mediumCommentBadge);
+              }
+              else {
+                badgeFuncs.updateSilverBadge(reviewer,mediumCommentBadge.name);
+              }
+          }
+        }
+        const topCommenter = badgeFuncs.commentedMostInReview(reviewID); 
+        const topUser = queries.getUserByID(topCommenter._id);
+
+        const topBadgeExist = badgeFuncs.checkIfBadgeExists(topUser._id, topCommentBadge.name); 
+        if(topBadgeExist.length == 0)
+        {
+          badgeFuncs.createUserSilverBadge(topUser._id, topCommentBadge);
+        }
+        else {
+          badgeFuncs.updateSilverBadge(topUser._id,topCommentBadge.name);
+        }
+        //End of badges
+
         return res.send("status changed");
       }
     } 
