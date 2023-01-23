@@ -14,7 +14,7 @@ const constants = require("../constants");
 const upload = require('../middlewares/upload');
 const queries = require('./queries');
 const algorithm = require('./algorithm');
-const { resolveSoa } = require('dns');
+const badgeFuncs = require('./badgeFuncs');
 
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
 var urlencodedParser2 = bodyParser.urlencoded({ extended: false });
@@ -40,8 +40,9 @@ router.get('/', isAuth, async function (req, res) {
 
 
 router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =>  {  
-
+    const userID = req.session.userID
     const chosenReviewers = req.body['chosenRows[]'];
+    const reviewProject = req.body.project;
     const existingReview = await Review.findOne({
         reviewtitle: req.body.reviewtitle,
         project: req.body.project
@@ -53,7 +54,7 @@ router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =
         const pattern = date.compile('D/MM/YYYY HH:mm:ss');
         const reviewTitle = req.body.title;
         const newRev = await new Review({
-            authorID: req.session.userID,
+            authorID: userID,
             assignedReviewers: chosenReviewers,
             creationDate: date.format(new Date(), pattern),
             expirationDate: date.format(date.addDays(new Date(), 3),pattern),
@@ -77,8 +78,35 @@ router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =
               console.log('Email sent: ' + info.response);
             }
           });
+        const assignedAsReviewer_low = queries.getBadgeByName('Middle Reviewer');
+        const assignedAsReviewer_high = queries.getBadgeByName('Top Reviewer')
+        
         for (var reviewer of chosenReviewers)
         {
+            var numberOfAssignedRevs = badgeFuncs.numberofAssignedRevs(reviewer, reviewProject);
+            switch(numberOfAssignedRevs)
+            {
+                case assignedAsReviewer_low.value:
+                    var lowBadgeExist = badgeFuncs.checkIfBadgeExists(reviewer,assignedAsReviewer_low.name); 
+                    if(lowBadgeExist.length == 0){
+                      badgeFuncs.createUserSilverBadge(reviewer, assignedAsReviewer_low);        
+                    }
+                    else {
+                      badgeFuncs.updateSilverBadge(reviewer, assignedAsReviewer_low.name);;
+                    }
+                    break;
+                case assignedAsReviewer_high.value:
+                    var highBadgeExist = badgeFuncs.checkIfBadgeExists(reviewer,manyAssigned.name);
+                    if(highBadgeExist.length == 0){
+                      badgeFuncs.createUserGoldBadge(reviewer, assignedAsReviewer_high);        
+                    }
+                    else {
+                      badgeFuncs.updateGoldBadge(reviewer, assignedAsReviewer_high.name);
+                    }
+                    break;
+            }
+
+
             var newNotification = {
                 receiver: reviewer,
                 content: "You have been associated as reviewer to the review "+reviewTitle,
@@ -90,6 +118,48 @@ router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =
         Notification.insertMany(ntfcsArr, function(err, docs) {
             if (err) throw err;
         });
+        
+        
+        switch (getNumOfCreatedReviews(userID))
+        {
+            case 5:
+                const badge_5revs = await queries.getBadgeByName("Small Contributer");
+                badgeFuncs.createUserBronzeBadge(badge_5revs);
+                break;
+            case 20:
+                const badge_20revs = await queries.getBadgeByName("Medium Contributer");
+                badgeFuncs.createUserSilverBadge(badge_20revs);
+                break;
+            case 50:
+                const badge_50revs = await queries.getBadgeByName("Major Contributer");
+                badgeFuncs.createUserGoldBadge(badge_50revs);
+                break;
+        }
+        const authorProjectReviews = badgeFuncs.authorProjectReviews(userID,newRev.project);
+        if(authorProjectReviews === middleReviewProjectBadge.value){
+            const mediumBadgeExsist = badgeFuncs.checkIfBadgeExists(userID,middleReviewProjectBadge.name);
+              if(mediumBadgeExsist.length == 0)
+              {
+                badgeFuncs.createUserSilverBadge(userID,middleReviewProjectBadge);
+              }
+              else {
+                badgeFuncs.updateSilverBadge(userID,middleReviewProjectBadge.name);
+              }         
+        }
+        const middleReviewProjectBadge = queries.getBadgeByName('Medium uploader');
+        const majorReviewProjectBadge = queries.getBadgeByName('Big uploader');
+
+        if(authorProjectReviews === majorReviewProjectBadge.value){
+            const highBadgeExist = badgeFuncs.checkIfBadgeExists(userID,majorReviewProjectBadge);
+            if(highBadgeExist.length == 0)
+            {
+                badgeFuncs.createUserGoldBadge(userID, majorReviewProjectBadge);
+            }
+            else {
+                badgeFuncs.updateGoldBadge(userID, majorReviewProjectBadge.name);
+            }         
+        }
+        
         res.send(newRev._id);
     }
 
@@ -115,7 +185,9 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
     const workloadMap = new Map();
     const sharedReviewsMap = new Map();
     const countReviews = new Map();
-
+    const topReviewers = new Map();
+    const totalUsersCount = await User.find({}).count();
+    const topScore = await User.find().sort({totalPoints: -1}).exec();
     const idsDict = {};
     const currUserID = req.session.userID;
     const algParams = [0.35, 0.3, 0.05, 0.3];
@@ -144,6 +216,14 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
                 var points = reviewer_user.totalPoints;
                 var pointsFunc = Math.log(points+1) / 10;
                 pointsMap.set(reviewer_username, pointsFunc);
+                var index = topScore.findIndex((user)=> {
+                    if (user.username == reviewer_username)
+                    {
+                        return true;
+                    }
+                    return false;
+                });
+                topReviewers.set(reviewer_username, (index/totalUsersCount)*100);
             }
 
             if (!sharedReviewsMap.has(reviewer_username))
@@ -164,13 +244,13 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
             idsDict[reviewer_username] = reviewer_userID;
         }
     }
-    /**
-    console.log(maxPotentialMap);
-    console.log(pointsMap);
-    console.log(workloadMap);
-    console.log(sharedReviewsMap);
-    console.log(countReviews);
-    */
+    
+    //console.log(maxPotentialMap);
+    //console.log(pointsMap);
+    //console.log(workloadMap);
+    //console.log(sharedReviewsMap);
+    //console.log(countReviews);
+    
     for (const [key, value] of maxPotentialMap)
     {
         algValue = algParams[0] * (value / countReviews.get(key)) +
@@ -181,7 +261,13 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
     }
     
     res.status(200);
-    var dataToSend = [{maxPotentialMap: Array.from(maxPotentialMap.entries()), idsDict: idsDict}];
+    var dataToSend = [{
+        maxPotentialMap: Array.from(maxPotentialMap.entries()),
+        idsDict: idsDict,
+        sharedReviewsMap: Array.from(sharedReviewsMap.entries()),
+        workloadMap: Array.from(workloadMap.entries()),
+        topReviewers: Array.from(topReviewers.entries())
+      }];
     res.send(JSON.stringify(dataToSend));
 });
 

@@ -22,8 +22,20 @@ const isAuth = (req, res, next) => {
     next();
   };
 
+const isAdmin = async (req, res, next) => {
+    const userID = req.session.userID;
+    const userPermission = await queries.getUserPermission(userID);
+    if (userPermission != 'admin')
+    {
+        return res.redirect('/');
+    }
+    next();
+};
 
-router.get('/', isAuth, async function (req, res) {
+router.use(isAuth);
+router.use(isAdmin);
+
+router.get('/', async function (req, res) {
     const userID = req.session.userID;
     const notifications = await queries.getNotifications(userID);
     const algParams = await queries.getAlgorithmParams();
@@ -85,13 +97,7 @@ router.post('/updateAlgParams', urlencodedParser, async(req, res) =>  {
         return res.status(400).send('already assigned!');
     }
 
-    /**if (req.body.content.length > 0)
-    {
-      await Review.updateOne({_id: req.params.id},
-        {'reviewtitle': req.body.content});
-      return res.status(200).send('review title changed');
-    }
-      **/
+
     res.status(400).send('Wrong username or project!');
 
 });

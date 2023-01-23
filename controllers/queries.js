@@ -5,6 +5,7 @@ const Review = require('../models/review');
 const Notification = require('../models/notification');
 const Project = require('../models/project');
 const Algorithm = require('../models/algorithm');
+const Badge = require('../models/badge');
 const date = require('date-and-time');
 
 module.exports = {
@@ -121,6 +122,14 @@ module.exports = {
  */
     getAlgorithmParams: async () => {
         return await Algorithm.findById({_id: mongoose.Types.ObjectId('63c58f5612cebe7d97818836')});
+    },
+
+/**
+ * Badges Functions
+ */
+
+    getBadgeByName: async (badgeName) => {
+        return await Badge.find({name: badgeName});
     }
 
 

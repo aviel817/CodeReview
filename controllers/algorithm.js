@@ -4,16 +4,9 @@ const Review = require('../models/review');
 module.exports = {
 
         sharedReviews: async (authorID, assignedReviewerID, newTagsList, project) => {
-            var numOfSharedReviews = await Review.aggregate([
+            //console.log(Array.from(newTagsList))
+            const numOfSharedReviews = await Review.aggregate([
                 {
-                  '$project': {
-                    'creationDate': 1, 
-                    'assignedReviewers': 1, 
-                    'authorID': 1, 
-                    'tags': 1, 
-                    'status': 1
-                  }
-                }, {
                   '$match': {
                     '$and': [
                       {
@@ -33,47 +26,60 @@ module.exports = {
                           }
                         ]
                       }
-                    ], 
-                    'status': 'Approved', 
+                    ]
+                  }
+                }, {
+                  '$match': {
                     'tags': {
-                      '$in': newTagsList
-                    },
-                    'project': project
+                      '$in': [...newTagsList]
+                    }
+                  }
+                }, {
+                  '$match': {
+                    'project': project, 
+                    'status': 'Approved'
+                  }
+                }, {
+                  '$project': {
+                    'creationDate': 1, 
+                    'assignedReviewers': 1, 
+                    'authorID': 1, 
+                    'tags': 1
                   }
                 }, {
                   '$count': 'sharedReviewsCount'
                 }
               ]);
-        numOfSharedReviews = numOfSharedReviews[0]?.sharedReviewsCount;
-        var totalNumOfReviews = await Review.aggregate([
-                {
-                  '$project': {
-                    'creationDate': 1, 
-                    'assignedReviewers': 1, 
-                    'authorID': 1, 
-                    'tags': 1, 
-                    'status': 1
+        numOfSharedReviewsExt = numOfSharedReviews[0]?.sharedReviewsCount;
+        const totalNumOfReviews = await Review.aggregate([
+            {
+              '$match': {
+                '$or': [
+                  {
+                    'authorID':  mongoose.Types.ObjectId(authorID)
+                  }, {
+                    'assignedReviewers':  mongoose.Types.ObjectId(authorID)
                   }
-                }, {
-                  '$match': {
-                    '$or': [
-                      {
-                        'authorID': mongoose.Types.ObjectId(authorID)
-                      }, {
-                        'assignedReviewers': mongoose.Types.ObjectId(authorID)
-                      }
-                    ], 
-                    'tags': {
-                      '$in': newTagsList
-                    },
-                    'project': project
-                  }
-                }, {
-                  '$count': 'numOfReviews'
+                ]
+              }
+            }, {
+              '$match': {
+                'tags': {
+                  '$in': [...newTagsList]
                 }
+              }
+            }, {
+              '$match': {
+                'project': project
+              }
+            }, {
+              '$count': 'numOfReviews'
+            }
               ]);
-        totalNumOfReviews = totalNumOfReviews[0]?.numOfReviews;
-        return (numOfSharedReviews / totalNumOfReviews) || 0;
+        console.log(numOfSharedReviewsExt)
+        totalNumOfReviewsExt = totalNumOfReviews[0]?.numOfReviews;
+        console.log(totalNumOfReviewsExt)
+        return (numOfSharedReviewsExt / totalNumOfReviewsExt) || 0;
     },
 
     workload: async (userID) => {

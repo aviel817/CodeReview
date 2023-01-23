@@ -176,6 +176,10 @@
     selectTable.append(`<tr onclick="toggleClass(this,'selectedRow');"><td id="`+selectedUserID+`">`+selectedUserName+`</td><td>Manual</td><td><textarea disabled></textarea></td></tr></option>`);
   }
 
+  function getMapValue(mapEntries, entry)
+  {
+    return (mapEntries.find(x => x[0] === entry))[1];
+  }
 
   $( document ).ready(function() {
     $("#upRevList").click(function(){
@@ -195,11 +199,23 @@
             dataFromServer = JSON.parse(data);
             mapEntries = dataFromServer[0]["maxPotentialMap"].sort((a,b)=> b[1]-a[1]);
             idsDict = dataFromServer[0]["idsDict"];
+            sharedReviews = dataFromServer[0]["sharedReviewsMap"];
+            workloadMap = dataFromServer[0]["workloadMap"];
+            topReviewers = dataFromServer[0]["topReviewers"];
+
             for (let entry of mapEntries)
             {
               //entry = entry.toString().replace(",", ", ");
               entry = entry.toString().split(",");
-              selectTable.append(`<tr onclick="toggleClass(this,'selectedRow');"><td id="`+idsDict[entry[0]]+`">`+entry[0]+`</td><td>`+entry[1]+`</td><td><textarea disabled></textarea></td></tr></option>`);
+              selectTable.append(`<tr onclick="toggleClass(this,'selectedRow');">
+                <td id="`+idsDict[entry[0]]+`">`+entry[0]+`</td>
+                <td>`+entry[1]+`</td>
+                <td>
+                  Shared Reviews: `+ getMapValue(sharedReviews, entry[0])*100+`%<br>
+                  Currently open reviews: `+getMapValue(workloadMap, entry[0])+`<br>
+                  Top `+ getMapValue(topReviewers, entry[0]).toFixed(0) + `% Pts
+                  </td>
+                </tr></option>`);
             }
 
           }
