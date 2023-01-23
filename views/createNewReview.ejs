@@ -195,14 +195,17 @@
           },
           function(data) {
             selectTable = $( "#selectTable tbody" )
-            console.log(data);
+            //console.log(data);
             dataFromServer = JSON.parse(data);
             mapEntries = dataFromServer[0]["maxPotentialMap"].sort((a,b)=> b[1]-a[1]);
             idsDict = dataFromServer[0]["idsDict"];
             sharedReviews = dataFromServer[0]["sharedReviewsMap"];
             workloadMap = dataFromServer[0]["workloadMap"];
             topReviewers = dataFromServer[0]["topReviewers"];
-
+            if (mapEntries.length == 0)
+            {
+              alert("no matching reviewers, add manually");
+            }
             for (let entry of mapEntries)
             {
               //entry = entry.toString().replace(",", ", ");

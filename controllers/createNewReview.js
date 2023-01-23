@@ -190,7 +190,9 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
     const topScore = await User.find().sort({totalPoints: -1}).exec();
     const idsDict = {};
     const currUserID = req.session.userID;
-    const algParams = [0.35, 0.3, 0.05, 0.3];
+    const algParams = await queries.getAlgorithmParams();
+    //[0.35, 0.3, 0.05, 0.3];
+    
 
     for (let closed_review of closedReviews)
     {
@@ -253,10 +255,10 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
     
     for (const [key, value] of maxPotentialMap)
     {
-        algValue = algParams[0] * (value / countReviews.get(key)) +
-                   algParams[1] * sharedReviewsMap.get(key) +
-                   algParams[2] * pointsMap.get(key) +
-                   algParams[3] * await algorithm.calcWorkload(workloadMap.get(key));
+        algValue = algParams.alpha * (value / countReviews.get(key)) +
+                   algParams.beta  * sharedReviewsMap.get(key) +
+                   algParams.gamma * pointsMap.get(key) +
+                   algParams.delta * await algorithm.calcWorkload(workloadMap.get(key));
         maxPotentialMap.set(key, algValue);
     }
     
