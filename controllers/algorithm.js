@@ -76,9 +76,7 @@ module.exports = {
               '$count': 'numOfReviews'
             }
               ]);
-        console.log(numOfSharedReviewsExt)
         totalNumOfReviewsExt = totalNumOfReviews[0]?.numOfReviews;
-        console.log(totalNumOfReviewsExt)
         return (numOfSharedReviewsExt / totalNumOfReviewsExt) || 0;
     },
 
