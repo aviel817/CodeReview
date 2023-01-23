@@ -41,6 +41,11 @@ module.exports = {
 
     countReviewsParticipated: async (userID) =>{
       return await Review.countDocuments({assignedReviewers: mongoose.Types.ObjectId(userID)});
-    } 
+    },
+
+    getReviewersInProject: async (projectName, reviewID) => {
+      const assignedReviewers = await Review.findById(reviewID).then((review)=> review.assignedReviewers);
+      return await User.find({_id: {$nin: assignedReviewers}});
+    }
   
 }

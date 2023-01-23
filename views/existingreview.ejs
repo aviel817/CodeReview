@@ -39,7 +39,7 @@
 				<div class="d-flex flex-row float-end mt-1">
 					<% if (typeof permission != 'undefined') { %>
 						<% if (permission.edit) { %>
-							<button id="editBtn" class="btn btn-secondary">Edit</button>
+							<a class="btn btn-secondary" href="/existingreview/<%= revID %>/edit" id="editBtn">Edit</a>
 						<% } %>
 						<% if (permission.approve) { %>
 							<button id="appBtn" class="btn btn-success ms-1">Approve</button>
@@ -371,32 +371,7 @@
 
 					$("#code").append(saveBut);
 					
-					/**
-					reviewersList = $(".reviewersNames");
-					reviewersList.map((i, obj)=> {
-						c = document.createElement("span");
-						c.addEventListener('click', function() {
-							 //alert(this.parentNode.innerHTML);
-							
-							//alert( last_segment ); // Alert last segment
-							this.parentNode.remove();
-							$.ajax('/existingreview/' + last_segment + '/removeReviewer', {
-								type: 'POST',
-								data: { 
-									'content': this.parentNode.innerHTML.trim()
-								},
-								function(data) {
-									alert(data);
-								}
-							});
-							
-						 });
-						c.innerText = "X";
-						//console.log(obj);
-						obj.append(c);
-					});
-					//reviewersList.after(c);
-					**/
+
 				}
 				else
 				{
