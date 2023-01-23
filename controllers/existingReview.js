@@ -14,8 +14,11 @@ const queries = require('./queries');
 const dataFuncs = require('./dataFuncs');
 const commentFile = require('../models/commentFile');
 const stream = require('stream');
-
+const permFuncs = require('./permissions');
 var urlencodedParser = bodyParser.urlencoded({ extended: true });
+
+router.use(require('./editReview'));
+
 
 const isAuth = (req, res, next) => {
     if (!req.session.isAuth)
@@ -24,36 +27,6 @@ const isAuth = (req, res, next) => {
     }
     next();
   };
-
-async function isManager(userID, projectName)
-{
-  const managingProjs = await queries.getProjectByProjMgrID(userID);
-  for (var k=0; k < managingProjs.length; k++)
-  {
-    if (managingProjs[k].projectName == projectName)
-    {
-      console.log(managingProjs[k].projectName)
-      console.log(projectName)
-      return true;
-    }
-  }
-  return false;
-}
-
-function isAuthor(userID, authorID)
-{
-  return userID.equals(authorID);
-}
-
-function isReviewer(assignedReviewers_ids, userID)
-{
-  return assignedReviewers_ids.includes(userID);
-}
-
-function isProjectUser(userProjects, projectName)
-{
-  return userProjects.includes(projectName);
-}
 
 
 router.get('/:id', isAuth, async function (req, res) {
@@ -166,15 +139,15 @@ router.get('/:id', isAuth, async function (req, res) {
               permission = permissions.projectManager;
             }
             
-            if(isAuthor(userID, authorID)) {
+            if(permFuncs.isAuthor(userID, authorID)) {
               permission.edit = true;
               permission.comment = true;
             }
-            if (isReviewer(assignedReviewers_ids, userID)) {
+            if (permFuncs.isReviewer(assignedReviewers_ids, userID)) {
               permission.comment = true;
               permission.vote = true;
             }
-            if (isProjectUser(userProjects, projectName)) {
+            if (permFuncs.isProjectUser(userProjects, projectName)) {
               permission.comment = true;
             }
             
@@ -203,25 +176,6 @@ router.get('/:id', isAuth, async function (req, res) {
     revTitle = "error";
     res.render(existingReviewPath, {revTitle});
     */
-});
-
-router.get('/:id/edit', isAuth, async function (req, res) {
-//check permission
-const editReviewPath = path.join(__dirname + "/../views/editReview.ejs");
-const userID = req.session.userID;
-const notifications = await queries.getNotifications(userID);
-const revID = req.params.id;
-const review = await queries.getReviewByID(revID);
-const assignedReviewers_ids = review.assignedReviewers;
-const assignedReviewers_names = [];
-for (let id of assignedReviewers_ids)
-{
-  var username = await queries.getUsernameByID(id);
-  assignedReviewers_names.push(username);
-}
-const users = await dataFuncs.getReviewersInProject(review.project, revID);
-res.render(editReviewPath, {userID, notifications, assignedReviewers_names, revID, users});
-
 });
 
 
@@ -361,20 +315,6 @@ router.post('/:id/uploadFile', urlencodedParser, upload.array('codeFiles'), asyn
 });
 
 
-router.post('/:id/removeReviewer', urlencodedParser, async(req, res) =>  {  
-    const userName = req.body.content;
-    const user = await queries.getUserByName(userName);
-    Review.updateOne({_id: mongoose.Types.ObjectId(req.params.id)},
-                     {$pull: {'assignedReviewers': user._id}}).exec();
-    res.redirect('/existingreview/'+req.params.id);
-});
-
-router.post('/:id/changeCode', urlencodedParser, async(req, res) =>  {  
-    console.log("request to change code sent");
-    console.log(req.body.code);
-    res.redirect('/existingreview/'+req.params.id);
-});
-
 router.post('/:id/approve', urlencodedParser, async(req, res) =>  {
   const reviewID = req.params.id;
   if (mongoose.Types.ObjectId.isValid(reviewID))
@@ -412,27 +352,6 @@ router.post('/:id/abandon', urlencodedParser, async(req, res) =>  {
         await queries.changeStatusToAbandoned(reviewID);
         return res.send("status changed");
     } 
-  }
-  return res.status(400).send();
-});
-
-router.post('/:id/edit/addExpDays', urlencodedParser, async(req, res) =>  {
-  const reviewID = req.params.id;
-  if (mongoose.Types.ObjectId.isValid(reviewID))
-  {
-    const pattern = date.compile('D/MM/YYYY HH:mm:ss');
-    const daysToAdd = req.body.daysToAdd;
-    const review = await queries.getReviewByID(reviewID);
-    const expDate = date.parse(review.expirationDate, pattern);
-    const newExpDate = date.format(date.addDays(expDate, parseInt(daysToAdd)), pattern);
-    
-    await Review.updateOne({ _id: reviewID },
-                           [
-                            { $unset: 'expirationDate' },
-                            { $set: { 'expirationDate': newExpDate} }
-                           ]);
-                           
-    return res.send('exp days updated');
   }
   return res.status(400).send();
 });
