@@ -4,6 +4,7 @@ const User = require('../models/user');
 const Review = require('../models/review');
 const Notification = require('../models/notification');
 const Project = require('../models/project');
+const Algorithm = require('../models/algorithm');
 const date = require('date-and-time');
 
 module.exports = {
@@ -110,6 +111,17 @@ module.exports = {
 
     getProjectByProjMgrID: async (projMgrID) => {
         return await Project.find({projectManager: mongoose.Types.ObjectId(projMgrID)});
+    },
+
+    getProjectByName: async (projName) => {
+            return await Project.findOne({projectName: projName});
+    },
+/**
+ * Algorithm Functioms
+ */
+    getAlgorithmParams: async () => {
+        return await Algorithm.findById({_id: mongoose.Types.ObjectId('63c58f5612cebe7d97818836')});
     }
+
 
 }

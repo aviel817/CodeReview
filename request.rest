@@ -1,6 +1,13 @@
 #GET http://localhost:3000/login
 
-POST http://localhost:3000/createnewreview/updateList
+POST http://localhost:3000/manage/assignUserToProj
+content-type: application/json
+
+{
+    "selUser": "admin",
+    "selProj": "Pool cleaning robot"
+}
+
 
 #POST http://localhost:3000/existingReview
 
