@@ -71,9 +71,9 @@ router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =
         
         for (var reviewer of chosenReviewers)
         {
-            /**const mailOptions = {
+            const mailOptions = {
             from: 'GamiRev2022@gmail.com',
-            to: reviewer.email,
+            to: 'segev.minyan@gmail.com',//reviewer.email,
             subject: 'You have been associated as reviewer - GamiRev',
             text: 'The user ' + req.session.username + ' has associated you as reviewer in his new review ' +reviewTitle+ ' in GamiRev application'
           };
@@ -83,7 +83,7 @@ router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =
             } else {
               console.log('Email sent: ' + info.response);
             }
-          });**/
+          });
             var numberOfAssignedRevs = badgeFuncs.numberofAssignedRevs(reviewer, reviewProject);
             switch(numberOfAssignedRevs)
             {
@@ -120,44 +120,44 @@ router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =
             if (err) throw err;
         });
         
-        
-        switch (getNumOfCreatedReviews(userID))
+        const numOfCreatedReviews = await badgeFuncs.getNumOfCreatedReviews(userID);
+        switch (numOfCreatedReviews)
         {
             case 5:
                 const badge_5revs = await queries.getBadgeByName("Small Contributer");
-                badgeFuncs.createUserBronzeBadge(badge_5revs);
+                await badgeFuncs.createUserBronzeBadge(badge_5revs);
                 break;
             case 20:
                 const badge_20revs = await queries.getBadgeByName("Medium Contributer");
-                badgeFuncs.createUserSilverBadge(badge_20revs);
+                await badgeFuncs.createUserSilverBadge(badge_20revs);
                 break;
             case 50:
                 const badge_50revs = await queries.getBadgeByName("Major Contributer");
-                badgeFuncs.createUserGoldBadge(badge_50revs);
+                await badgeFuncs.createUserGoldBadge(badge_50revs);
                 break;
         }
-        const authorProjectReviews = badgeFuncs.authorProjectReviews(userID,newRev.project);
+        const middleReviewProjectBadge = await queries.getBadgeByName('Medium uploader');
+        const majorReviewProjectBadge = await queries.getBadgeByName('Big uploader');
+        const authorProjectReviews = await badgeFuncs.authorProjectReviews(userID,newRev.project);
         if(authorProjectReviews === middleReviewProjectBadge.value){
-            const mediumBadgeExsist = badgeFuncs.checkIfBadgeExists(userID,middleReviewProjectBadge.name);
+            const mediumBadgeExsist = await badgeFuncs.checkIfBadgeExists(userID,middleReviewProjectBadge.name);
               if(mediumBadgeExsist.length == 0)
               {
-                badgeFuncs.createUserSilverBadge(userID,middleReviewProjectBadge);
+                await badgeFuncs.createUserSilverBadge(userID,middleReviewProjectBadge);
               }
               else {
-                badgeFuncs.updateSilverBadge(userID,middleReviewProjectBadge.name);
+                await badgeFuncs.updateSilverBadge(userID,middleReviewProjectBadge.name);
               }         
         }
-        const middleReviewProjectBadge = queries.getBadgeByName('Medium uploader');
-        const majorReviewProjectBadge = queries.getBadgeByName('Big uploader');
 
         if(authorProjectReviews === majorReviewProjectBadge.value){
-            const highBadgeExist = badgeFuncs.checkIfBadgeExists(userID,majorReviewProjectBadge);
+            const highBadgeExist = await badgeFuncs.checkIfBadgeExists(userID,majorReviewProjectBadge);
             if(highBadgeExist.length == 0)
             {
-                badgeFuncs.createUserGoldBadge(userID, majorReviewProjectBadge);
+                await badgeFuncs.createUserGoldBadge(userID, majorReviewProjectBadge);
             }
             else {
-                badgeFuncs.updateGoldBadge(userID, majorReviewProjectBadge.name);
+                await badgeFuncs.updateGoldBadge(userID, majorReviewProjectBadge.name);
             }         
         }
         

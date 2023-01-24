@@ -1,23 +1,22 @@
 const express = require('express');
 const mongoose = require("mongoose");
 const Badge = require('../models/badge');
+const User = require('../models/user');
+const Review = require('../models/review');
 
 module.exports = {
   getNumOfCreatedReviews: async (userID) => {
-      const authorReviews = await Review.aggregate([
-          [
-              [
-                  {
-                    '$match': {
-                      'authorID': userID
-                    }
-                  }, {
-                    '$count': 'createdReviews'
-                  }
-                ]
-          ]
-      ])
-
+      const authorReviews = await Review.aggregate(
+        [
+          {
+            '$match': {
+              'authorID': mongoose.Types.ObjectId(userID)
+            }
+          }, {
+            '$count': 'createdReviews'
+          }
+        ]
+      );
 
       return authorReviews[0]?.createdReviews || 0;
   },
@@ -32,8 +31,8 @@ module.exports = {
                 }
               }, {
                 '$match': {
-                  'authorID': authorID, 
-                  'project': newRev.project
+                  'authorID': mongoose.Types.ObjectId(userID), 
+                  'project': projectName
                 }
               }, {
                 '$count': 'projectRevs'
