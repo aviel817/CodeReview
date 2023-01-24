@@ -18,6 +18,7 @@
     -->
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
+    <script src="/js/badgesscript.js"></script>
 <style>
     h1   {text-align:left;}
     th   {text-align: center;}
@@ -30,10 +31,15 @@
 
   <br>
   <h1> <u>GamiRev Badges:</u> </h1>
-<div>
+<div id="alltimebadges">
     <br>
+    <% if (editPerm === true) { %>
+    <div class="d-flex justify-content-end m-3">
+        <input class="btn btn-primary" type="button" value="edit all-time badges" onclick="AllTimeEdit()" id="all-time-edit">
+    </div>
+    <% } %>
     <h3>all-time badges</h3>
-    <table class="table table-bordered table-hover border-dark w-auto text-center">
+    <table class="table table-bordered table-hover border-dark w-auto text-center" id="alltimetable">
     <thead>
         <tr>
             <th scope="col">#</th>
@@ -43,56 +49,27 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td style="background-color:#CD7F32 ;" > Bronze</td>
-            <td>Small Contributer</td>
-            <td>Created 5 Reviewes</td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td style="background-color:#C0C0C0 ;">Silver</td>
-            <td>Medium Contributer</td>
-            <td>Created 20 Reviews</td>
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td style="background-color:#FFD700 ;">Gold</td>
-            <td>Major Contributer</td>
-            <td>Created 50 Reviews</td>
-        </tr>
-        <tr>
-            <th scope="row">4</th>
-            <td style="background-color:#CD7F32 ;">Bronze</td>
-            <td>First timer</td>
-            <td>Commented in the first time</td>
-        </tr>
-        <tr>
-            <th scope="row">5</th>
-            <td style="background-color:#CD7F32 ;">Bronze</td>
-            <td>Rising Star</td>
-            <td>Reached the leaderboard top 10</td>
-        </tr>
-        <tr>
-          <th scope="row">6</th>
-          <td style="background-color:#C0C0C0 ;"> Silver</td>
-          <td>Big Game</td>
-          <td>Reached the leaderboard top 3</td>
-        </tr>
-        <tr>
-          <th scope="row">7</th>
-          <td style="background-color:#FFD700 ;">Gold</td>
-          <td>Top of the Pyramid</td>
-          <td>Reached the leaderboard 1st place</td>
-        </tr>
+        <% for(var i=0; i < allTimeBadges.length; i++) { %>
+            <tr>
+                <th scope="row"><%= i+1 %></th>
+                <td><%= allTimeBadges[i].Rank %></td>
+                <td><%= allTimeBadges[i].name %></td>
+                <td><%= allTimeBadges[i].description.replace('{value}', allTimeBadges[i].value) %></td>
+            </tr>
+        <% } %>
     </tbody>
   </table>
 </div>
 
-<div>
+<div class="mt-5" id="reviewandprojectbadges">
     <br>
+    <% if (editPerm === true) { %>
+    <div class="d-flex justify-content-end m-3">
+        <input class="btn btn-primary" type="button" value="edit review-and-project badges" onclick="ReviewAndProjectEdit()" id="review-and-project-edit">
+    </div>
+    <% } %>
     <h3>Review and Project badges</h3>
-    <table class="table table-bordered table-hover border-dark w-auto text-center">
+    <table class="table table-bordered table-hover border-dark w-auto text-center" id="reviewandprojecttable">
     <thead>
         <tr>
             <th scope="col">#</th>
@@ -102,50 +79,27 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td style="background-color:#C0C0C0 ;"> Silver</td>
-            <td>Middle Reviewer</td>
-            <td>Assigned as a reviewer for 10 reviews in the same Project</td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td style="background-color:#FFD700 ;">Gold</td>
-            <td>Top reviewer</td>
-            <td>Assigned as a reviewer for 50 reviews in the same Project</td>
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td style="background-color:#CD7F32 ;">Bronze</td>
-            <td>low participant</td>
-            <td>Commented 2 times in a single review</td>
-        </tr>
-        <tr>
-            <th scope="row">4</th>
-            <td style="background-color:#C0C0C0 ;">Silver</td>
-            <td>Highly Involved</td>
-            <td>Writng most comments in a single closed Review</td>
-        </tr>
-        <tr>
-          <th scope="row">5</th>
-          <td style="background-color:#C0C0C0 ;">Silver</td>
-          <td>Medium uploader</td>
-          <td>Creating 10 Reviewes in a single project</td>
-      </tr>
-      <tr>
-        <th scope="row">6</th>
-        <td style="background-color:#FFD700 ;">Gold</td>
-        <td>Big uploader</td>
-        <td>Creating 25 Reviewes in a single project</td>
-    </tr>
+        <% for(var i=0; i < reviewProjectBadges.length; i++) { %>
+            <tr>
+                <th scope="row"><%= i+1 %></th>
+                <td><%= reviewProjectBadges[i].Rank %></td>
+                <td><%= reviewProjectBadges[i].name %></td>
+                <td><%= reviewProjectBadges[i].description.replace('{value}', allTimeBadges[i].value) %></td>
+            </tr>
+        <% } %>
     </tbody>
   </table>
 </div>
 
-<div>
+<div class="mt-5" id="timedbadges">
     <br>
+    <% if (editPerm === true) { %>
+    <div class="d-flex justify-content-end m-3">
+		<input class="btn btn-primary" type="button" value="edit timed badges" onclick="TimedEdit()" id="timed-edit">
+    </div>
+    <% } %>
     <h3>Timed badges</h3>
-    <table class="table table-bordered table-hover border-dark w-auto text-center">
+    <table class="table table-bordered table-hover border-dark w-auto text-center" id="timedtable">
     <thead>
         <tr>
             <th scope="col">#</th>
@@ -155,46 +109,37 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td style="background-color:#CD7F32 ;" > Bronze</td>
-            <td>Low-rate Creator</td>
-            <td>Created 3 new Reviewes in a week</td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td style="background-color:#C0C0C0 ;">Silver</td>
-            <td>Medium-rate Coreator</td>
-            <td>Created 5 new Reviewes in a week</td>
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td style="background-color:#FFD700 ;">Gold</td>
-            <td>High-rate Creator</td>
-            <td>Created 10 new Reviewes in a week</td>
-        </tr>
-        <tr>
-            <th scope="row">4</th>
-            <td style="background-color:#CD7F32 ;" > Bronze</td>
-            <td>Daily Responder</td>
-            <td>Write at least 1 Comment everyday in a week</td>
-        </tr>
-        <tr>
-            <th scope="row">5</th>
-            <td style="background-color:#C0C0C0 ;">Silver</td>
-            <td>High Demand</td>
-            <td>Get assigned to 3 reviewes in a week</td>
-        </tr>
-        <tr>
-            <th scope="row">6</th>
-            <td style="background-color:#FFD700 ;">Gold</td>
-            <td>Popular</td>
-            <td>Get assigned to 5 reviewes in a week</td>
-        </tr>
+        <% for(var i=0; i < timedBadges.length; i++) { %>
+            <tr>
+                <th scope="row"><%= i+1 %></th>
+                <td><%= timedBadges[i].Rank %></td>
+                <td><%= timedBadges[i].name %></td>
+                <td><%= timedBadges[i].description.replace('{value}', allTimeBadges[i].value) %></td>
+            </tr>
+        <% } %>
     </tbody>
   </table>
 </div>
+<script>
+    $(document).ready(()=> {
+        goldBdg = $('td').filter(function(){
+            return $(this).text() === 'Gold'
+        });
+        goldBdg.css('background-color', '#FFD700');
 
+        silverBdg = $('td').filter(function(){
+            return $(this).text() === 'Silver'
+        });
+        silverBdg.css('background-color', '#C0C0C0');
+
+        bronzeBdg = $('td').filter(function(){
+            return $(this).text() === 'Bronze'
+        });
+        bronzeBdg.css('background-color', '#CD7F32');
+
+    });
+
+</script>
 
 </body>
 </html>

@@ -65,9 +65,15 @@ router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =
             project: req.body.project
         }).save()
         var ntfcsArr = []
-        const mailOptions = {
+
+        const assignedAsReviewer_low = queries.getBadgeByName('Middle Reviewer');
+        const assignedAsReviewer_high = queries.getBadgeByName('Top Reviewer')
+        
+        for (var reviewer of chosenReviewers)
+        {
+            /**const mailOptions = {
             from: 'GamiRev2022@gmail.com',
-            to: 'aviel1440@gmail.com',
+            to: reviewer.email,
             subject: 'You have been associated as reviewer - GamiRev',
             text: 'The user ' + req.session.username + ' has associated you as reviewer in his new review ' +reviewTitle+ ' in GamiRev application'
           };
@@ -77,12 +83,7 @@ router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =
             } else {
               console.log('Email sent: ' + info.response);
             }
-          });
-        const assignedAsReviewer_low = queries.getBadgeByName('Middle Reviewer');
-        const assignedAsReviewer_high = queries.getBadgeByName('Top Reviewer')
-        
-        for (var reviewer of chosenReviewers)
-        {
+          });**/
             var numberOfAssignedRevs = badgeFuncs.numberofAssignedRevs(reviewer, reviewProject);
             switch(numberOfAssignedRevs)
             {
@@ -191,9 +192,8 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
     const idsDict = {};
     const currUserID = req.session.userID;
     const algParams = await queries.getAlgorithmParams();
-    //[0.35, 0.3, 0.05, 0.3];
+    //[0.35, 0.3, 0.05, 0.3]
     
-
     for (let closed_review of closedReviews)
     {
         titles.push(closed_review.reviewtitle);
@@ -247,11 +247,6 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
         }
     }
     
-    //console.log(maxPotentialMap);
-    //console.log(pointsMap);
-    //console.log(workloadMap);
-    //console.log(sharedReviewsMap);
-    //console.log(countReviews);
     
     for (const [key, value] of maxPotentialMap)
     {

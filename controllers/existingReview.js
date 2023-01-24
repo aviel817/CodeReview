@@ -207,7 +207,35 @@ router.post('/:id', urlencodedParser, async(req, res) =>  {
         { returnDocument: 'after' }
     );
 
-
+    var ntfcsArr = [];
+    for (var reviewer of review.assignedReviewers)
+    {
+      if (!(reviewer.equals(userID)))
+      {
+        var username = await queries.getUsernameByID(userID);
+        var newNotification = {
+          receiver: reviewer,
+          content: `The user ${username} commented on the review <a href="existingreview/${review._id}">${review.reviewtitle}</a>`,
+          isRead: false,
+          timeCreated: new Date()
+        };
+        ntfcsArr.push(newNotification);
+      }
+    }
+    if (!(review.authorID.equals(userID)))
+    {
+      var username = await queries.getUsernameByID(userID);
+      var newNotification = {
+        receiver: review.authorID,
+        content: `The user ${username} commented on the review <a href="existingreview/${review._id}">${review.reviewtitle}</a>`,
+        isRead: false,
+        timeCreated: new Date()
+      };
+      ntfcsArr.push(newNotification);
+    }
+    Notification.insertMany(ntfcsArr, function(err, docs) {
+      if (err) throw err;
+    });
     const checkIfReviewer = await Review.aggregate([
       {
         '$match': {
