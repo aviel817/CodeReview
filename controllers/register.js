@@ -53,7 +53,7 @@ router.post('/', urlencodedParser, async(req, res) =>  {
                         password: hash,
                         totalPoints: 0,
                         projects: [],
-                        permission: 0,
+                        permission: "User",
                         email: req.body.email
                     }).save()
                     //res.send('You have successfully registered');
