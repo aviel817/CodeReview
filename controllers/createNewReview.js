@@ -173,8 +173,6 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
         return res.send(JSON.stringify([{maxPotentialMap: [], idsDict: []}]));
     }
     const selected_project = req.body['project']; 
-    console.log(selected_project);
-    console.log(new_tags);
     const closedReviews = await Review.find({
             status: {$ne: 'open'},
             project: selected_project
