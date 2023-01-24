@@ -116,4 +116,24 @@ res.status(400).send('User not found');
 
 });
 
+router.post('/changePermission', urlencodedParser, async(req, res) =>  { 
+    username = req.body.username;
+    permission = req.body.permission;
+    if (!(username && permission))
+    {
+        return res.status(400).send('invalid parameters');
+    }
+    const userID = await queries.getUserByName(username);
+    if (permission == 'Project Manager')
+    {
+        projName = req.body.projName;
+        await Project.updateOne({projectName: projName},
+            {'projectManager': userID});
+    }
+    await User.updateOne({username: username},
+                         {'permission': permission});
+      return res.status(200).send('permission changed');
+
+});
+
 module.exports = router;

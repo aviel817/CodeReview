@@ -225,7 +225,7 @@ router.post('/updateList', urlencodedParser2, async(req, res) =>  {
                     }
                     return false;
                 });
-                topReviewers.set(reviewer_username, (index+1/totalUsersCount)*100);
+                topReviewers.set(reviewer_username, ((index+1)/totalUsersCount)*100);
             }
 
             if (!sharedReviewsMap.has(reviewer_username))
