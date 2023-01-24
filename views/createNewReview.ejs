@@ -214,7 +214,7 @@
                 <td id="`+idsDict[entry[0]]+`">`+entry[0]+`</td>
                 <td>`+entry[1]+`</td>
                 <td>
-                  Shared Reviews: `+ getMapValue(sharedReviews, entry[0])*100+`%<br>
+                  Shared Reviews: `+ (getMapValue(sharedReviews, entry[0])*100).toFixed(2)+`%<br>
                   Currently open reviews: `+getMapValue(workloadMap, entry[0])+`<br>
                   Top `+ getMapValue(topReviewers, entry[0]).toFixed(0) + `% Pts
                   </td>
