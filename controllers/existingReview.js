@@ -362,46 +362,46 @@ router.post('/:id/approve', urlencodedParser, async(req, res) =>  {
       {
         await queries.changeStatusToApproved(reviewID);
         //Badges
-        const lowCommentBadge = queries.getBadgeByName('low participant');
-        const mediumCommentBadge = queries.getBadgeByName('medium participant');
-        const topCommentBadge = queries.getBadgeByName('Highly Involved');
+        const lowCommentBadge = await queries.getBadgeByName('low participant');
+        const mediumCommentBadge = await queries.getBadgeByName('medium participant');
+        const topCommentBadge = await queries.getBadgeByName('Highly Involved');
         for( var reviewer of review.assignedReviewers)
         {
-          const reviewerComments = badgeFuncs.numCommentsInReview(reviewID,reviewer);
+          const reviewerComments = await badgeFuncs.numCommentsInReview(reviewID,reviewer);
           switch(reviewerComments)
           {
             case (lowCommentBadge.value):
-              const lowBadgeExsist = badgeFuncs.checkIfBadgeExists(reviewer,lowCommentBadge.name) ;
+              const lowBadgeExsist = await badgeFuncs.checkIfBadgeExists(reviewer,lowCommentBadge.name) ;
               if(lowBadgeExsist.length == 0)
               {
-                badgeFuncs.createUserBronzeBadge(reviewer,lowCommentBadge);
+                await badgeFuncs.createUserBronzeBadge(reviewer,lowCommentBadge);
               }
               else {
-                badgeFuncs.updateBronzeBadge(reviewer, lowCommentBadge.name);
+                await badgeFuncs.updateBronzeBadge(reviewer, lowCommentBadge.name);
               }
             break;
           
             case (mediumCommentBadge.value):
-              const mediumBadgeExist = badgeFuncs.checkIfBadgeExists(reviewer,mediumCommentBadge.name); 
+              const mediumBadgeExist = await badgeFuncs.checkIfBadgeExists(reviewer,mediumCommentBadge.name); 
               if(mediumBadgeExist.length == 0)
               {
-                badgeFuncs.createUserSilverBadge(reviewer, mediumCommentBadge);
+                await badgeFuncs.createUserSilverBadge(reviewer, mediumCommentBadge);
               }
               else {
-                badgeFuncs.updateSilverBadge(reviewer,mediumCommentBadge.name);
+                await badgeFuncs.updateSilverBadge(reviewer,mediumCommentBadge.name);
               }
           }
         }
-        const topCommenter = badgeFuncs.commentedMostInReview(reviewID); 
-        const topUser = queries.getUserByID(topCommenter._id);
+        const topCommenter = await badgeFuncs.commentedMostInReview(reviewID); 
+        const topUser = await queries.getUserByID(topCommenter._id);
 
-        const topBadgeExist = badgeFuncs.checkIfBadgeExists(topUser._id, topCommentBadge.name); 
+        const topBadgeExist = await badgeFuncs.checkIfBadgeExists(topUser._id, topCommentBadge.name); 
         if(topBadgeExist.length == 0)
         {
-          badgeFuncs.createUserSilverBadge(topUser._id, topCommentBadge);
+          await badgeFuncs.createUserSilverBadge(topUser._id, topCommentBadge);
         }
         else {
-          badgeFuncs.updateSilverBadge(topUser._id,topCommentBadge.name);
+          await badgeFuncs.updateSilverBadge(topUser._id,topCommentBadge.name);
         }
         //End of badges
 
