@@ -40,6 +40,15 @@ const showEdit = async (userID, reqID) => {
   return true;
 };
 
+const showManage = async (userID) => {
+  const userPermission = await queries.getUserPermission(userID);
+  if (userPermission == 'admin')
+  {
+    return true;
+  }
+  return false;
+}
+
 router.get('/:id', isAuth, async function (req, res) {
   const viewingProfileID = req.params.id;
   if (!mongoose.Types.ObjectId.isValid(viewingProfileID))
@@ -78,7 +87,8 @@ router.get('/:id', isAuth, async function (req, res) {
   const projects = await queries.getUserProjects(viewingProfileID);
   const recentlyAssignedRevs = await Review.find({assignedReviewers: mongoose.Types.ObjectId(viewingProfileID)},{_id: 1, reviewtitle: 1, creationDate: 1, status: 1}).limit(10);
   const showEditPerm = await showEdit(userID, viewingProfileID);
-	res.render(path.join(__dirname + "/../views/profile.ejs"), {user, userID, notifications, badges, numOfReviewsCreated, reviewsParticipated, numOfComments, projects, recentlyAssignedRevs, showEditPerm});
+  const isAdmin = await showManage(userID);
+	res.render(path.join(__dirname + "/../views/profile.ejs"), {user, userID, notifications, badges, numOfReviewsCreated, reviewsParticipated, numOfComments, projects, recentlyAssignedRevs, showEditPerm, isAdmin});
 });
 
 router.get('/:id/edit', isAuth, checkPermission, async function (req, res) {

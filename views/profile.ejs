@@ -39,10 +39,15 @@
         </div>
 
       </div>
-        <a href="/badges" style="position: absolute; right: 50px;" class="btn btn-primary">Badges</a>
+      <div class="d-flex flex-row justify-content-end" style="gap: 5px;">
+        <a href="/badges" class="btn btn-primary">Badges</a>
         <% if (showEditPerm === true) { %>
-          <a href="/profile/<%= user._id %>/edit" style="position: absolute; right: 150px;" class="btn btn-secondary">Edit</a>
+          <a href="/profile/<%= user._id %>/edit" class="btn btn-secondary">Edit</a>
         <% } %>
+        <% if (isAdmin === true) { %>
+          <a href="/manage" class="btn btn-danger">Manage</a>
+        <% } %>
+      </div>
           <ul class="nav nav-tabs" id="myTab" role="tablist" style="margin-bottom: 25px;">
             <li class="nav-item">
               <a class="nav-link active" id="info-tab" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="true">Info</a>

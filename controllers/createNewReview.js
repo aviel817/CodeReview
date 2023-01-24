@@ -71,7 +71,7 @@ router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =
         
         for (var reviewer of chosenReviewers)
         {
-            const mailOptions = {
+            /**const mailOptions = {
             from: 'GamiRev2022@gmail.com',
             to: 'segev.minyan@gmail.com',//reviewer.email,
             subject: 'You have been associated as reviewer - GamiRev',
@@ -83,7 +83,7 @@ router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =
             } else {
               console.log('Email sent: ' + info.response);
             }
-          });
+          });**/
             var numberOfAssignedRevs = badgeFuncs.numberofAssignedRevs(reviewer, reviewProject);
             switch(numberOfAssignedRevs)
             {
@@ -110,7 +110,7 @@ router.post('/', urlencodedParser2, upload.single('codeFile'), async(req, res) =
 
             var newNotification = {
                 receiver: reviewer,
-                content: "You have been associated as reviewer to the review "+reviewTitle,
+                content: `You have been associated as reviewer to the review <a href="existingreview/${newRev._id}">${reviewTitle}</a>`,
                 isRead: false,
                 timeCreated: new Date()
             };
