@@ -362,7 +362,7 @@ router.post('/:id/approve', urlencodedParser, async(req, res) =>  {
       {
       //  await queries.changeStatusToApproved(reviewID);
         //Badges
-        const lowCommentBadge = await queries.getBadgeByName('low participant');
+     /*   const lowCommentBadge = await queries.getBadgeByName('low participant');
         const mediumCommentBadge = await queries.getBadgeByName('medium participant');
         const topCommentBadge = await queries.getBadgeByName('Highly Involved');
         for( var reviewer of review.assignedReviewers)
@@ -401,11 +401,11 @@ router.post('/:id/approve', urlencodedParser, async(req, res) =>  {
           await badgeFuncs.createUserSilverBadge(topUser._id, topCommentBadge);
         }
         else {
-          await badgeFuncs.updateSilverBadge(topUser._id,topCommentBadge.name);
-        }
+          await badgeFuncs.updateSilverBadge(topUser._id,topCommentBadge.name);*
+        }*/
         //End of badges
         await queries.changeStatusToApproved(reviewID);
-        
+
         return res.send("status changed");
       }
     } 
