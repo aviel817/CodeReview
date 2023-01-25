@@ -360,7 +360,7 @@ router.post('/:id/approve', urlencodedParser, async(req, res) =>  {
       }
       if ((posVotes / review.assignedReviewers.length) > 0.6 )
       {
-        await queries.changeStatusToApproved(reviewID);
+      //  await queries.changeStatusToApproved(reviewID);
         //Badges
         const lowCommentBadge = await queries.getBadgeByName('low participant');
         const mediumCommentBadge = await queries.getBadgeByName('medium participant');
@@ -404,7 +404,8 @@ router.post('/:id/approve', urlencodedParser, async(req, res) =>  {
           await badgeFuncs.updateSilverBadge(topUser._id,topCommentBadge.name);
         }
         //End of badges
-
+        await queries.changeStatusToApproved(reviewID);
+        
         return res.send("status changed");
       }
     } 
