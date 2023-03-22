@@ -49,9 +49,13 @@ npm i
 ## Screenshots
 
 
-![mainpage](https://i.imgur.com/UkmCtgY.png)
+
 ![alg1](https://i.imgur.com/r7G8xXd.png)
 ![alg2](https://i.imgur.com/Mmzl1aB.png)
+
+![existingreview](https://i.imgur.com/3BYLncd.png)
+
+![filesandcomments](https://i.imgur.com/T6laXpQ.png)
 
 
 
@@ -64,7 +68,3 @@ npm i
    [jQuery]: <http://jquery.com>
    [express]: <http://expressjs.com>
    [Mongoose]: <https://mongoosejs.com/>
-
-
-
-
