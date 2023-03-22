@@ -1,7 +1,7 @@
 # GamiRev
 
 
-GamiRev is an efficient code review web application using a matching algorithm to find the most fitting reviewers for a review
+GamiRev is a code review web application that makes the code review process more efficient by using a matching algorithm to find the most fitting reviewers for a review. The algorithm considers the following aspects: reviews with similar interests, the user's points, the user's workload, and the user's collaboration with the code author. We aim to reduce the selection of inappropriate reviewers by allowing the author to take better-informed decisions. In addition, the application includes gamification elements such as points, badges, and a leaderboard to motivate reviewers to contribute to the process.
 
 
 
@@ -14,7 +14,7 @@ GamiRev is an efficient code review web application using a matching algorithm t
 - Login using sessions
 - Secure password storage using argon2
 
-## Tech
+## Technologies
 
 GamiRev uses the following technlogies:
 
@@ -36,15 +36,19 @@ It also requires a MongoDB database with the needed collections in the code.
 
 To install the dependencies run:
 
-
-
 ```sh
 npm i
 ```
+The app constant variables should be stored either in process enviornment or in the .secrets (json) file. The structure of the .secrets file is:
 
-
-
-
+```sh
+ {
+    "dbURL":"",
+    "cookieSecret":"",
+    "emailUser":"",
+    "emailPass":""
+}
+```
 
 ## Screenshots
 
@@ -68,3 +72,7 @@ npm i
    [jQuery]: <http://jquery.com>
    [express]: <http://expressjs.com>
    [Mongoose]: <https://mongoosejs.com/>
+
+
+
+
