@@ -55,13 +55,13 @@ The app constant variables should be stored either in process enviornment or in 
 
 ![alg1](https://i.imgur.com/r7G8xXd.png)
 <br /><br />
-Choosing from recommended reviewers:<br /><br />
+- Choosing from recommended reviewers:<br /><br />
 ![alg2](https://i.imgur.com/Mmzl1aB.png)
 <br /><br />
-Existing review screen:<br /><br />
+- Existing review screen:<br /><br />
 ![existingreview](https://i.imgur.com/3BYLncd.png)
 <br /><br />
-Files and Comments section in existing review:<br /><br />
+- Files and Comments section in existing review:<br /><br />
 ![filesandcomments](https://i.imgur.com/T6laXpQ.png)
 
 
